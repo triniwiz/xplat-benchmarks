@@ -27,6 +27,12 @@ const MASON_NOTES = [
   'text-flow: no line clamp in Mason, so the 2-line clamp paragraphs render in full.',
 ];
 
+/** Framework apps register Mason elements through masonkit's framework integration. */
+const FRAMEWORK_MASON_NOTES = [
+  ...MASON_NOTES,
+  'styled-cards v4: stylesheet `transform` is not applied when elements come from a framework installMasonKit() (seen with Angular and Vue; masonkit 1.0.0-beta.104, Android).',
+];
+
 const NS_ACTIVITY = 'com.tns.NativeScriptActivity';
 
 export const APPS: readonly AppDef[] = [
@@ -61,10 +67,7 @@ export const APPS: readonly AppDef[] = [
     paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nsngmason', android: 'org.xplatbench.nsngmason' },
     androidActivity: NS_ACTIVITY,
-    notes: [
-      ...MASON_NOTES,
-      'styled-cards v4: stylesheet `transform` is not applied under installMasonKit() (masonkit 1.0.0-beta.104, Android).',
-    ],
+    notes: FRAMEWORK_MASON_NOTES,
   },
   {
     id: 'ns-vue-mason',
@@ -75,7 +78,7 @@ export const APPS: readonly AppDef[] = [
     paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nsvuemason', android: 'org.xplatbench.nsvuemason' },
     androidActivity: NS_ACTIVITY,
-    notes: MASON_NOTES,
+    notes: FRAMEWORK_MASON_NOTES,
   },
   {
     id: 'ns-react-mason',
