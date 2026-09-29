@@ -59,22 +59,27 @@ export interface RunStatus {
   label: string;
 }
 
-const g = globalThis as any;
+// Bare globals, not globalThis.x: some engines (Lynx's background thread)
+// expose fetch/console/timers as globals that are not properties of globalThis.
+declare const fetch: (url: string, init?: object) => Promise<any>;
+declare const setTimeout: (fn: () => void, ms: number) => unknown;
+declare const clearTimeout: (id: unknown) => void;
+declare const console: { log(message: string): void };
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => g.setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number, what: string): Promise<T> {
   return new Promise<T>((resolve, reject) => {
-    const timer = g.setTimeout(() => reject(new Error(`timeout after ${ms}ms: ${what}`)), ms);
+    const timer = setTimeout(() => reject(new Error(`timeout after ${ms}ms: ${what}`)), ms);
     promise.then(
       (v) => {
-        g.clearTimeout(timer);
+        clearTimeout(timer);
         resolve(v);
       },
       (e) => {
-        g.clearTimeout(timer);
+        clearTimeout(timer);
         reject(e);
       },
     );
@@ -82,13 +87,13 @@ function withTimeout<T>(promise: Promise<T>, ms: number, what: string): Promise<
 }
 
 async function getJson<T>(url: string): Promise<T> {
-  const res = await g.fetch(url);
+  const res = await fetch(url);
   if (!res.ok) throw new Error(`GET ${url} → ${res.status}`);
   return (await res.json()) as T;
 }
 
 async function postJson(url: string, body: unknown): Promise<void> {
-  const res = await g.fetch(url, {
+  const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
@@ -98,7 +103,7 @@ async function postJson(url: string, body: unknown): Promise<void> {
 
 function emit(adapter: BenchAdapter, kind: string, payload: unknown): void {
   const line = `${LOG_PREFIX}_${kind} ${JSON.stringify(payload)}`;
-  (adapter.log ?? ((m: string) => g.console.log(m)))(line);
+  (adapter.log ?? ((m: string) => console.log(m)))(line);
 }
 
 export async function runCase(

@@ -23,3 +23,10 @@ results/*
 apps/*/platforms/
 apps/*/hooks/
 apps/*/.ns-build-*
+
+# Lynx
+apps/lynx/bundle/dist/
+apps/lynx/hosts/*/build/
+apps/lynx/hosts/*/app/build/
+apps/lynx/hosts/android/.gradle/
+apps/lynx/hosts/android/local.properties

@@ -1,0 +1,61 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+
+// Minimal Lynx host: one Activity with one LynxView loading the ReactLynx
+// bundle from apps/lynx/bundle/dist (build it with `npm run build` there).
+def lynxVersion = "4.1.0"
+
+android {
+    namespace "org.xplatbench.lynx"
+    compileSdk 37
+
+    defaultConfig {
+        applicationId "org.xplatbench.lynx"
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
+        buildConfigField "String", "LYNX_VERSION", "\"$lynxVersion\""
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    buildTypes {
+        release {
+            // Debug keystore, like the other benchmark apps' local release builds.
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    sourceSets {
+        main.assets.srcDirs += ["../../../bundle/dist"]
+    }
+
+    packaging {
+        jniLibs.useLegacyPackaging = true
+    }
+}
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.16.0")
+
+    implementation("org.lynxsdk.lynx:lynx:$lynxVersion")
+    implementation("org.lynxsdk.lynx:lynx-jssdk:$lynxVersion")
+    implementation("org.lynxsdk.lynx:lynx-trace:$lynxVersion")
+    implementation("org.lynxsdk.lynx:primjs:4.1.1")
+    implementation("org.lynxsdk.lynx:lynx-service-log:$lynxVersion")
+    // Backs fetch() in the background thread (results go to the harness over HTTP).
+    implementation("org.lynxsdk.lynx:lynx-service-http:$lynxVersion")
+    implementation("com.squareup.okhttp3:okhttp:4.9.0")
+}

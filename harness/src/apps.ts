@@ -133,8 +133,15 @@ export const APPS: readonly AppDef[] = [
     title: 'Lynx',
     dir: 'apps/lynx',
     sharedDir: 'apps/lynx/bundle/src/shared',
+    paletteCss: true,
     bundleId: { ios: 'org.xplatbench.lynx', android: 'org.xplatbench.lynx' },
     androidActivity: '.MainActivity',
+    notes: [
+      'Clock: Date.now() (1 ms resolution); Lynx\'s background thread has no performance.now().',
+      'Painted is observed on the background thread: layoutchange events cross from the main thread, as any Lynx app would see them.',
+      'grid-dashboard: grid placed by line numbers (Lynx has no grid-template-areas).',
+      'Host registers the Log and HTTP services only (no images in the scenarios); Lynx logs an image-prefetch error at load.',
+    ],
   },
 ];
 
