@@ -16,7 +16,16 @@ export interface AppDef {
   bundleId: { ios: string; android: string };
   /** Android launch activity (for `am start -n`), when not the default. */
   androidActivity: string;
+  /** Known deviations from the spec, printed in every report. */
+  notes?: string[];
 }
+
+const MASON_NOTES = [
+  'Mason-native frame: Mason root, status Text, Mason Scroll host and Mason Ul; the window root is a core GridLayout only to apply Android insets.',
+  'list-scroll: Mason Ul with keyed templates needs apps/ns-common/patches (masonkit 1.0.0-beta.104 ignores itemTemplates; Android onCreate treats the view type as a data index).',
+  'list-scroll: each Ul cell has an extra full-width Mason root (cells size to max-content and ignore root margins).',
+  'text-flow: no line clamp in Mason, so the 2-line clamp paragraphs render in full.',
+];
 
 const NS_ACTIVITY = 'com.tns.NativeScriptActivity';
 
@@ -30,6 +39,7 @@ export const APPS: readonly AppDef[] = [
     paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nscore', android: 'org.xplatbench.nscore' },
     androidActivity: NS_ACTIVITY,
+    notes: ['styled-cards v5: core does not clip children to border-radius (overflow: hidden unsupported).'],
   },
   {
     id: 'ns-core-mason',
@@ -40,6 +50,7 @@ export const APPS: readonly AppDef[] = [
     paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nscoremason', android: 'org.xplatbench.nscoremason' },
     androidActivity: NS_ACTIVITY,
+    notes: MASON_NOTES,
   },
   {
     id: 'ns-angular-mason',
@@ -50,6 +61,10 @@ export const APPS: readonly AppDef[] = [
     paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nsngmason', android: 'org.xplatbench.nsngmason' },
     androidActivity: NS_ACTIVITY,
+    notes: [
+      ...MASON_NOTES,
+      'styled-cards v4: stylesheet `transform` is not applied under installMasonKit() (masonkit 1.0.0-beta.104, Android).',
+    ],
   },
   {
     id: 'react-native',

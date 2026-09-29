@@ -84,6 +84,13 @@ export function buildReport(dir: string): string {
   }
   out.push('');
 
+  const notes = apps.filter((a) => a.notes?.length);
+  if (notes.length) {
+    out.push('## Known deviations', '');
+    for (const a of notes) for (const n of a.notes!) out.push(`- **${a.title}**: ${n}`);
+    out.push('');
+  }
+
   if (problems.length) {
     out.push('## Problems', '', ...problems.map((p) => `- ${p}`), '');
   }

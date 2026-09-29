@@ -1,0 +1,34 @@
+{
+  "name": "ns-angular-mason",
+  "main": "src/main.ts",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~22.0.0",
+    "@angular/common": "~22.0.0",
+    "@angular/compiler": "~22.0.0",
+    "@angular/core": "~22.0.0",
+    "@angular/forms": "~22.0.0",
+    "@angular/platform-browser": "~22.0.0",
+    "@angular/platform-browser-dynamic": "~22.0.0",
+    "@angular/router": "~22.0.0",
+    "@nativescript/angular": "~22.0.0",
+    "@nativescript/core": "https://pkg.pr.new/@nativescript/core@11434",
+    "@triniwiz/nativescript-masonkit": "1.0.0-beta.104",
+    "rxjs": "~7.8.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "~22.0.0",
+    "@angular/compiler-cli": "~22.0.0",
+    "@nativescript/android": "9.1.1",
+    "@nativescript/types": "~9.0.0",
+    "@nativescript/webpack": "~5.0.25",
+    "@ngtools/webpack": "~22.0.0",
+    "patch-package": "^8.0.1",
+    "typescript": "~6.0.0"
+  },
+  "scripts": {
+    "sync": "cd ../.. && npm run bench -- sync ns-angular-mason",
+    "postinstall": "patch-package --patch-dir ../ns-common/patches"
+  }
+}

@@ -1,5 +1,5 @@
-import { ListView, Screen, type ItemEventData } from '@nativescript/core';
-import { Text, View } from '@triniwiz/nativescript-masonkit';
+import { Screen } from '@nativescript/core';
+import { Text, Ul, View } from '@triniwiz/nativescript-masonkit';
 import { h } from './ns-common/h';
 import type { Built } from './ns-common/shell';
 import type {
@@ -177,8 +177,8 @@ function cards(d: CardsData): Built {
 }
 
 // ---- list-scroll -----------------------------------------------------------
-// Core ListView (same recycling as ns-core) with Mason item trees. Mason's own
-// virtualized Ul does not support keyed item templates yet.
+// Mason's virtualized Ul (UICollectionView / RecyclerView) with keyed item
+// templates. Keyed templates need apps/ns-common/patches (beta.104 bugs).
 
 interface ItemRefs {
   mark: View;
@@ -210,8 +210,11 @@ function createItem(type: ListItem['type']): CoreView {
     refs.badges = box('badges');
     view = box('li-card', [head, refs.body, refs.badges]);
   }
-  (view as any).__refs = refs;
-  return view;
+  // Ul cells size their root to max-content and ignore its margins, so each
+  // cell gets a bare full-width Mason root.
+  const cell = box('li-cell', [view]);
+  (cell as any).__refs = refs;
+  return cell;
 }
 
 function bindItem(view: CoreView, item: ListItem) {
@@ -229,13 +232,14 @@ function bindItem(view: CoreView, item: ListItem) {
 }
 
 function list(d: ListData): Built {
-  const lv = new ListView();
-  lv.itemTemplates = (['a', 'b', 'c'] as const).map((key) => ({ key, createView: () => createItem(key) }));
-  lv.itemTemplateSelector = (item: ListItem) => item.type;
-  lv.on(ListView.itemLoadingEvent, (args: ItemEventData) => bindItem(args.view, d.items[args.index]));
-  lv.items = d.items;
-  lv.className = 'list';
-  return { root: lv, sentinel: lv, placement: 'fill' };
+  const ul: any = new Ul(); // runtime Ul is list/UnorderedList; index.d.ts types it as a plain VBase
+  // Templates before items: iOS registers one reuse identifier per template when the native view is created.
+  ul.itemTemplates = (['a', 'b', 'c'] as const).map((key) => ({ key, createView: () => createItem(key) })) as any;
+  ul.itemTemplateSelector = (item: ListItem) => item.type;
+  ul.on('itemLoading', (args: any) => bindItem(args.view, d.items[args.index]));
+  ul.items = d.items;
+  ul.className = 'list body';
+  return { root: ul as CoreView, sentinel: ul as CoreView, placement: 'fill' };
 }
 
 // ---- dispatch --------------------------------------------------------------

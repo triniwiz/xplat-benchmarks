@@ -10,9 +10,9 @@ import { runPlan, type BenchAdapter } from '../shared/runner';
 import { SCENARIOS, SIZES, type ScenarioId, type Size } from '../shared/scenarios';
 
 // App shell shared by ns-core and ns-core-mason: a fixed-height status line
-// above the bench host (a core ScrollView). Scenarios mount into the host, or
-// replace it when they bring their own scrolling (virtualized lists). The two
-// apps differ only in `build` and their CSS.
+// above the bench host. Scenarios mount into the host, or replace it when they
+// bring their own scrolling (virtualized lists). The apps differ in `build`,
+// their CSS and their Chrome (core views vs Mason views).
 
 export interface Built {
   root: View;
@@ -23,35 +23,65 @@ export interface Built {
   mutate?(name: string): void;
 }
 
+/**
+ * The app frame around the bench host. ns-core uses core views throughout
+ * (coreChrome); Mason apps supply a Mason root, status line, Scroll host and Ul.
+ */
+export interface Chrome {
+  /** Window root. Must apply the Android system-bar insets (androidOverflowEdge). */
+  root: View;
+  setStatus(text: string): void;
+  /** 'scroll': show `view` inside the scroll host. 'fill': show it in place of the host. */
+  setBody(view: View, placement: Built['placement']): void;
+  /** Empty host between iterations. */
+  clear(): void;
+}
+
 export interface ShellOptions {
   app: AppId;
   title: string;
   build(fixture: ScenarioFixture): Built;
+  chrome?: Chrome;
 }
 
-export function startShell({ app, title, build }: ShellOptions): void {
-  const status = h(Label, { className: 'status', text: `${app} · ready` });
+/** Core frame: fixed-height status Label above a core ScrollView (row 1), which 'fill' views replace. */
+export function coreChrome(): Chrome {
+  const status = h(Label, { className: 'status' });
   const scroll = new ScrollView();
-  const root = h(GridLayout, { className: 'root', rows: '24,*' }, [status]);
+  // Edge-to-edge on Android: keep the root out from under the system bars
+  // (insets applied as padding), like the iOS safe area.
+  const root = h(GridLayout, { className: 'root', rows: '24,*', androidOverflowEdge: 'none' }, [status]);
   let body: View = scroll;
   GridLayout.setRow(scroll, 1);
   root.addChild(scroll);
-
   const replaceBody = (view: View) => {
     root.removeChild(body);
     GridLayout.setRow(view, 1);
     root.addChild(view);
     body = view;
   };
-  const setBody = (view: View, placement: Built['placement']) => {
-    if (placement === 'scroll') {
+  return {
+    root,
+    setStatus: (text) => (status.text = text),
+    setBody(view, placement) {
+      if (placement === 'scroll') {
+        if (body !== scroll) replaceBody(scroll);
+        scroll.content = view;
+      } else {
+        scroll.content = null;
+        replaceBody(view);
+      }
+    },
+    clear() {
       if (body !== scroll) replaceBody(scroll);
-      scroll.content = view;
-    } else {
-      scroll.content = null;
-      replaceBody(view);
-    }
+      scroll.content = new StackLayout();
+    },
   };
+}
+
+export function startShell({ app, title, build, chrome = coreChrome() }: ShellOptions): void {
+  const setStatus = (text: string) => chrome.setStatus(text);
+  setStatus(`${app} · ready`);
 
   let current: Built | null = null;
   const adapter: BenchAdapter = {
@@ -63,7 +93,7 @@ export function startShell({ app, title, build }: ShellOptions): void {
     async mount(f) {
       current = build(f);
       const painted = waitPainted(current.sentinel);
-      setBody(current.root, current.placement);
+      chrome.setBody(current.root, current.placement);
       return painted;
     },
     async mutate(_f, name) {
@@ -73,16 +103,16 @@ export function startShell({ app, title, build }: ShellOptions): void {
     },
     async unmount() {
       current = null;
-      setBody(new StackLayout(), 'scroll');
+      chrome.clear();
       await nextFrames(1);
     },
   };
 
   const show = (scenario: ScenarioId, size: Size) => {
-    status.text = `${app} · ${scenario}/${size}`;
+    setStatus(`${app} · ${scenario}/${size}`);
     const t0 = now();
     adapter.mount(fixtureFor(scenario, size)).then(() => {
-      status.text = `${app} · ${scenario}/${size} · ${(now() - t0).toFixed(1)} ms`;
+      setStatus(`${app} · ${scenario}/${size} · ${(now() - t0).toFixed(1)} ms`);
     });
   };
 
@@ -109,10 +139,10 @@ export function startShell({ app, title, build }: ShellOptions): void {
     if (cmd.mode === 'show') return show(cmd.scenario, cmd.size);
     runPlan(adapter, cmd.host, cmd.runId, (s) => {
       // Only on case boundaries: a status relayout must not land inside a measured iteration.
-      if (s.iteration === 0) status.text = `${app} · ${s.phase} ${s.caseIndex + 1}/${s.caseCount} ${s.label}`;
+      if (s.iteration === 0) setStatus(`${app} · ${s.phase} ${s.caseIndex + 1}/${s.caseCount} ${s.label}`);
     });
   });
 
-  scroll.content = home();
-  Application.run({ create: () => root });
+  chrome.setBody(home(), 'scroll');
+  Application.run({ create: () => chrome.root });
 }

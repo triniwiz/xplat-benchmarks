@@ -275,6 +275,7 @@ function list(d: ListData): Built {
   lv.itemTemplates = (['a', 'b', 'c'] as const).map((key) => ({ key, createView: () => createItem(key) }));
   lv.itemTemplateSelector = (item: ListItem) => item.type;
   lv.on(ListView.itemLoadingEvent, (args: ItemEventData) => bindItem(args.view, d.items[args.index]));
+  lv.separatorColor = 'transparent' as any; // items draw their own borders, as in the reference
   lv.items = d.items;
   lv.className = 'root';
   return { root: lv, sentinel: lv, placement: 'fill' };

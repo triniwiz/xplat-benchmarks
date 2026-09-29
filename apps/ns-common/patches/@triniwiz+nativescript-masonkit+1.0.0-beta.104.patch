@@ -1,0 +1,39 @@
+diff --git a/node_modules/@triniwiz/nativescript-masonkit/list/common.js b/node_modules/@triniwiz/nativescript-masonkit/list/common.js
+index 73f40a2..76d792b 100644
+--- a/node_modules/@triniwiz/nativescript-masonkit/list/common.js
++++ b/node_modules/@triniwiz/nativescript-masonkit/list/common.js
+@@ -33,6 +33,20 @@ export const itemTemplateProperty = new Property({
+ });
+ export const itemTemplatesProperty = new Property({
+     name: 'itemTemplates',
++    // xplat-benchmarks patch: keyed templates were never copied into _itemTemplatesInternal.
++    valueChanged: (target, _oldValue, newValue) => {
++        target._itemTemplatesInternal = new Array(target._defaultTemplate);
++        if (Array.isArray(newValue)) {
++            target._itemTemplatesInternal = target._itemTemplatesInternal.concat(newValue);
++        }
++        // iOS registers one reuse identifier per template in initNativeView; register late templates too.
++        if (__APPLE__ && target._view && typeof MasonListCell !== 'undefined') {
++            for (let i = 0; i < target._itemTemplatesInternal.length; i++) {
++                target._view.registerWithCellClassForCellWithReuseIdentifier(MasonListCell.class(), `template-${i}`);
++            }
++        }
++        target.refresh();
++    },
+     valueConverter: (value) => {
+         if (typeof value === 'string') {
+             if (__UI_USE_XML_PARSER__) {
+diff --git a/node_modules/@triniwiz/nativescript-masonkit/list/index.android.js b/node_modules/@triniwiz/nativescript-masonkit/list/index.android.js
+index 024b3a6..2368ee1 100644
+--- a/node_modules/@triniwiz/nativescript-masonkit/list/index.android.js
++++ b/node_modules/@triniwiz/nativescript-masonkit/list/index.android.js
+@@ -26,7 +26,8 @@ var Listener = (function (_super) {
+     Listener.prototype.onCreate = function (type) {
+         var owner = this._owner.get();
+         if (owner) {
+-            var template = owner._getItemTemplate(type);
++            // xplat-benchmarks patch: `type` is the view type (a template index), not a data index.
++            var template = owner._itemTemplatesInternal[type] || owner._itemTemplatesInternal[0];
+             var view = template.createView();
+             if (view instanceof ProxyViewContainer) {
+             }
