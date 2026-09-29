@@ -1,0 +1,18 @@
+{
+  "name": "ns-core",
+  "main": "app/app.ts",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@nativescript/core": "~9.1.0"
+  },
+  "devDependencies": {
+    "@nativescript/android": "9.1.1",
+    "@nativescript/types": "~9.0.0",
+    "@nativescript/webpack": "~5.0.25",
+    "typescript": "~6.0.0"
+  },
+  "scripts": {
+    "sync": "cd ../.. && npm run bench -- sync ns-core"
+  }
+}

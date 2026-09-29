@@ -21,7 +21,10 @@ export interface PaintTiming {
    * reads `now()` when the promise resolves.
    */
   end?: number;
+  /** Durations already computed by the engine (ms), e.g. Lynx layoutEnd - layoutStart. */
   phases?: Record<string, number>;
+  /** Absolute timestamps on the `now()` clock; recorded as `mark - t0` (e.g. 'layout' = sentinel laid out). */
+  marks?: Record<string, number>;
 }
 
 export interface BenchAdapter {
@@ -38,6 +41,11 @@ export interface BenchAdapter {
   mutate(fixture: ScenarioFixture, mutation: string): Promise<PaintTiming | void>;
   /** Remove the tree and resolve once the empty host is painted. */
   unmount(): Promise<void>;
+  /**
+   * Resolve at the start of a display frame. Awaited before every t0 so the
+   * wait for the next vsync is consistent rather than random (0..1 frame).
+   */
+  align?(): Promise<void>;
   /** Best-effort GC hint between iterations. */
   gc?(): void;
   log?(message: string): void;
@@ -105,12 +113,12 @@ export async function runCase(
   const phases: Record<string, number[]> = {};
   const label = `${fixture.scenario}/${fixture.size}`;
 
-  const record = (series: string, ms: number, timing: PaintTiming | void, measured: boolean) => {
+  const record = (series: string, t0: number, end: number, timing: PaintTiming | void, measured: boolean) => {
     if (!measured) return;
-    samples[series].push(ms);
-    if (timing && timing.phases) {
-      for (const k in timing.phases) (phases[`${series}.${k}`] ??= []).push(timing.phases[k]);
-    }
+    samples[series].push(end - t0);
+    if (!timing) return;
+    for (const k in timing.phases) (phases[`${series}.${k}`] ??= []).push(timing.phases[k]);
+    for (const k in timing.marks) (phases[`${series}.${k}`] ??= []).push(timing.marks[k] - t0);
   };
 
   const total = plan.warmup + plan.iterations;
@@ -118,19 +126,24 @@ export async function runCase(
     onIteration?.(i);
     const measured = i >= plan.warmup;
 
+    const align = () => (adapter.align ? withTimeout(adapter.align(), plan.timeoutMs, `${label} align`) : undefined);
+
+    await align();
     let t0 = adapter.now();
     let timing = await withTimeout(adapter.mount(fixture), plan.timeoutMs, `${label} mount`);
-    record('mount', ((timing && timing.end) ?? adapter.now()) - t0, timing, measured);
+    record('mount', t0, (timing && timing.end) ?? adapter.now(), timing, measured);
 
     for (const m of def.mutations) {
+      await align();
       t0 = adapter.now();
       timing = await withTimeout(adapter.mutate(fixture, m), plan.timeoutMs, `${label} ${m}`);
-      record(m, ((timing && timing.end) ?? adapter.now()) - t0, timing, measured);
+      record(m, t0, (timing && timing.end) ?? adapter.now(), timing, measured);
     }
 
+    await align();
     t0 = adapter.now();
     await withTimeout(adapter.unmount(), plan.timeoutMs, `${label} unmount`);
-    record('unmount', adapter.now() - t0, undefined, measured);
+    record('unmount', t0, adapter.now(), undefined, measured);
 
     adapter.gc?.();
     await sleep(plan.cooldownMs);

@@ -1,0 +1,93 @@
+/* NativeScript core translation of scenarios/reference/styles.css.
+   Units are unitless dip (core `px` means device pixels).
+   line-height in core is *extra* spacing, so fs-* add ~0.2em to reach ~1.4em. */
+@import './shared/palette.css';
+
+.root { background-color: #F5F6FA; }
+.status { font-size: 11; color: #6B7185; padding: 4 8; background-color: #FFFFFF; }
+.sentinel { height: 1; background-color: #F5F6FA; }
+
+.fs-0 { font-size: 12; line-height: 2; }
+.fs-1 { font-size: 14; line-height: 3; }
+.fs-2 { font-size: 16; line-height: 3; }
+.fs-3 { font-size: 20; line-height: 4; }
+
+/* home */
+.home { padding: 12; }
+.home-title { font-size: 16; font-weight: bold; color: #1F2330; margin-bottom: 8; }
+.home-row { margin-bottom: 4; }
+.home-label { font-size: 13; color: #1F2330; vertical-align: center; }
+.home-btn { font-size: 12; padding: 4 10; margin-left: 4; border-radius: 4; background-color: #D0EBFF; color: #1F2330; }
+
+/* nested-chain */
+.chain { padding: 1 0 1 1; border-left-width: 1; }
+.chain-label { font-size: 12; color: #1F2330; padding: 4; }
+
+/* tree-fanout (+ relayout-resize, relayout-style) */
+.tn { padding: 1; border-width: 1; }
+.leaf { height: 12; }
+.restyled .tn { padding: 3; border-color: #3B5BDB; }
+
+/* flex-wrap-tiles (+ insert-remove) */
+.tiles { flex-direction: row; flex-wrap: wrap; padding: 4; }
+.tile { width: 88; margin: 4; padding: 8; border-radius: 8; }
+.tile-title { font-size: 14; font-weight: bold; color: #1F2330; }
+.tile-sub { font-size: 12; color: #6B7185; }
+
+/* grid-dashboard */
+.dash-header { padding: 0 12; background-color: #FFFFFF; border-bottom-width: 1; border-color: #D0D4E0; }
+.dash-title { font-size: 16; font-weight: bold; color: #1F2330; vertical-align: center; }
+.pill { margin-left: 4; padding: 4 8; border-radius: 999; background-color: #F5F6FA; font-size: 12; color: #1F2330; vertical-align: center; }
+.dash-nav { padding: 8 0; background-color: #FFFFFF; border-right-width: 1; border-color: #D0D4E0; }
+.nav-item { padding: 8 12; font-size: 12; color: #6B7185; }
+.nav-item.active { color: #3B5BDB; font-weight: bold; background-color: #D0EBFF; }
+.dash-stats { padding: 4; }
+.stat { margin: 4; padding: 8; border-radius: 8; background-color: #FFFFFF; border-width: 1; border-color: #D0D4E0; }
+.stat-label { font-size: 12; color: #6B7185; }
+.stat-value { font-size: 20; font-weight: bold; color: #1F2330; }
+.stat-delta { font-size: 12; }
+.stat-delta.up { color: #2F9E44; }
+.stat-delta.down { color: #E03131; }
+.bars { height: 40; margin-top: 4; }
+.bar { margin: 0 1; border-radius: 2; background-color: #3B5BDB; vertical-align: bottom; }
+.dash-table { padding: 4 8; }
+.trow { padding: 6 0; border-bottom-width: 1; border-color: #D0D4E0; }
+.cell-name { orientation: horizontal; vertical-align: center; }
+.dot { width: 8; height: 8; border-radius: 4; margin-right: 6; vertical-align: center; }
+.cell { font-size: 12; color: #1F2330; vertical-align: center; }
+.thead .cell { font-weight: bold; }
+
+/* text-flow */
+.text-flow { padding: 12; }
+.para { margin-bottom: 8; color: #1F2330; }
+.bold { font-weight: bold; }
+
+/* styled-cards, scroll-plain */
+.cards { padding: 4; }
+.card { margin: 8; background-color: #FFFFFF; }
+.card-inner { padding: 12; }
+.card-title { font-size: 16; font-weight: bold; color: #1F2330; }
+.card-body { font-size: 14; line-height: 3; color: #6B7185; margin-top: 4; }
+.chips { orientation: horizontal; margin-top: 8; }
+.chip { padding: 2 8; margin-right: 4; border-radius: 999; font-size: 12; color: #1F2330; }
+.v0 { border-radius: 12; box-shadow: 0 2 6 rgba(0, 0, 0, 0.2); }
+.v1 { border-radius: 16 0 16 0; border-width: 2; }
+.v2 { border-radius: 8; }
+.v2 .card-title, .v2 .card-body { color: #FFFFFF; }
+.v3 { border-width: 4 1 1 1; border-color: #D0D4E0; }
+.v4 { opacity: 0.85; transform: rotate(-1deg) scale(0.98); border-radius: 8; border-width: 1; border-color: #D0D4E0; }
+.v5 { border-radius: 12; }
+.band { height: 24; }
+
+/* list-scroll */
+.li-row { padding: 12 16; background-color: #FFFFFF; border-bottom-width: 1; border-color: #D0D4E0; }
+.avatar { width: 32; height: 32; border-radius: 16; margin-right: 12; vertical-align: center; }
+.thumb { width: 56; height: 56; border-radius: 8; margin-right: 12; vertical-align: center; }
+.li-text { vertical-align: center; }
+.li-title { font-size: 14; font-weight: bold; color: #1F2330; }
+.li-sub { font-size: 12; color: #6B7185; }
+.li-meta { font-size: 12; color: #6B7185; margin-left: 8; vertical-align: center; }
+.badges { orientation: horizontal; margin-top: 4; }
+.badge { padding: 2 6; margin-right: 4; border-radius: 4; font-size: 10; color: #1F2330; }
+.li-card { margin: 8 12; padding: 12; border-radius: 12; background-color: #FFFFFF; border-width: 1; border-color: #D0D4E0; }
+.li-body { font-size: 14; line-height: 3; color: #1F2330; margin-top: 8; }

@@ -8,6 +8,7 @@ import { androidDriver, listAndroid } from './devices/android';
 import { iosDriver, listIos } from './devices/ios';
 import type { DeviceDriver, Platform, Target } from './devices/types';
 import { RESULTS_DIR, ROOT, SCENARIOS_SRC } from './paths';
+import { paletteClasses } from '../../scenarios/scripts/css';
 import { writeReport, type ResultFile } from './report';
 import { startServer } from './server';
 
@@ -89,14 +90,21 @@ async function cmdDevices() {
 
 function cmdSync(ids: string[]) {
   const apps = ids.length ? ids.map(getApp) : APPS.filter((a) => existsSync(join(ROOT, a.dir)));
-  const files = readdirSync(SCENARIOS_SRC).filter((f) => f.endsWith('.ts'));
-  for (const app of apps) {
-    const dest = join(ROOT, app.sharedDir);
+  const copyTs = (fromDir: string, toRel: string, label: string) => {
+    const files = readdirSync(fromDir).filter((f) => f.endsWith('.ts'));
+    const dest = join(ROOT, toRel);
     rmSync(dest, { recursive: true, force: true });
     mkdirSync(dest, { recursive: true });
-    for (const f of files) cpSync(join(SCENARIOS_SRC, f), join(dest, f));
-    writeFileSync(join(dest, 'README.md'), 'Copied from scenarios/src by `npm run bench -- sync`. Do not edit here.\n');
-    log(`synced ${files.length} files → ${app.sharedDir}`);
+    for (const f of files) cpSync(join(fromDir, f), join(dest, f));
+    writeFileSync(join(dest, 'README.md'), `Copied from ${label} by \`npm run bench -- sync\`. Do not edit here.\n`);
+    log(`synced ${files.length} files → ${toRel}`);
+  };
+  for (const app of apps) {
+    copyTs(SCENARIOS_SRC, app.sharedDir, 'scenarios/src');
+    for (const extra of app.extraShared ?? []) copyTs(join(ROOT, extra.from), extra.to, extra.from);
+    if (app.paletteCss) {
+      writeFileSync(join(ROOT, app.sharedDir, 'palette.css'), `/* Generated from scenarios/src/tokens.ts by bench sync. */\n${paletteClasses()}\n`);
+    }
   }
 }
 

@@ -36,7 +36,7 @@ test('runner ↔ server protocol end to end', async () => {
       calls.push(`mutate ${m}`);
       clock += 5;
       // Engine-reported end time and phase, as the Lynx adapter does.
-      return m === 'grow' ? { end: clock - 1, phases: { layout: 2 } } : undefined;
+      return m === 'grow' ? { end: clock - 1, phases: { layout: 2 }, marks: { laid: clock - 3 } } : undefined;
     },
     async unmount() {
       clock += 1;
@@ -59,6 +59,7 @@ test('runner ↔ server protocol end to end', async () => {
   assert.deepEqual(Object.keys(resize.samples).sort(), ['grow', 'mount', 'shrink', 'unmount']);
   assert.deepEqual(resize.samples.grow, [4, 4, 4]);
   assert.deepEqual(resize.phases?.['grow.layout'], [2, 2, 2]);
+  assert.deepEqual(resize.phases?.['grow.laid'], [2, 2, 2]);
   assert.deepEqual(insert.samples.insert, [5, 5, 5]);
   // warmup + iterations mounts per case
   assert.equal(calls.filter((c) => c === 'mount nested-chain').length, 4);

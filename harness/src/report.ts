@@ -56,7 +56,7 @@ export function buildReport(dir: string): string {
       if (expected && c.fixtureHash !== expected) {
         problems.push(`round ${f.round} ${app} ${key}: fixture hash ${c.fixtureHash} ≠ manifest ${expected}`);
       }
-      for (const [name, values] of Object.entries(c.samples)) {
+      for (const [name, values] of [...Object.entries(c.samples), ...Object.entries(c.phases ?? {})]) {
         const k = `${key}/${name}`;
         let byApp = series.get(k);
         if (!byApp) series.set(k, (byApp = new Map()));
@@ -73,6 +73,7 @@ export function buildReport(dir: string): string {
   out.push(`- Device: ${deviceName} (${first.target.kind}), ${first.target.platform} ${first.device.osVersion ?? first.target.osVersion ?? ''}`);
   out.push(`- Rounds: ${new Set(files.map((f) => f.round)).size}, warmup ${first.record.plan.warmup}, iterations ${first.record.plan.iterations} per round`);
   out.push(`- Cells: median ms · p90 ms (n). Lower is better.`);
+  out.push(`- \`<series>\` = until painted (layout + next frame); \`<series>.layout\` = until the tree was laid out.`);
   if (first.target.kind !== 'device') out.push(`- ⚠️ ${first.target.kind} run — smoke-test numbers only.`);
   out.push('');
 
@@ -88,7 +89,9 @@ export function buildReport(dir: string): string {
   }
 
   for (const def of SCENARIOS) {
-    const names = ['mount', ...def.mutations];
+    // Each painted series is followed by its breakdowns (e.g. mount → mount.layout).
+    const present = new Set([...series.keys()].filter((k) => k.startsWith(`${def.id}/`)).map((k) => k.split('/')[2]));
+    const names = ['mount', ...def.mutations].flatMap((n) => [n, ...[...present].filter((p) => p.startsWith(`${n}.`)).sort()]);
     const blocks: string[] = [];
     for (const name of names) {
       const rows: string[] = [];

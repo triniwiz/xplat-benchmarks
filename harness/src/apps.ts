@@ -9,6 +9,10 @@ export interface AppDef {
   dir: string;
   /** Where `bench sync` copies scenarios/src, relative to repo root. */
   sharedDir: string;
+  /** Extra shared source folders `bench sync` copies (*.ts only), relative to repo root. */
+  extraShared?: { from: string; to: string }[];
+  /** Also write <sharedDir>/palette.css (the tokens' color classes) for CSS-styled apps. */
+  paletteCss?: boolean;
   bundleId: { ios: string; android: string };
   /** Android launch activity (for `am start -n`), when not the default. */
   androidActivity: string;
@@ -21,7 +25,9 @@ export const APPS: readonly AppDef[] = [
     id: 'ns-core',
     title: 'NativeScript Core',
     dir: 'apps/ns-core',
-    sharedDir: 'apps/ns-core/src/shared',
+    sharedDir: 'apps/ns-core/app/shared',
+    extraShared: [{ from: 'apps/ns-common', to: 'apps/ns-core/app/ns-common' }],
+    paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nscore', android: 'org.xplatbench.nscore' },
     androidActivity: NS_ACTIVITY,
   },
@@ -29,7 +35,9 @@ export const APPS: readonly AppDef[] = [
     id: 'ns-core-mason',
     title: 'NativeScript Core + Mason',
     dir: 'apps/ns-core-mason',
-    sharedDir: 'apps/ns-core-mason/src/shared',
+    sharedDir: 'apps/ns-core-mason/app/shared',
+    extraShared: [{ from: 'apps/ns-common', to: 'apps/ns-core-mason/app/ns-common' }],
+    paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nscoremason', android: 'org.xplatbench.nscoremason' },
     androidActivity: NS_ACTIVITY,
   },
@@ -38,6 +46,8 @@ export const APPS: readonly AppDef[] = [
     title: 'NativeScript Angular + Mason',
     dir: 'apps/ns-angular-mason',
     sharedDir: 'apps/ns-angular-mason/src/shared',
+    extraShared: [{ from: 'apps/ns-common', to: 'apps/ns-angular-mason/src/ns-common' }],
+    paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nsngmason', android: 'org.xplatbench.nsngmason' },
     androidActivity: NS_ACTIVITY,
   },

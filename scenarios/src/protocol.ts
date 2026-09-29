@@ -57,7 +57,10 @@ export interface CaseResult {
   fixtureHash: string;
   /** Series name ('mount', 'unmount', or a mutation name) → ms per measured iteration. */
   samples: Record<string, number[]>;
-  /** Optional engine-reported phase breakdowns (e.g. Lynx 'layout'), ms per iteration. */
+  /**
+   * Optional breakdowns, ms per iteration, keyed `<series>.<name>`: marks relative to t0
+   * (e.g. 'mount.layout' = sentinel laid out) and engine-reported durations.
+   */
   phases?: Record<string, number[]>;
   error?: string;
 }

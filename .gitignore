@@ -11,7 +11,14 @@ scenarios/reference/*.html
 apps/*/src/shared/
 apps/*/app/shared/
 apps/lynx/bundle/src/shared/
+apps/*/app/ns-common/
+apps/*/src/ns-common/
 
 # raw results are kept locally; commit curated ones explicitly with -f
 results/*
 !results/.gitkeep
+
+# NativeScript build output
+apps/*/platforms/
+apps/*/hooks/
+apps/*/.ns-build-*

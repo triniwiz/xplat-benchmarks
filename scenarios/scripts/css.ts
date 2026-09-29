@@ -5,7 +5,8 @@ import { colors, fontSizes, palette, paletteLight } from '../src/tokens';
 
 const lineHeight = (size: number) => Math.round(size * 1.4);
 
-function paletteClasses(): string {
+/** Color utility classes (bg-i, bgl-i, bc-i). Colors only, so valid for NS core and Mason CSS too. */
+export function paletteClasses(): string {
   const out: string[] = [];
   palette.forEach((c, i) => {
     out.push(`.bg-${i} { background-color: ${c}; }`);
