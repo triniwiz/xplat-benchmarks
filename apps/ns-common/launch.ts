@@ -19,6 +19,10 @@ export function onLaunchUrl(handler: (url: string) => void): void {
   };
 
   if (__APPLE__) {
+    // The harness launches iOS apps with the URL in the environment (see harness/src/devices/ios.ts).
+    Application.on(Application.launchEvent, () => {
+      deliver(NSProcessInfo.processInfo.environment.objectForKey('XPLATBENCH_URL') as string | null);
+    });
     Application.ios.addDelegateHandler('applicationOpenURLOptions', (_app, url: NSURL) => {
       deliver(url.absoluteString);
       return true;

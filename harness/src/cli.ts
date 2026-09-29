@@ -241,6 +241,8 @@ async function cmdShow(argv: string[]) {
   const target = await resolveTarget(values.platform, values.device);
   const driver = driverFor(target);
   const app = getApp(values.app);
+  // iOS asks before a URL switches from one foreground app to another; stop the others first.
+  for (const other of APPS) if (other.id !== app.id) await driver.stop(other.bundleId[target.platform]);
   await driver.launchUrl(
     app.bundleId[target.platform],
     showUrl(values.scenario, values.size as Size, schemeFor(app, target.platform)),

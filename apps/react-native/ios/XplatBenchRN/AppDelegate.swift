@@ -23,9 +23,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     window = UIWindow(frame: UIScreen.main.bounds)
 
+    // The harness launches iOS apps with the URL in XPLATBENCH_URL (see harness/src/devices/ios.ts).
+    let launchUrl = ProcessInfo.processInfo.environment["XPLATBENCH_URL"] ?? ""
     factory.startReactNative(
       withModuleName: "XplatBenchRN",
       in: window,
+      initialProperties: ["launchUrl": launchUrl],
       launchOptions: launchOptions
     )
 

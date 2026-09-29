@@ -117,9 +117,10 @@ function handleUrl(url: string | null | undefined) {
 }
 
 let listening = false;
-export function listenForLaunchUrls() {
+export function listenForLaunchUrls(initialProp?: string) {
   if (listening) return;
   listening = true;
-  Linking.getInitialURL().then(handleUrl);
+  if (initialProp) handleUrl(initialProp);
+  else Linking.getInitialURL().then(handleUrl);
   Linking.addEventListener('url', (e) => handleUrl(e.url));
 }

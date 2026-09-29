@@ -5,12 +5,16 @@ export interface ExecResult {
   stderr: string;
 }
 
-export function run(cmd: string, args: readonly string[], opts: { timeoutMs?: number } = {}): Promise<ExecResult> {
+export function run(
+  cmd: string,
+  args: readonly string[],
+  opts: { timeoutMs?: number; env?: Record<string, string> } = {},
+): Promise<ExecResult> {
   return new Promise((resolve, reject) => {
     execFile(
       cmd,
       args,
-      { timeout: opts.timeoutMs ?? 120_000, maxBuffer: 64 * 1024 * 1024 },
+      { timeout: opts.timeoutMs ?? 120_000, maxBuffer: 64 * 1024 * 1024, env: opts.env ? { ...process.env, ...opts.env } : process.env },
       (err, stdout, stderr) => {
         if (err) {
           const e = err as Error & { stderr?: string };

@@ -72,14 +72,20 @@ export function iosDriver(target: Target, hostOverride?: string): DeviceDriver {
         return false;
       }
     },
+    // The URL goes in as the XPLATBENCH_URL environment variable, not a URL
+    // open: simctl openurl asks "Open in …?" for custom schemes, and a launch
+    // targets exactly one bundle.
     async launchUrl(bundleId, url) {
       if (sim) {
-        await tryRun('xcrun', ['simctl', 'terminate', target.id, bundleId]);
-        await run('xcrun', ['simctl', 'openurl', target.id, url]);
+        await run('xcrun', ['simctl', 'launch', '--terminate-running-process', target.id, bundleId], {
+          env: { SIMCTL_CHILD_XPLATBENCH_URL: url },
+        });
       } else {
         await run('xcrun', [
           'devicectl', 'device', 'process', 'launch',
-          '--device', target.id, '--terminate-existing', '--payload-url', url, bundleId,
+          '--device', target.id, '--terminate-existing',
+          '--environment-variables', JSON.stringify({ XPLATBENCH_URL: url }),
+          bundleId,
         ]);
       }
     },

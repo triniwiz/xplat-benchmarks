@@ -52,8 +52,9 @@ function Body() {
 
 // Frame: safe-area root (system-bar insets, as the NativeScript apps apply
 // with androidOverflowEdge), a fixed-height status line and the bench host.
-export function App() {
-  useEffect(listenForLaunchUrls, []);
+export function App({ launchUrl }: { launchUrl?: string }) {
+  // iOS: the harness passes the URL as an initial property; Android uses Linking.
+  useEffect(() => listenForLaunchUrls(launchUrl), []);
   return (
     <SafeAreaProvider>
       <StatusBar barStyle="dark-content" />
