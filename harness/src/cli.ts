@@ -1,7 +1,7 @@
 import { cpSync, existsSync, mkdirSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
-import { DEFAULT_PORT, PROTOCOL_VERSION, runUrl, showUrl, type Plan, type PlanCase } from '../../scenarios/src/protocol';
+import { DEFAULT_PORT, PROTOCOL_VERSION, URL_SCHEME, appScheme, runUrl, showUrl, type Plan, type PlanCase } from '../../scenarios/src/protocol';
 import { SCENARIOS, SIZES, getScenario, isScenarioId, type ScenarioKind, type Size } from '../../scenarios/src/scenarios';
 import { APPS, getApp, type AppDef } from './apps';
 import { androidDriver, listAndroid } from './devices/android';
@@ -80,6 +80,9 @@ function shuffle<T>(items: T[]): T[] {
   }
   return a;
 }
+
+/** Android targets the component explicitly; iOS needs a scheme only this app claims. */
+const schemeFor = (app: AppDef, platform: Platform) => (platform === 'ios' ? appScheme(app.id) : URL_SCHEME);
 
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -172,7 +175,7 @@ async function cmdRun(argv: string[]) {
         const runId = `r${round}-${app.id}-${Date.now().toString(36)}`;
         const full: Plan = { protocol: PROTOCOL_VERSION, runId, app: app.id, ...plan, cases };
         const finished = server.addRun(full, { timeoutMs: runTimeoutMs, onProgress: (m) => log(`${app.id}: ${m}`) });
-        await driver.launchUrl(app.bundleId[platform], runUrl(host, runId), app.androidActivity);
+        await driver.launchUrl(app.bundleId[platform], runUrl(host, runId, schemeFor(app, platform)), app.androidActivity);
         const record = await finished;
         await driver.stop(app.bundleId[platform]);
         if (record.timedOut) log(`${app.id}: TIMED OUT after ${record.cases.length} cases`);
@@ -238,7 +241,11 @@ async function cmdShow(argv: string[]) {
   const target = await resolveTarget(values.platform, values.device);
   const driver = driverFor(target);
   const app = getApp(values.app);
-  await driver.launchUrl(app.bundleId[target.platform], showUrl(values.scenario, values.size as Size), app.androidActivity);
+  await driver.launchUrl(
+    app.bundleId[target.platform],
+    showUrl(values.scenario, values.size as Size, schemeFor(app, target.platform)),
+    app.androidActivity,
+  );
   if (values.screenshot) {
     await sleep(Number(values.settle) * 1000);
     await driver.screenshot(values.screenshot);

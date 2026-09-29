@@ -14,6 +14,15 @@ import { isScenarioId, type ScenarioId, type Size } from './scenarios';
 export const PROTOCOL_VERSION = 1;
 export const DEFAULT_PORT = 9797;
 export const URL_SCHEME = 'xplatbench';
+
+/**
+ * Per-app scheme (xplatbench-<app>://). Every app also registers the shared
+ * scheme, but iOS cannot target a bundle when several apps claim the same
+ * scheme (simctl openurl prompts), so iOS launches use the per-app one.
+ */
+export function appScheme(app: string): string {
+  return `${URL_SCHEME}-${app}`;
+}
 export const LOG_PREFIX = 'XPLATBENCH';
 
 export type AppId =
@@ -89,7 +98,7 @@ export type LaunchCommand =
 /** Parses a launch URL without relying on a URL global (not on every engine). */
 export function parseLaunchUrl(url: string | null | undefined): LaunchCommand | null {
   if (!url) return null;
-  const m = /^xplatbench:\/\/([a-z]+)\/?(?:\?(.*))?$/.exec(url.trim());
+  const m = /^xplatbench(?:-[a-z0-9-]+)?:\/\/([a-z]+)\/?(?:\?(.*))?$/.exec(url.trim());
   if (!m) return null;
   const query: Record<string, string> = {};
   for (const pair of (m[2] ?? '').split('&')) {
@@ -108,10 +117,10 @@ export function parseLaunchUrl(url: string | null | undefined): LaunchCommand | 
   return null;
 }
 
-export function runUrl(host: string, runId: string): string {
-  return `${URL_SCHEME}://run?host=${encodeURIComponent(host)}&run=${encodeURIComponent(runId)}`;
+export function runUrl(host: string, runId: string, scheme = URL_SCHEME): string {
+  return `${scheme}://run?host=${encodeURIComponent(host)}&run=${encodeURIComponent(runId)}`;
 }
 
-export function showUrl(scenario: ScenarioId, size: Size): string {
-  return `${URL_SCHEME}://show?scenario=${scenario}&size=${size}`;
+export function showUrl(scenario: ScenarioId, size: Size, scheme = URL_SCHEME): string {
+  return `${scheme}://show?scenario=${scenario}&size=${size}`;
 }

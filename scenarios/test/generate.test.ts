@@ -37,5 +37,10 @@ test('launch URLs round-trip', () => {
   assert.deepEqual(parseLaunchUrl(showUrl('grid-dashboard', 'S')), { mode: 'show', scenario: 'grid-dashboard', size: 'S' });
   assert.equal(parseLaunchUrl('xplatbench://show?scenario=nope'), null);
   assert.equal(parseLaunchUrl('https://example.com'), null);
+  assert.deepEqual(parseLaunchUrl('xplatbench-ns-core-mason://show?scenario=text-flow&size=L'), {
+    mode: 'show',
+    scenario: 'text-flow',
+    size: 'L',
+  });
   assert.equal(parseLaunchUrl(undefined), null);
 });

@@ -24,6 +24,7 @@ const MASON_NOTES = [
   'Mason-native frame: Mason root, status Text, Mason Scroll host and Mason Ul; the window root is a core GridLayout only to apply Android insets.',
   'list-scroll: Mason Ul with keyed templates needs apps/ns-common/patches (masonkit 1.0.0-beta.104 ignores itemTemplates; Android onCreate treats the view type as a data index).',
   'list-scroll: each Ul cell has an extra full-width Mason root (cells size to max-content and ignore root margins).',
+  'list-scroll (iOS): the first screen of the Mason Ul fills only ~7 cells and leaves the rest blank (masonkit 1.0.0-beta.104).',
   'text-flow: no line clamp in Mason, so the 2-line clamp paragraphs render in full.',
   'styled-cards v4: stylesheet `transform` (rotate/scale) is not applied inside a Mason-native tree (it was when the host was a core ScrollView; masonkit 1.0.0-beta.104, Android).',
 ];

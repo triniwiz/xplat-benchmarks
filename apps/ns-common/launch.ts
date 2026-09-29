@@ -9,7 +9,7 @@ export function onLaunchUrl(handler: (url: string) => void): void {
   let last = '';
   let lastAt = 0;
   const deliver = (url: string | null | undefined) => {
-    if (!url || !url.startsWith('xplatbench:')) return;
+    if (!url || !url.startsWith('xplatbench')) return; // xplatbench:// or xplatbench-<app>://
     const now = Date.now();
     if (url === last && now - lastAt < 2000) return; // same URL via two paths
     last = url;
