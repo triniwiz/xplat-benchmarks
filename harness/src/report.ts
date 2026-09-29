@@ -2,11 +2,12 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import type { AppId } from '../../scenarios/src/protocol';
 import { SCENARIOS, SIZES } from '../../scenarios/src/scenarios';
-import { APPS } from './apps';
+import { APPS, type AppDef } from './apps';
 import type { Target } from './devices/types';
 import { MANIFEST } from './paths';
 import type { RunRecord } from './server';
 import { summarize } from './stats';
+import { writeHtmlReport } from './report-html';
 
 export interface ResultFile {
   round: number;
@@ -27,7 +28,17 @@ type SeriesMap = Map<string, Map<AppId, number[]>>; // "scenario/size/series" �
 
 const fmt = (v: number) => (Number.isFinite(v) ? (v >= 100 ? v.toFixed(0) : v.toFixed(1)) : '–');
 
-export function buildReport(dir: string): string {
+export interface Aggregate {
+  files: ResultFile[];
+  /** "scenario/size/series" → app → samples, merged across rounds (series include `<name>.layout` marks). */
+  series: SeriesMap;
+  problems: string[];
+  apps: AppDef[];
+  versions: Map<AppId, Record<string, string>>;
+}
+
+/** Load a results folder and merge samples across rounds; shared by REPORT.md and report.html. */
+export function aggregate(dir: string): Aggregate {
   const files = loadResults(dir);
   if (!files.length) throw new Error(`No result files in ${dir}`);
   const manifest: Record<string, { hash: string }> = existsSync(MANIFEST)
@@ -64,8 +75,11 @@ export function buildReport(dir: string): string {
       }
     }
   }
+  return { files, series, problems, apps: APPS.filter((a) => appsSeen.has(a.id)), versions };
+}
 
-  const apps = APPS.filter((a) => appsSeen.has(a.id));
+export function buildReport(dir: string): string {
+  const { files, series, problems, apps, versions } = aggregate(dir);
   const first = files[0];
   const out: string[] = [];
   out.push(`# Results: ${basename(dir)}`, '');
@@ -127,9 +141,11 @@ export function buildReport(dir: string): string {
   return out.join('\n');
 }
 
+/** Writes REPORT.md and report.html; returns the Markdown path. */
 export function writeReport(dir: string): string {
   const md = buildReport(dir);
   const path = join(dir, 'REPORT.md');
   writeFileSync(path, md);
+  writeHtmlReport(dir);
   return path;
 }
