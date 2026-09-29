@@ -16,7 +16,16 @@ export const DEFAULT_PORT = 9797;
 export const URL_SCHEME = 'xplatbench';
 export const LOG_PREFIX = 'XPLATBENCH';
 
-export type AppId = 'ns-core' | 'ns-core-mason' | 'ns-angular-mason' | 'react-native' | 'lynx';
+export type AppId =
+  | 'ns-core'
+  | 'ns-core-mason'
+  | 'ns-angular-mason'
+  | 'ns-vue-mason'
+  | 'ns-react-mason'
+  | 'ns-svelte-mason'
+  | 'ns-solid-mason'
+  | 'react-native'
+  | 'lynx';
 
 export interface PlanCase {
   scenario: ScenarioId;
