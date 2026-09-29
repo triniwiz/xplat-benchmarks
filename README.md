@@ -11,8 +11,8 @@ This repo benchmarks layout performance and CSS support on deep and heavy layout
 | `ns-react-mason` | NativeScript React 19 (`@nativescript-community/react`, dominative) + Mason | running |
 | `ns-svelte-mason` | svelte-native 1.0 (Svelte 4) + Mason | running |
 | `ns-solid-mason` | `@nativescript-community/solid-js` (dominative) + Mason | running |
-| `react-native` | React Native 0.87 bare CLI, Fabric and Hermes | planned (phase 3) |
-| `lynx` | ReactLynx (rspeedy) bundle in minimal native hosts built on Lynx SDK 4.1 | planned (phase 3) |
+| `react-native` | React Native 0.87.1 bare CLI, Fabric, Hermes, FlashList v2 | running (Android; iOS project generated, not yet built) |
+| `lynx` | ReactLynx (rspeedy) bundle in a minimal native host on Lynx SDK 4.1.0 | running (Android; iOS host not yet written) |
 
 `ns-core` and `ns-core-mason` are a controlled pair. They build identical trees with the same imperative helper; only the element classes and the CSS differ. Comparing them isolates the layout engine. Every `ns-*-mason` app shares one stylesheet and the same element structure, so comparing any of them with `ns-core-mason` isolates the cost of that framework.
 
