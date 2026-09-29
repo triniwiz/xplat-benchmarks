@@ -47,6 +47,9 @@ export function androidDriver(target: Target): DeviceDriver {
     async stop(pkg) {
       await adb(serial, 'shell', 'am', 'force-stop', pkg);
     },
+    async install(apk) {
+      await run(ADB, ['-s', serial, 'install', '-r', apk], { timeoutMs: 300_000 });
+    },
     async screenshot(outPath) {
       const remote = '/data/local/tmp/xplatbench-screen.png';
       await adb(serial, 'shell', 'screencap', '-p', remote);

@@ -9,6 +9,7 @@ import { iosDriver, listIos } from './devices/ios';
 import type { DeviceDriver, Platform, Target } from './devices/types';
 import { RESULTS_DIR, ROOT, SCENARIOS_SRC } from './paths';
 import { paletteClasses } from '../../scenarios/scripts/css';
+import { buildApp } from './build';
 import { writeReport, type ResultFile } from './report';
 import { startServer } from './server';
 
@@ -17,6 +18,8 @@ const USAGE = `Usage: npm run bench -- <command> [options]
 Commands
   devices                              List connected Android devices and booted iOS simulators / paired iPhones
   sync [app...]                        Copy scenarios/src into each app's shared/ folder (default: all apps present)
+  build --platform android [--apps a,b] [--install] [--device <id>]
+                                       Sync, then release-build each app to build/<platform>/<app>.apk (optionally install)
   run --platform <ios|android>         Run the in-app layout suite and write results/<date>-<device>/
       [--device <id>] [--apps a,b] [--scenarios id,..|mount|relayout|scroll] [--sizes S,M,L]
       [--iterations 20] [--warmup 3] [--cooldown 100] [--rounds 3] [--app-cooldown 20]
@@ -185,6 +188,39 @@ async function cmdRun(argv: string[]) {
   log(`report: ${writeReport(outDir)}`);
 }
 
+async function cmdBuild(argv: string[]) {
+  const { values } = parseArgs({
+    args: argv,
+    options: {
+      platform: { type: 'string' },
+      apps: { type: 'string' },
+      install: { type: 'boolean', default: false },
+      device: { type: 'string' },
+    },
+  });
+  const platform = values.platform as Platform;
+  if (platform !== 'ios' && platform !== 'android') throw new Error('--platform ios|android is required');
+  const apps = list(values.apps).length ? list(values.apps).map(getApp) : APPS.filter((a) => existsSync(join(ROOT, a.dir)));
+  const driver = values.install ? driverFor(await resolveTarget(platform, values.device)) : null;
+  cmdSync(apps.map((a) => a.id));
+  const failed: string[] = [];
+  for (const app of apps) {
+    const t0 = Date.now();
+    try {
+      const artifact = await buildApp(app, platform);
+      log(`${app.id}: built ${artifact} in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
+      if (driver) {
+        await driver.install(artifact);
+        log(`${app.id}: installed on ${driver.target.name}`);
+      }
+    } catch (e) {
+      failed.push(app.id);
+      log(`${app.id}: FAILED ${e instanceof Error ? e.message : e}`);
+    }
+  }
+  if (failed.length) throw new Error(`build failed for: ${failed.join(', ')}`);
+}
+
 async function cmdShow(argv: string[]) {
   const { values } = parseArgs({
     args: argv,
@@ -219,6 +255,8 @@ async function main() {
       return cmdSync(rest);
     case 'run':
       return cmdRun(rest);
+    case 'build':
+      return cmdBuild(rest);
     case 'show':
       return cmdShow(rest);
     case 'report':

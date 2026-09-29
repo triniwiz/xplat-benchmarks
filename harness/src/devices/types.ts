@@ -16,6 +16,8 @@ export interface DeviceDriver {
   /** Cold-launch the app with a deep link (terminating any running instance first). */
   launchUrl(bundleId: string, url: string, activity?: string): Promise<void>;
   stop(bundleId: string): Promise<void>;
+  /** Install (or replace) a build artifact. */
+  install(artifactPath: string): Promise<void>;
   /** Save a PNG of the current screen. */
   screenshot(outPath: string): Promise<void>;
   /** Free-form device facts recorded with every result file. */

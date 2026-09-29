@@ -30,3 +30,6 @@ apps/lynx/hosts/*/build/
 apps/lynx/hosts/*/app/build/
 apps/lynx/hosts/android/.gradle/
 apps/lynx/hosts/android/local.properties
+
+# release artifacts and logs from `bench build`
+build/

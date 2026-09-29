@@ -87,6 +87,10 @@ export function iosDriver(target: Target, hostOverride?: string): DeviceDriver {
       if (sim) await tryRun('xcrun', ['simctl', 'terminate', target.id, bundleId]);
       // Physical devices: the next launch uses --terminate-existing.
     },
+    async install(appPath) {
+      if (sim) await run('xcrun', ['simctl', 'install', target.id, appPath], { timeoutMs: 300_000 });
+      else await run('xcrun', ['devicectl', 'device', 'install', 'app', '--device', target.id, appPath], { timeoutMs: 300_000 });
+    },
     async screenshot(outPath) {
       if (!sim) throw new Error('Screenshots of physical iOS devices are not scriptable; use the simulator or QuickTime');
       await run('xcrun', ['simctl', 'io', target.id, 'screenshot', outPath]);
