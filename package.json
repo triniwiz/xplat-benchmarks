@@ -1,0 +1,21 @@
+{
+  "name": "xplat-benchmarks",
+  "private": true,
+  "type": "module",
+  "description": "Layout and CSS performance benchmarks: NativeScript (core, core + Mason, Angular + Mason), React Native, Lynx",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "bench": "tsx harness/src/cli.ts",
+    "fixtures": "tsx scenarios/scripts/build.ts",
+    "fixtures:check": "tsx scenarios/scripts/build.ts --check",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "node --import tsx --test 'scenarios/test/*.test.ts' 'harness/test/*.test.ts'"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

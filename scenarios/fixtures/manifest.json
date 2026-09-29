@@ -1,0 +1,287 @@
+{
+  "nested-chain/S": {
+    "fixture": "nested-chain",
+    "params": {
+      "depth": 32
+    },
+    "hash": "23a2666d",
+    "elements": 33
+  },
+  "nested-chain/M": {
+    "fixture": "nested-chain",
+    "params": {
+      "depth": 64
+    },
+    "hash": "ef595819",
+    "elements": 65
+  },
+  "nested-chain/L": {
+    "fixture": "nested-chain",
+    "params": {
+      "depth": 128
+    },
+    "hash": "27a1fe6d",
+    "elements": 129
+  },
+  "tree-fanout/S": {
+    "fixture": "tree-fanout",
+    "params": {
+      "branching": 3,
+      "depth": 5
+    },
+    "hash": "633cc86c",
+    "elements": 365
+  },
+  "tree-fanout/M": {
+    "fixture": "tree-fanout",
+    "params": {
+      "branching": 3,
+      "depth": 6
+    },
+    "hash": "9b5e5f28",
+    "elements": 1094
+  },
+  "tree-fanout/L": {
+    "fixture": "tree-fanout",
+    "params": {
+      "branching": 3,
+      "depth": 7
+    },
+    "hash": "43ff134a",
+    "elements": 3281
+  },
+  "flex-wrap-tiles/S": {
+    "fixture": "flex-wrap-tiles",
+    "params": {
+      "count": 250,
+      "insert": 100
+    },
+    "hash": "2f65bf41",
+    "elements": 751
+  },
+  "flex-wrap-tiles/M": {
+    "fixture": "flex-wrap-tiles",
+    "params": {
+      "count": 1000,
+      "insert": 100
+    },
+    "hash": "5ce6932e",
+    "elements": 3001
+  },
+  "flex-wrap-tiles/L": {
+    "fixture": "flex-wrap-tiles",
+    "params": {
+      "count": 2500,
+      "insert": 100
+    },
+    "hash": "9ff6202a",
+    "elements": 7501
+  },
+  "grid-dashboard/S": {
+    "fixture": "grid-dashboard",
+    "params": {
+      "nav": 8,
+      "stats": 8,
+      "rows": 20
+    },
+    "hash": "7e8c6cab",
+    "elements": 258
+  },
+  "grid-dashboard/M": {
+    "fixture": "grid-dashboard",
+    "params": {
+      "nav": 12,
+      "stats": 16,
+      "rows": 100
+    },
+    "hash": "8246ae09",
+    "elements": 918
+  },
+  "grid-dashboard/L": {
+    "fixture": "grid-dashboard",
+    "params": {
+      "nav": 16,
+      "stats": 32,
+      "rows": 300
+    },
+    "hash": "216d8d54",
+    "elements": 2514
+  },
+  "text-flow/S": {
+    "fixture": "text-flow",
+    "params": {
+      "paragraphs": 50
+    },
+    "hash": "e7f47d7d",
+    "elements": 51
+  },
+  "text-flow/M": {
+    "fixture": "text-flow",
+    "params": {
+      "paragraphs": 200
+    },
+    "hash": "afa7fabb",
+    "elements": 201
+  },
+  "text-flow/L": {
+    "fixture": "text-flow",
+    "params": {
+      "paragraphs": 600
+    },
+    "hash": "0387efaf",
+    "elements": 601
+  },
+  "styled-cards/S": {
+    "fixture": "styled-cards",
+    "params": {
+      "cards": 30
+    },
+    "hash": "41e70f23",
+    "elements": 246
+  },
+  "styled-cards/M": {
+    "fixture": "styled-cards",
+    "params": {
+      "cards": 120
+    },
+    "hash": "a8f8912e",
+    "elements": 981
+  },
+  "styled-cards/L": {
+    "fixture": "styled-cards",
+    "params": {
+      "cards": 400
+    },
+    "hash": "571471e1",
+    "elements": 3267
+  },
+  "relayout-resize/S": {
+    "fixture": "tree-fanout",
+    "params": {
+      "branching": 3,
+      "depth": 5
+    },
+    "hash": "633cc86c",
+    "elements": 365
+  },
+  "relayout-resize/M": {
+    "fixture": "tree-fanout",
+    "params": {
+      "branching": 3,
+      "depth": 6
+    },
+    "hash": "9b5e5f28",
+    "elements": 1094
+  },
+  "relayout-resize/L": {
+    "fixture": "tree-fanout",
+    "params": {
+      "branching": 3,
+      "depth": 7
+    },
+    "hash": "43ff134a",
+    "elements": 3281
+  },
+  "relayout-style/S": {
+    "fixture": "tree-fanout",
+    "params": {
+      "branching": 3,
+      "depth": 5
+    },
+    "hash": "633cc86c",
+    "elements": 365
+  },
+  "relayout-style/M": {
+    "fixture": "tree-fanout",
+    "params": {
+      "branching": 3,
+      "depth": 6
+    },
+    "hash": "9b5e5f28",
+    "elements": 1094
+  },
+  "relayout-style/L": {
+    "fixture": "tree-fanout",
+    "params": {
+      "branching": 3,
+      "depth": 7
+    },
+    "hash": "43ff134a",
+    "elements": 3281
+  },
+  "insert-remove/S": {
+    "fixture": "flex-wrap-tiles",
+    "params": {
+      "count": 250,
+      "insert": 100
+    },
+    "hash": "2f65bf41",
+    "elements": 751
+  },
+  "insert-remove/M": {
+    "fixture": "flex-wrap-tiles",
+    "params": {
+      "count": 1000,
+      "insert": 100
+    },
+    "hash": "5ce6932e",
+    "elements": 3001
+  },
+  "insert-remove/L": {
+    "fixture": "flex-wrap-tiles",
+    "params": {
+      "count": 2500,
+      "insert": 100
+    },
+    "hash": "9ff6202a",
+    "elements": 7501
+  },
+  "list-scroll/S": {
+    "fixture": "list-scroll",
+    "params": {
+      "items": 500
+    },
+    "hash": "652f4bd7",
+    "elements": 3978
+  },
+  "list-scroll/M": {
+    "fixture": "list-scroll",
+    "params": {
+      "items": 2000
+    },
+    "hash": "faed7450",
+    "elements": 15715
+  },
+  "list-scroll/L": {
+    "fixture": "list-scroll",
+    "params": {
+      "items": 5000
+    },
+    "hash": "e2435516",
+    "elements": 39513
+  },
+  "scroll-plain/S": {
+    "fixture": "scroll-plain",
+    "params": {
+      "cards": 100
+    },
+    "hash": "84a04ce8",
+    "elements": 817
+  },
+  "scroll-plain/M": {
+    "fixture": "scroll-plain",
+    "params": {
+      "cards": 300
+    },
+    "hash": "1a07adb5",
+    "elements": 2451
+  },
+  "scroll-plain/L": {
+    "fixture": "scroll-plain",
+    "params": {
+      "cards": 600
+    },
+    "hash": "80b18e49",
+    "elements": 4901
+  }
+}
