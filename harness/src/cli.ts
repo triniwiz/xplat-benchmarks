@@ -185,9 +185,11 @@ async function cmdRun(argv: string[]) {
         });
         await driver.launchUrl(app.bundleId[platform], runUrl(host, runId, schemeFor(app, platform)), app.androidActivity);
         const record = await finished;
+        const memory = await driver.memory?.(app.bundleId[platform]);
+        if (memory) log(`${app.id}: memory after run ${JSON.stringify(memory)}`);
         await driver.stop(app.bundleId[platform]);
         if (record.timedOut) log(`${app.id}: TIMED OUT after ${record.cases.length} cases`);
-        const file: ResultFile = { round, target, device: { ...device, ...(await driver.describe()) }, record };
+        const file: ResultFile = { round, target, device: { ...device, ...(await driver.describe()) }, record, memory };
         writeFileSync(join(outDir, `r${round}-${app.id}.json`), JSON.stringify(file, null, 1));
         log(`${app.id}: wrote r${round}-${app.id}.json; cooling down ${values['app-cooldown']}s`);
         await sleep(Number(values['app-cooldown']) * 1000);

@@ -14,6 +14,8 @@ export interface ResultFile {
   target: Target;
   device: Record<string, string>;
   record: RunRecord;
+  /** App memory (KB) right after the run, before the app is stopped. */
+  memory?: Record<string, number>;
 }
 
 export function loadResults(dir: string): ResultFile[] {
@@ -102,6 +104,19 @@ export function buildReport(dir: string): string {
   if (notes.length) {
     out.push('## Known deviations', '');
     for (const a of notes) for (const n of a.notes!) out.push(`- **${a.title}**: ${n}`);
+    out.push('');
+  }
+
+  const withMemory = files.filter((f) => f.memory);
+  if (withMemory.length) {
+    const mb = (kb?: number) => (kb === undefined ? '–' : (kb / 1024).toFixed(0));
+    out.push('## Memory after run (MB, highest round)', '', '| app | Java heap | native heap | graphics | total PSS |', '|---|---:|---:|---:|---:|');
+    for (const a of apps) {
+      const mems = withMemory.filter((f) => f.record.plan.app === a.id).map((f) => f.memory!);
+      if (!mems.length) continue;
+      const max = (k: string) => Math.max(...mems.map((m) => m[k] ?? 0)) || undefined;
+      out.push(`| ${a.title} | ${mb(max('javaHeapKB'))} | ${mb(max('nativeHeapKB'))} | ${mb(max('graphicsKB'))} | ${mb(max('totalPssKB'))} |`);
+    }
     out.push('');
   }
 

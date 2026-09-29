@@ -47,6 +47,22 @@ export function androidDriver(target: Target): DeviceDriver {
     async stop(pkg) {
       await adb(serial, 'shell', 'am', 'force-stop', pkg);
     },
+    async memory(pkg) {
+      // App Summary of `dumpsys meminfo`: Java Heap, Native Heap, Graphics, TOTAL PSS (KB).
+      const res = await tryRun(ADB, ['-s', serial, 'shell', 'dumpsys', 'meminfo', pkg]);
+      if (!res) return undefined;
+      const summary = res.stdout.slice(res.stdout.indexOf('App Summary'));
+      const kb = (label: string) => {
+        const m = new RegExp(`${label}:\\s+(\\d+)`).exec(summary);
+        return m ? Number(m[1]) : undefined;
+      };
+      const out: Record<string, number> = {};
+      for (const [key, label] of [['javaHeapKB', 'Java Heap'], ['nativeHeapKB', 'Native Heap'], ['graphicsKB', 'Graphics'], ['totalPssKB', 'TOTAL PSS']] as const) {
+        const v = kb(label);
+        if (v !== undefined) out[key] = v;
+      }
+      return Object.keys(out).length ? out : undefined;
+    },
     async install(apk) {
       await run(ADB, ['-s', serial, 'install', '-r', apk], { timeoutMs: 300_000 });
     },

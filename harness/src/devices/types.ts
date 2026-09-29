@@ -18,6 +18,8 @@ export interface DeviceDriver {
   stop(bundleId: string): Promise<void>;
   /** Install (or replace) a build artifact. */
   install(artifactPath: string): Promise<void>;
+  /** Memory of the running app (KB), when the platform can report it. */
+  memory?(bundleId: string): Promise<Record<string, number> | undefined>;
   /** Save a PNG of the current screen. */
   screenshot(outPath: string): Promise<void>;
   /** Free-form device facts recorded with every result file. */
