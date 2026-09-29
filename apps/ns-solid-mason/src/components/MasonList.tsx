@@ -4,7 +4,6 @@ import { For, createSignal, onMount } from 'solid-js';
 import type { ListData, ListItem as Item } from '../shared/generate';
 import { controller } from '../store';
 
-// Content of one Ul cell; `type` is fixed per template, `item` is reactive.
 function ListItem(props: { type: Item['type']; item: () => Item }) {
   const it = props.item;
   const badges = () => (
@@ -41,12 +40,6 @@ function ListItem(props: { type: Item['type']; item: () => Item }) {
   );
 }
 
-/**
- * Mason's virtualized ul (masonkit ships no Solid list component). Each keyed
- * template's createView renders a ListItem into a detached .li-cell view (the
- * bare full-width Mason root every Ul cell gets, as in ns-core-mason);
- * itemLoading rebinds the new or recycled cell through its signal.
- */
 export function MasonList(props: { data: ListData }) {
   let list: any;
   onMount(() => {

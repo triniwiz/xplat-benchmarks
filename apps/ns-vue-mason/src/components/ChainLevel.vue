@@ -1,4 +1,3 @@
-<!-- Recursive: Vue components render no host element, so each level is one View. -->
 <template>
   <View v-if="level < data.depth" :class="`chain bgl-${level % 8} bc-${level % 8}`">
     <ChainLevel :data="data" :level="level + 1" />

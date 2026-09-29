@@ -1,4 +1,3 @@
-<!-- No line clamp in Mason: clamp paragraphs render in full, as in ns-core-mason. -->
 <view class="host">
   <view class="text-flow">
     {#each data.paragraphs as p (p.id)}
@@ -17,6 +16,5 @@
   import type { TextFlowData } from '../shared/generate';
   import Sentinel from './Sentinel.svelte';
   export let data: TextFlowData;
-  /** Mason reads letterSpacing in device pixels. */
   const spacing = 0.5 * Screen.mainScreen.scale;
 </script>

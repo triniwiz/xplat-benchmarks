@@ -5,18 +5,12 @@ import { ROOT } from './paths';
 export interface AppDef {
   id: AppId;
   title: string;
-  /** Project directory, relative to repo root. */
   dir: string;
-  /** Where `bench sync` copies scenarios/src, relative to repo root. */
   sharedDir: string;
-  /** Extra shared source folders `bench sync` copies (*.ts only), relative to repo root. */
   extraShared?: { from: string; to: string }[];
-  /** Also write <sharedDir>/palette.css (the tokens' color classes) for CSS-styled apps. */
   paletteCss?: boolean;
   bundleId: { ios: string; android: string };
-  /** Android launch activity (for `am start -n`), when not the default. */
   androidActivity: string;
-  /** Known deviations from the spec, printed in every report. */
   notes?: string[];
 }
 
@@ -56,8 +50,6 @@ export const APPS: readonly AppDef[] = [
     notes: MASON_NOTES,
   },
   {
-    // Dev only: the same app against a local nativescript-mason build (vendor/masonkit-perf.tgz),
-    // to measure Mason changes side by side with the published package.
     id: 'ns-core-mason-perf',
     title: 'NativeScript Core + Mason (local build)',
     dir: 'apps/ns-core-mason-perf',

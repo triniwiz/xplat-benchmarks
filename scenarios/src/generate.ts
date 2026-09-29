@@ -4,9 +4,6 @@ import { getScenario, type FixtureId, type Params, type ScenarioId, type Size } 
 import { paragraph, sentence, title, words } from './text';
 import { palette } from './tokens';
 
-// ---- data shapes -----------------------------------------------------------
-// `color` fields are indices into tokens.palette / tokens.paletteLight.
-
 export interface ChainData {
   depth: number;
   label: string;
@@ -15,7 +12,6 @@ export interface ChainData {
 export interface TreeNode {
   id: number;
   depth: number;
-  /** Direction children are laid out in. Leaves have no children. */
   dir: 'row' | 'column';
   color: number;
   children: TreeNode[];
@@ -36,7 +32,6 @@ export interface Tile {
 
 export interface TilesData {
   tiles: Tile[];
-  /** Tiles inserted at the head by the insert-remove scenario. */
   insert: Tile[];
 }
 
@@ -46,7 +41,6 @@ export interface StatCard {
   value: string;
   delta: string;
   up: boolean;
-  /** Seven bar heights, 4..40. */
   bars: number[];
 }
 
@@ -61,12 +55,9 @@ export interface DashboardData {
 
 export interface Paragraph {
   id: number;
-  /** Index into tokens.fontSizes. */
   size: 0 | 1 | 2 | 3;
   bold: boolean;
-  /** Letter spacing in dp (0 or 0.5). */
   spacing: 0 | 0.5;
-  /** Clamp to two lines with an ellipsis. */
   clamp: boolean;
   text: string;
 }
@@ -77,7 +68,6 @@ export interface TextFlowData {
 
 export interface Card {
   id: number;
-  /** 0..5, see spec.md "styled-cards". */
   variant: 0 | 1 | 2 | 3 | 4 | 5;
   title: string;
   body: string;
@@ -92,7 +82,6 @@ export interface CardsData {
 
 export interface ListItem {
   id: number;
-  /** a: single line row, b: media row with badges, c: card with body text. */
   type: 'a' | 'b' | 'c';
   title: string;
   subtitle: string;
@@ -116,8 +105,6 @@ export interface FixtureMap {
   'list-scroll': ListData;
   'scroll-plain': CardsData;
 }
-
-// ---- generators ------------------------------------------------------------
 
 const P = palette.length;
 
@@ -275,7 +262,6 @@ export interface ScenarioFixture {
   hash: string;
 }
 
-/** Fixture data for a scenario/size. Pure and deterministic across JS engines. */
 export function fixtureFor(scenario: ScenarioId, size: Size): ScenarioFixture {
   const def = getScenario(scenario);
   const params = def.sizes[size];

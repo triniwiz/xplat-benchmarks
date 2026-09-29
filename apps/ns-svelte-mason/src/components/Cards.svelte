@@ -1,7 +1,6 @@
 <view class="host">
   <view class="cards">
     {#each data.cards as c (c.id)}
-      <!-- Inline styles only on the variants that use them. -->
       {#if c.variant === 2}
         <view class="card v2" style={`background-image: ${gradient(c)}`}>
           <CardInner card={c} />

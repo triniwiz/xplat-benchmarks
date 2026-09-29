@@ -19,7 +19,6 @@ const COMPONENTS: Record<string, (p: { data: any }) => any> = {
   'scroll-plain': Cards,
 };
 
-// Own component and store, so status updates never re-render the scenario.
 function Status() {
   return <Text style={s.status}>{useStore(status)}</Text>;
 }
@@ -50,10 +49,7 @@ function Body() {
   return <ScrollView style={s.body}>{Scenario ? <Scenario data={f!.data} /> : !isStarted ? <Home /> : null}</ScrollView>;
 }
 
-// Frame: safe-area root (system-bar insets, as the NativeScript apps apply
-// with androidOverflowEdge), a fixed-height status line and the bench host.
 export function App({ launchUrl }: { launchUrl?: string }) {
-  // iOS: the harness passes the URL as an initial property; Android uses Linking.
   useEffect(() => listenForLaunchUrls(launchUrl), []);
   return (
     <SafeAreaProvider>

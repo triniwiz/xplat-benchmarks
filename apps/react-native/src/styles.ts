@@ -1,9 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { colors, fontSizes, palette, paletteLight } from './shared/tokens';
 
-// React Native translation of scenarios/reference/styles.css. Yoga defaults
-// already match the reference `div` rule (flex column, min size 0).
-
 const lh = (size: number) => Math.round(size * 1.4);
 
 export const bg = palette.map((c) => ({ backgroundColor: c }));
@@ -37,7 +34,6 @@ export const s = StyleSheet.create({
   tileTitle: { fontSize: 14, fontWeight: 'bold', color: colors.text },
   tileSub: { fontSize: 12, color: colors.muted },
 
-  // grid-dashboard, flex-emulated (RN has no CSS grid)
   dashHeader: { height: 56, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 12, backgroundColor: colors.surface, borderBottomWidth: 1, borderColor: colors.border },
   dashTitle: { flex: 1, fontSize: 16, fontWeight: 'bold', color: colors.text },
   pill: { marginLeft: 4, paddingVertical: 4, paddingHorizontal: 8, borderRadius: 999, backgroundColor: colors.bg, fontSize: 12, color: colors.text, overflow: 'hidden' },

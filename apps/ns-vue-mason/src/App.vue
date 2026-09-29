@@ -1,6 +1,3 @@
-<!-- Same frame as apps/ns-core-mason/app/chrome.ts: a core GridLayout window
-     root that only applies the Android system-bar insets, holding a Mason root
-     with the status Text and a Mason Scroll host, or Mason's Ul in its place. -->
 <template>
   <GridLayout class="root" androidOverflowEdge="none">
     <View class="frame">

@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-# Rebuild the vendored masonkit from a local nativescript-mason checkout (see README.md).
-# Usage: ./rebuild-mason.sh [path-to-nativescript-mason]   (default: ../../../nativescript-mason-perf)
 set -euo pipefail
 APP_DIR="$(cd "$(dirname "$0")" && pwd)"
 MASON="$(cd "${1:-$APP_DIR/../../../nativescript-mason-perf}" && pwd)"
@@ -12,7 +10,6 @@ export ANDROID_HOME="${ANDROID_HOME:-$HOME/Library/Android/sdk}" PATH="$HOME/.ca
 cp "$MASON/packages/nativescript-masonkit/src-native/mason-android/masonkit/build/outputs/aar/masonkit-release.aar" \
   "$MASON/dist/packages/nativescript-masonkit/platforms/android/masonkit-release.aar"
 
-# Commit-named tarball (plus a dirty marker): npm caches file: tarballs by integrity.
 SHA="$(git -C "$MASON" rev-parse --short HEAD)$(git -C "$MASON" diff --quiet HEAD -- packages crates || echo -dirty-$(date +%s))"
 TMP="$(mktemp -d)"
 (cd "$MASON/dist/packages/nativescript-masonkit" && npm pack --pack-destination "$TMP" >/dev/null)

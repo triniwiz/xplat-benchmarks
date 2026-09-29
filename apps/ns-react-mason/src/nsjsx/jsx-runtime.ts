@@ -1,6 +1,3 @@
-// jsxImportSource for NativeScript elements: React's runtime, with a JSX
-// namespace whose intrinsic elements are the untyped dominative tags (Mason
-// and core, lowercase), instead of React DOM's HTML/SVG element types.
 import type * as React from 'react';
 
 export { Fragment, jsx, jsxs } from 'react/jsx-runtime';

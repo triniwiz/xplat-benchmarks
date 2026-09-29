@@ -14,9 +14,7 @@ export interface ResultFile {
   target: Target;
   device: Record<string, string>;
   record: RunRecord;
-  /** App memory (KB) right after the run, before the app is stopped. */
   memory?: Record<string, number>;
-  /** Same, after a forced managed-heap GC (`--gc-memory`). */
   memoryAfterGc?: Record<string, number>;
 }
 
@@ -28,20 +26,18 @@ export function loadResults(dir: string): ResultFile[] {
     .filter((r) => r.record?.plan);
 }
 
-type SeriesMap = Map<string, Map<AppId, number[]>>; // "scenario/size/series" → app → samples
+type SeriesMap = Map<string, Map<AppId, number[]>>;
 
 const fmt = (v: number) => (Number.isFinite(v) ? (v >= 100 ? v.toFixed(0) : v.toFixed(1)) : '–');
 
 export interface Aggregate {
   files: ResultFile[];
-  /** "scenario/size/series" → app → samples, merged across rounds (series include `<name>.layout` marks). */
   series: SeriesMap;
   problems: string[];
   apps: AppDef[];
   versions: Map<AppId, Record<string, string>>;
 }
 
-/** Load a results folder and merge samples across rounds; shared by REPORT.md and report.html. */
 export function aggregate(dir: string): Aggregate {
   const files = loadResults(dir);
   if (!files.length) throw new Error(`No result files in ${dir}`);
@@ -127,7 +123,6 @@ export function buildReport(dir: string): string {
   }
 
   for (const def of SCENARIOS) {
-    // Each painted series is followed by its breakdowns (e.g. mount → mount.layout).
     const present = new Set([...series.keys()].filter((k) => k.startsWith(`${def.id}/`)).map((k) => k.split('/')[2]));
     const names = ['mount', ...def.mutations].flatMap((n) => [n, ...[...present].filter((p) => p.startsWith(`${n}.`)).sort()]);
     const blocks: string[] = [];
@@ -158,7 +153,6 @@ export function buildReport(dir: string): string {
   return out.join('\n');
 }
 
-/** Writes REPORT.md and report.html; returns the Markdown path. */
 export function writeReport(dir: string): string {
   const md = buildReport(dir);
   const path = join(dir, 'REPORT.md');

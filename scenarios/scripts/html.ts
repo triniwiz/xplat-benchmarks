@@ -14,9 +14,6 @@ import type {
 import type { FixtureId } from '../src/scenarios';
 import { palette } from '../src/tokens';
 
-// Browser reference renderer: the visual ground truth each app must match.
-// Structure here is the structure spec.md describes (element for element).
-
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 function chain(d: ChainData): string {
@@ -97,7 +94,6 @@ function textFlow(d: TextFlowData): string {
 
 function card(c: Card): string {
   const cls = c.variant === 1 ? `card v1 bc-${c.color}` : `card v${c.variant}`;
-  // v2 is a per-card gradient; v3 colours only the top border.
   const style =
     c.variant === 2
       ? ` style="background-image:linear-gradient(135deg, ${palette[c.color]}, ${palette[c.color2]})"`
@@ -159,7 +155,6 @@ export function renderFixture<K extends FixtureId>(fixture: K, data: FixtureMap[
   return RENDERERS[fixture](data);
 }
 
-/** Number of elements the reference tree contains (excluding the host). */
 export function countElements(html: string): number {
   return (html.match(/<(div|span|p)[\s>]/g) ?? []).length;
 }

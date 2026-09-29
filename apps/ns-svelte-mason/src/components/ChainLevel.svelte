@@ -1,4 +1,3 @@
-<!-- Recursive via svelte:self; Svelte components add no host element. -->
 {#if level < data.depth}
   <view class={`chain bgl-${level % 8} bc-${level % 8}`}>
     <svelte:self {data} level={level + 1} />

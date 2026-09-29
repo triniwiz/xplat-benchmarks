@@ -8,7 +8,6 @@ module.exports = (env) => {
       Object.assign(args[0], benchDefines(__dirname));
       return args;
     });
-    // React JSX via TypeScript's react-jsx transform (no babel), as in nativescript-mason apps/demo-react.
     config.resolve.extensions.prepend('.tsx').prepend('.jsx');
     config.resolve.alias.set('nsjsx/jsx-runtime', require('path').resolve(__dirname, 'src/nsjsx/jsx-runtime.ts'));
     config.module

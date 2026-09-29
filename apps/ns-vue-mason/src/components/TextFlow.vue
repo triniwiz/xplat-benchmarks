@@ -1,4 +1,3 @@
-<!-- No line clamp in Mason: clamp paragraphs render in full, as in ns-core-mason. -->
 <template>
   <View>
     <View class="text-flow">
@@ -16,6 +15,5 @@ import { Screen } from '@nativescript/core';
 import type { TextFlowData } from '../shared/generate';
 import Sentinel from './Sentinel.vue';
 defineProps<{ data: TextFlowData }>();
-/** Mason reads letterSpacing in device pixels. */
 const spacing = 0.5 * Screen.mainScreen.scale;
 </script>

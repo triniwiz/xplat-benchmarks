@@ -6,11 +6,9 @@ export interface Summary {
   median: number;
   p90: number;
   stddev: number;
-  /** Median absolute deviation. */
   mad: number;
 }
 
-/** Linear-interpolated percentile, p in [0, 100]. `sorted` must be ascending. */
 export function percentile(sorted: readonly number[], p: number): number {
   if (!sorted.length) return NaN;
   const idx = (p / 100) * (sorted.length - 1);

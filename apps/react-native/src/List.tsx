@@ -5,8 +5,6 @@ import type { ListData, ListItem } from './shared/generate';
 import { sentinelLayout } from './bench';
 import { bg, bgl, s } from './styles';
 
-// FlashList v2: recycles cells per item type, as ListView/Ul/<list> do.
-
 function Badges({ item }: { item: ListItem }) {
   return (
     <View style={s.badges}>

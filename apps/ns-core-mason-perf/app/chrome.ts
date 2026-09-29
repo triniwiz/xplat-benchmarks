@@ -4,14 +4,8 @@ import { h } from './ns-common/h';
 import type { Chrome } from './ns-common/shell';
 import { SCENARIOS, SIZES } from './shared/scenarios';
 
-type AnyView = any; // Mason's typings don't unify with core's View type
+type AnyView = any;
 
-/**
- * Mason frame: a Mason root (status Text + Mason Scroll host, or a Mason Ul in
- * its place), and a Mason home screen. The only core view is the window root, a single-cell GridLayout
- * that applies the Android system-bar insets (Mason views have no
- * androidOverflowEdge support).
- */
 export function masonChrome(): Chrome {
   const status = h(Text, { className: 'status' });
   const scroll = h(Scroll, { className: 'body' });

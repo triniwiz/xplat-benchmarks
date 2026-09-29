@@ -1,10 +1,5 @@
-// Deterministic PRNG shared by every app. Only integer ops and division by
-// 2^32 are used, so V8, Hermes and PrimJS produce bit-identical sequences.
-
 export interface Rng {
-  /** Float in [0, 1). */
   next(): number;
-  /** Integer in [min, max], inclusive. */
   int(min: number, max: number): number;
   pick<T>(items: readonly T[]): T;
   chance(p: number): boolean;

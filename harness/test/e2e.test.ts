@@ -5,7 +5,6 @@ import { runPlan, type BenchAdapter } from '../../scenarios/src/runner';
 import { startServer } from '../src/server';
 import { summarize } from '../src/stats';
 
-// Drives the real runner against the real server over HTTP with a fake app.
 test('runner ↔ server protocol end to end', async () => {
   const server = await startServer(0);
   const plan: Plan = {
@@ -35,7 +34,6 @@ test('runner ↔ server protocol end to end', async () => {
     async mutate(_f, m) {
       calls.push(`mutate ${m}`);
       clock += 5;
-      // Engine-reported end time and phase, as the Lynx adapter does.
       return m === 'grow' ? { end: clock - 1, phases: { layout: 2 }, marks: { laid: clock - 3 } } : undefined;
     },
     async unmount() {
@@ -61,7 +59,6 @@ test('runner ↔ server protocol end to end', async () => {
   assert.deepEqual(resize.phases?.['grow.layout'], [2, 2, 2]);
   assert.deepEqual(resize.phases?.['grow.laid'], [2, 2, 2]);
   assert.deepEqual(insert.samples.insert, [5, 5, 5]);
-  // warmup + iterations mounts per case
   assert.equal(calls.filter((c) => c === 'mount nested-chain').length, 4);
 });
 
@@ -76,7 +73,6 @@ test('unknown run is rejected and failures are reported, not thrown', async () =
     unmount: async () => {},
     log: () => {},
   };
-  // No plan registered: runner must return without throwing.
   await runPlan(adapter, `127.0.0.1:${server.port}`, 'missing');
 
   const plan: Plan = {

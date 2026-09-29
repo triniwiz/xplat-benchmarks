@@ -15,7 +15,6 @@ const COMPONENTS: Record<string, (p: { data: any }) => any> = {
   'scroll-plain': Cards,
 };
 
-// Own component and store, so status updates never re-render the scenario.
 function Status() {
   return <text className="status">{useStore(status)}</text>;
 }
@@ -50,8 +49,6 @@ function Body() {
   );
 }
 
-// Frame: the host applies the system-bar insets; a fixed-height status line
-// above the bench host (a scroll-view, or the <list> in its place).
 export function App() {
   useEffect(startFromLaunchUrl, []);
   return (

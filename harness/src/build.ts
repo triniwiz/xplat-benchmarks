@@ -6,14 +6,10 @@ import type { AppDef } from './apps';
 import type { Platform } from './devices/types';
 import { ROOT } from './paths';
 
-// Release builds per stack. Android only for now; outputs are copied to
-// build/<platform>/<app>.apk and logs to build/logs/<app>-<platform>.log.
-
 export const BUILD_DIR = join(ROOT, 'build');
 
 const ANDROID_HOME = process.env.ANDROID_HOME ?? join(homedir(), 'Library', 'Android', 'sdk');
 
-// Local release signing with the Android debug keystore (never for distribution).
 const DEBUG_KEYSTORE = [
   '--key-store-path', join(homedir(), '.android', 'debug.keystore'),
   '--key-store-password', 'android',
@@ -68,7 +64,6 @@ function exec(step: Step, logPath: string): Promise<void> {
   });
 }
 
-/** Build one app in release mode; returns the artifact path. */
 export async function buildApp(app: AppDef, platform: Platform): Promise<string> {
   const outDir = join(BUILD_DIR, platform);
   const logDir = join(BUILD_DIR, 'logs');

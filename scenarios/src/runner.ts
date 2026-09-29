@@ -11,49 +11,23 @@ import {
 } from './protocol';
 import { getScenario } from './scenarios';
 
-// Framework-agnostic benchmark loop. Each app implements BenchAdapter; the
-// runner owns timing, iteration, warmup and reporting so every app is measured
-// identically.
-
 export interface PaintTiming {
-  /**
-   * End timestamp on the adapter's `now()` clock, when the engine reports its
-   * own paint time (Lynx PipelineEntry.paintEnd). Otherwise the runner
-   * reads `now()` when the promise resolves.
-   */
   end?: number;
-  /** Durations already computed by the engine (ms), e.g. Lynx layoutEnd - layoutStart. */
   phases?: Record<string, number>;
-  /** Absolute timestamps on the `now()` clock; recorded as `mark - t0` (e.g. 'layout' = sentinel laid out). */
   marks?: Record<string, number>;
 }
 
 export interface BenchAdapter {
   app: AppId;
-  /** Monotonic-ish ms clock. Must share a clock with PaintTiming.end. */
   now(): number;
   info(): Omit<RunInfo, 'runId' | 'app' | 'startedAt'>;
-  /**
-   * Mount the scenario into the bench host and resolve once the tree is laid
-   * out and the next frame has been produced (see README "painted").
-   */
   mount(fixture: ScenarioFixture): Promise<PaintTiming | void>;
-  /** Apply a named mutation (ScenarioDef.mutations) and resolve once painted. */
   mutate(fixture: ScenarioFixture, mutation: string): Promise<PaintTiming | void>;
-  /** Remove the tree and resolve once the empty host is painted. */
   unmount(): Promise<void>;
-  /**
-   * Resolve at the start of a display frame. Awaited before every t0 so the
-   * wait for the next vsync is consistent rather than random (0..1 frame).
-   */
   align?(): Promise<void>;
-  /** Best-effort GC hint between iterations. */
   gc?(): void;
-  /** Optional counters reported once after the last case (e.g. live native nodes, for leak checks). */
   diagnostics?(): Promise<Record<string, number>> | Record<string, number>;
-  /** Start a JS CPU profile (Plan.profile). */
   profileStart?(label: string): void;
-  /** Stop it; returns the profile as text (.cpuprofile JSON), if available. */
   profileStop?(label: string): Promise<string | undefined> | string | undefined;
   log?(message: string): void;
 }
@@ -66,8 +40,6 @@ export interface RunStatus {
   label: string;
 }
 
-// Bare globals, not globalThis.x: some engines (Lynx's background thread)
-// expose fetch/console/timers as globals that are not properties of globalThis.
 declare const fetch: (url: string, init?: object) => Promise<any>;
 declare const setTimeout: (fn: () => void, ms: number) => unknown;
 declare const clearTimeout: (id: unknown) => void;
@@ -99,7 +71,6 @@ async function getJson<T>(url: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-/** POST with retries: a result must not be lost to a transient network blip. */
 async function postJson(url: string, body: unknown, attempts = 4): Promise<void> {
   const payload = JSON.stringify(body);
   for (let i = 1; ; i++) {
@@ -179,10 +150,6 @@ export async function runCase(
   return result;
 }
 
-/**
- * Fetch the plan from the harness, run every case and report results.
- * Never throws; failures are reported to the harness and the log.
- */
 export async function runPlan(
   adapter: BenchAdapter,
   host: string,
@@ -228,7 +195,6 @@ export async function runPlan(
             const content = await adapter.profileStop?.(label);
             if (content) await postJson(`${base}/artifact`, { runId, name: `${label}.cpuprofile`, content } satisfies ArtifactMessage);
           } catch (e) {
-            // Release builds drop console output, so report the failure as an artifact.
             emit(adapter, 'ERROR', { runId, error: `profile ${label}: ${e}` });
             await postJson(`${base}/artifact`, { runId, name: `${label}.error.txt`, content: String(e) } satisfies ArtifactMessage).catch(() => {});
           }
@@ -249,7 +215,6 @@ export async function runPlan(
       try {
         await adapter.unmount();
       } catch {
-        // host may already be empty
       }
     }
     emit(adapter, 'RESULT', result);

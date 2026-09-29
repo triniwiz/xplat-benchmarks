@@ -1,9 +1,6 @@
 import type { ListData, ListItem } from './shared/generate';
 import { sentinelLayout } from './bench';
 
-// Lynx <list>: native virtualized list, cells recycled per reuse-identifier
-// (the item type), as ListView / Ul / FlashList do.
-
 function Badges({ item }: { item: ListItem }) {
   return (
     <view className="badges">

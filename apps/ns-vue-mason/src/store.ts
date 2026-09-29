@@ -4,7 +4,6 @@ import type { ScenarioFixture } from './shared/generate';
 
 const APP = 'ns-vue-mason';
 
-// shallowRef: fixture data stays raw (never deep-proxied by Vue).
 export const current = shallowRef<ScenarioFixture | null>(null);
 export const status = ref(`${APP} · ready`);
 export const started = ref(false);

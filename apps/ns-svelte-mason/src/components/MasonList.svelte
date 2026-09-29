@@ -1,6 +1,3 @@
-<!-- Mason's virtualized ul (masonkit ships no Svelte list component). Each
-     keyed template's createView mounts a ListItem into a detached .li-cell
-     view; itemLoading rebinds the new or recycled cell with $set. -->
 <ul bind:this={ul} class="list body" on:layoutChanged={() => controller.sentinelLayout()} />
 
 <script lang="ts">

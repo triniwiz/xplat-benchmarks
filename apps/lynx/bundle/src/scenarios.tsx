@@ -3,10 +3,6 @@ import type { Card, CardsData, ChainData, DashboardData, TextFlowData, TilesData
 import { palette } from './shared/tokens';
 import { sentinelLayout, setMutator } from './bench';
 
-// Element-for-element the structure of scenarios/scripts/html.ts; styles in
-// App.css (the reference CSS). Grid uses line placement (Lynx has no
-// grid-template-areas).
-
 function Sentinel() {
   return <view className="sentinel" bindlayoutchange={sentinelLayout} />;
 }

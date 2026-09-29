@@ -15,14 +15,10 @@ const COMPONENTS: Record<string, (p: { data: any }) => any> = {
   'scroll-plain': Cards,
 };
 
-/** Dynamic from solid-js/web is DOM-only; under the universal renderer, call the component directly. */
 function Scenario(props: { fixture: string; data: any }) {
   return COMPONENTS[props.fixture]({ data: props.data });
 }
 
-// Same frame as apps/ns-core-mason/app/chrome.ts: a core GridLayout that only
-// applies the Android system-bar insets, holding a Mason root with the status
-// text and a Mason scroll host, or Mason's ul in its place.
 export function App() {
   return (
     <gridlayout class="root" androidOverflowEdge="none">

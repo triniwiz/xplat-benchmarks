@@ -6,11 +6,6 @@ import { SCENARIOS, SIZES } from '../shared/scenarios';
 import { BenchService } from './bench.service';
 import { CardsComponent, ChainComponent, DashboardComponent, TextFlowComponent, TilesComponent, TreeComponent } from './scenarios';
 
-// Same frame as apps/ns-core-mason/app/chrome.ts: a core GridLayout window root
-// that only applies the Android system-bar insets, holding a Mason root with
-// the status Text and a Mason Scroll host, or Mason's virtualized Ul in its
-// place. Each Ul cell has a bare full-width Mason root (.li-cell), as in
-// ns-core-mason.
 @Component({
   selector: 'ns-app',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -107,7 +102,6 @@ export class AppComponent {
   readonly bench = inject(BenchService);
   readonly scenarios = SCENARIOS;
   readonly sizes = SIZES;
-  /** The home screen shows until the first scenario mounts; after that the host stays empty between iterations. */
   readonly home = computed(() => !this.bench.started());
   readonly list = computed(() => {
     const f = this.bench.current();

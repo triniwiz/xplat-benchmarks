@@ -5,12 +5,6 @@ import type { AppDef } from './apps';
 import { aggregate } from './report';
 import { summarize } from './stats';
 
-// Self-contained report.html: per scenario and series, one small multiple per
-// size with a horizontal bar per app (median, p90 whisker, value at the tip),
-// a per-bar tooltip and a table view. Four stack groups carry color (validated
-// categorical slots 1-4); apps are always named on the axis, so identity is
-// never color-alone. Palette and marks follow the dataviz reference instance.
-
 type Group = 'ns-core' | 'ns-mason' | 'react-native' | 'lynx';
 
 const GROUPS: { id: Group; label: string }[] = [
@@ -20,7 +14,6 @@ const GROUPS: { id: Group; label: string }[] = [
   { id: 'lynx', label: 'Lynx' },
 ];
 
-/** Axis labels: short enough for the label band; the legend names the stack families. */
 const shortTitle = (app: AppDef) => app.title.replace(/^NativeScript /, 'NS ');
 
 const groupOf = (app: AppDef): Group =>

@@ -1,14 +1,5 @@
 import { File, Utils } from '@nativescript/core';
 
-// JS CPU profiles through the NativeScript Android runtime's profiler globals
-// (bench run --cpu-profile). The runtime writes <dir>/<app>-<name>-<sec>.<usec>.cpuprofile
-// into the app's private storage; the app reads it back and sends it to the harness,
-// since release builds can't be pulled with run-as.
-//
-// As of @nativescript/android 9 (2026-09), __stopCPUProfiler returns false and writes
-// nothing: start and stop each create their own v8::CpuProfiler, so stop never finds
-// the profile. profileStop then throws, and the runner reports it as <case>.error.txt.
-
 declare const __startCPUProfiler: undefined | ((name: string) => void);
 declare const __stopCPUProfiler: undefined | ((name: string) => boolean);
 

@@ -13,14 +13,6 @@ import {
 import { DetachedLoader, NsTemplatedItem, TEMPLATED_ITEMS_COMPONENT, type ItemContext } from '@nativescript/angular';
 import type { View } from '@nativescript/core';
 
-/**
- * Angular host for Mason's virtualized <Ul> (masonkit ships no Angular
- * directive for it). Mirrors @nativescript/angular's ListViewComponent:
- * `<ng-template nsTemplateKey="...">` children register keyed templates.
- * Unlike core ListView, Mason's Android list requires createView() to return
- * a real view, so templates create their embedded view there and itemLoading
- * only rebinds the (new or recycled) view to its item.
- */
 @Component({
   selector: 'Ul',
   template: `<DetachedContainer><ng-container #loader></ng-container></DetachedContainer>`,
@@ -53,10 +45,10 @@ export class MasonUlComponent<T = any> implements AfterContentInit {
       templates.push({ key, createView: () => t.create() });
     });
     this.ul.itemTemplates = templates;
-    this.ul.items = this._items; // refresh now that templates exist
+    this.ul.items = this._items;
   }
 
-  onItemLoading(args: any /* ItemEventData */) {
+  onItemLoading(args: any) {
     const t = this.templates.get(this.viewKey.get(args.view)!);
     if (!t) return;
     t.update(args.view, { index: args.index, data: this._items[args.index] });

@@ -1,6 +1,5 @@
 import Foundation
 
-/** Loads main.lynx.bundle from the app bundle (copied from apps/lynx/bundle/dist by `bench build`). */
 class BundleTemplateProvider: NSObject, LynxTemplateProvider {
   func loadTemplate(withUrl url: String!, onComplete callback: LynxTemplateLoadBlock!) {
     guard let path = Bundle.main.path(forResource: url, ofType: "bundle") else {

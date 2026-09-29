@@ -14,9 +14,6 @@ const COMPONENTS: Record<string, (p: { data: any }) => any> = {
   'scroll-plain': Cards,
 };
 
-// Same frame as apps/ns-core-mason/app/chrome.ts: a core GridLayout that only
-// applies the Android system-bar insets, holding a Mason root with the status
-// text and a Mason scroll host, or Mason's ul in its place.
 export function App() {
   const f = useStore(current);
   const text = useStore(status);

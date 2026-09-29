@@ -5,12 +5,6 @@ declare const java: any;
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-/**
- * Leak check for Mason apps (Android): collect JS, then Java (so JS-released
- * views/nodes become unreachable and their Cleaners free the Rust nodes), then
- * read Mason.debugStats(). Builds without that API (the published beta)
- * report only { debugStats: 0 }.
- */
 export async function masonDiagnostics(): Promise<Record<string, number>> {
   if (!__ANDROID__) return {};
   for (let i = 0; i < 2; i++) {

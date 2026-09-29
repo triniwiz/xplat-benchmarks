@@ -1,25 +1,18 @@
 import { Application } from '@nativescript/core';
 
-// Delivers xplatbench:// URLs from cold and warm launches on both platforms.
-// Call before Application.run(). iOS apps using scenes receive the cold-launch
-// URL in the scene connection options; warm opens go through the legacy
-// applicationOpenURLOptions handler, which core forwards from the scene.
-
 export function onLaunchUrl(handler: (url: string) => void): void {
   let last = '';
   let lastAt = 0;
   const deliver = (url: string | null | undefined) => {
-    if (!url || !url.startsWith('xplatbench')) return; // xplatbench:// or xplatbench-<app>://
+    if (!url || !url.startsWith('xplatbench')) return;
     const now = Date.now();
-    if (url === last && now - lastAt < 2000) return; // same URL via two paths
+    if (url === last && now - lastAt < 2000) return;
     last = url;
     lastAt = now;
-    // Let the first frame and the root view settle before starting work.
     setTimeout(() => handler(url), 0);
   };
 
   if (__APPLE__) {
-    // The harness launches iOS apps with the URL in the environment (see harness/src/devices/ios.ts).
     Application.on(Application.launchEvent, () => {
       deliver(NSProcessInfo.processInfo.environment.objectForKey('XPLATBENCH_URL') as string | null);
     });

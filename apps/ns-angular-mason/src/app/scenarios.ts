@@ -5,13 +5,6 @@ import type { Card, CardsData, ChainData, DashboardData, TextFlowData, TilesData
 import { palette } from '../shared/tokens';
 import { BenchService } from './bench.service';
 
-// One OnPush component per scenario, element-for-element the structure of the
-// Mason builders in apps/ns-core-mason/app/scenarios.ts, with the same CSS.
-// The component host (a Mason box via installMasonKit componentHosts) carries
-// class="host", so host > [content, sentinel] matches ns-core-mason.
-// Trees recurse through ng-template rather than components, so no extra
-// component-host nodes are added per tree node.
-
 const SENTINEL = `<View class="sentinel" (layoutChanged)="bench.sentinelLayout()"></View>`;
 
 function useMutator(fn: (name: string) => void) {
@@ -189,7 +182,6 @@ export class DashboardComponent {
 export class TextFlowComponent {
   readonly bench = inject(BenchService);
   readonly data = input.required<TextFlowData>();
-  /** Mason reads letterSpacing in device pixels. */
   readonly spacing = 0.5 * Screen.mainScreen.scale;
 }
 

@@ -1,6 +1,3 @@
-<!-- One component for the three Ul templates; `type` is fixed per template, so a
-     recycled cell never changes structure. Each cell has a bare full-width Mason
-     root (.li-cell), as in ns-core-mason. -->
 <template>
   <View class="li-cell">
     <View v-if="type !== 'c'" class="li-row">

@@ -5,13 +5,10 @@ import type { ScenarioId, Size } from '../shared/scenarios';
 
 const APP = 'ns-angular-mason';
 
-// Angular binding for ns-common/controller.ts: the mounted scenario and the
-// status line are signals the root template renders.
 @Injectable({ providedIn: 'root' })
 export class BenchService {
   readonly current = signal<ScenarioFixture | null>(null);
   readonly status = signal(`${APP} · ready`);
-  /** Set by the first mount; the home screen is not re-rendered between iterations. */
   readonly started = signal(false);
 
   private readonly controller = createController({

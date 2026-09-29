@@ -6,10 +6,6 @@ import { SCENARIOS, SIZES } from '../src/scenarios';
 import { referenceCss } from './css';
 import { countElements, page, renderFixture } from './html';
 
-// Writes scenarios/fixtures/*.json, fixtures/manifest.json (hashes every app
-// must reproduce) and the browser reference under scenarios/reference/.
-//   --check  regenerate in memory and fail if manifest.json would change.
-
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const fixturesDir = join(root, 'fixtures');
 const referenceDir = join(root, 'reference');
@@ -51,7 +47,6 @@ if (check) {
   try {
     current = readFileSync(manifestPath, 'utf8');
   } catch {
-    // no manifest yet
   }
   if (current !== serialized) {
     console.error('fixtures/manifest.json is out of date or the generator is non-deterministic. Run `npm run fixtures`.');

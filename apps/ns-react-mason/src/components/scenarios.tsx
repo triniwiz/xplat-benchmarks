@@ -4,9 +4,6 @@ import type { Card, CardsData, ChainData, DashboardData, TextFlowData, TilesData
 import { palette } from '../shared/tokens';
 import { controller } from '../store';
 
-// Element-for-element the structure of apps/ns-core-mason/app/scenarios.ts,
-// same CSS. Function components render no host element, so recursion adds no nodes.
-
 function Sentinel() {
   return <view className="sentinel" onLayoutChanged={() => controller.sentinelLayout()} />;
 }
@@ -141,10 +138,8 @@ export function Dashboard({ data }: { data: DashboardData }) {
   );
 }
 
-/** Mason reads letterSpacing in device pixels. */
 const SPACING = 0.5 * Screen.mainScreen.scale;
 
-// No line clamp in Mason: clamp paragraphs render in full, as in ns-core-mason.
 export function TextFlow({ data }: { data: TextFlowData }) {
   return (
     <view className="host">
@@ -183,7 +178,6 @@ export function Cards({ data }: { data: CardsData }) {
     <view className="host">
       <view className="cards">
         {data.cards.map((c) =>
-          // Inline styles only on the variants that use them.
           c.variant === 2 ? (
             <view key={c.id} className="card v2" style={{ backgroundImage: gradient(c) }}>
               <CardInner card={c} />

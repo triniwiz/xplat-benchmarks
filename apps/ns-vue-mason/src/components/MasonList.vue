@@ -1,6 +1,3 @@
-<!-- Mason's virtualized Ul (masonkit ships no Vue list component). Each keyed
-     template's createView mounts a ListItem via createNativeView; itemLoading
-     rebinds the new or recycled cell by swapping its reactive item. -->
 <template>
   <Ul ref="ul" class="list body" @layoutChanged="controller.sentinelLayout()" />
 </template>

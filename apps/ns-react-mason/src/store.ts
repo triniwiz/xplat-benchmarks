@@ -4,7 +4,6 @@ import type { ScenarioFixture } from './shared/generate';
 
 const APP = 'ns-react-mason';
 
-/** Minimal external store; useSyncExternalStore renders synchronously on change. */
 export function createStore<T>(initial: T) {
   let value = initial;
   const listeners = new Set<() => void>();

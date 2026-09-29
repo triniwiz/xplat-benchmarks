@@ -2,7 +2,6 @@
   <View>
     <View class="cards">
       <template v-for="c in data.cards" :key="c.id">
-        <!-- Inline styles only on the variants that use them. -->
         <View v-if="c.variant === 2" class="card v2" :style="{ backgroundImage: gradient(c) }">
           <CardInner :card="c" />
         </View>

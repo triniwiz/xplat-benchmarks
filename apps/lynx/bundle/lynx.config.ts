@@ -7,7 +7,6 @@ const version = (pkg: string) => JSON.parse(readFileSync(new URL(`./node_modules
 export default defineConfig({
   plugins: [
     pluginReactLynx({
-      // Flex by default (Lynx defaults to display: linear) so layout matches the reference.
       defaultDisplayLinear: false,
     }),
   ],

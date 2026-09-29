@@ -6,9 +6,6 @@ import { palette } from './shared/tokens';
 import { sentinelLayout, setMutator } from './bench';
 import { bc, bg, bgl, fs, s } from './styles';
 
-// Element-for-element the structure of scenarios/scripts/html.ts, idiomatic
-// React Native (function components, StyleSheet). Grid is flex-emulated.
-
 function Sentinel() {
   return <View style={s.sentinel} onLayout={sentinelLayout} />;
 }
@@ -19,8 +16,6 @@ function useMutator(fn: (name: string) => void) {
     return () => setMutator(null);
   }, []);
 }
-
-// ---- nested-chain
 
 function ChainLevel({ data, level }: { data: ChainData; level: number }) {
   if (level >= data.depth) return <Text style={s.chainLabel}>{data.label}</Text>;
@@ -40,8 +35,6 @@ export function Chain({ data }: { data: ChainData }) {
     </View>
   );
 }
-
-// ---- tree-fanout (+ relayout-resize, relayout-style)
 
 const Restyled = createContext(false);
 
@@ -78,8 +71,6 @@ export function Tree({ data }: { data: TreeData }) {
   );
 }
 
-// ---- flex-wrap-tiles (+ insert-remove)
-
 export function Tiles({ data }: { data: TilesData }) {
   const [inserted, setInserted] = useState(false);
   useMutator((name) => setInserted(name === 'insert'));
@@ -98,8 +89,6 @@ export function Tiles({ data }: { data: TilesData }) {
     </View>
   );
 }
-
-// ---- grid-dashboard (flex-emulated: header row, then nav | [stats, table])
 
 export function Dashboard({ data }: { data: DashboardData }) {
   const pairs: DashboardData['stats'][] = [];
@@ -170,8 +159,6 @@ export function Dashboard({ data }: { data: DashboardData }) {
   );
 }
 
-// ---- text-flow
-
 export function TextFlow({ data }: { data: TextFlowData }) {
   return (
     <View>
@@ -186,8 +173,6 @@ export function TextFlow({ data }: { data: TextFlowData }) {
     </View>
   );
 }
-
-// ---- styled-cards / scroll-plain
 
 const VARIANT = [s.v0, s.v1, s.v2, s.v3, s.v4, s.v5];
 

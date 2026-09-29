@@ -1,5 +1,3 @@
-<!-- Content of one Ul cell; MasonList mounts it into the cell's bare full-width
-     Mason root (.li-cell). `type` is fixed per template. -->
 {#if type !== 'c'}
   <view class="li-row">
     <view class={`${type === 'b' ? 'thumb' : 'avatar'} bg-${item.color}`} />

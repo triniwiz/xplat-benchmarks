@@ -5,11 +5,6 @@ import { parseLaunchUrl } from './shared/protocol';
 import { runPlan, type BenchAdapter, type PaintTiming } from './shared/runner';
 import type { ScenarioId, Size } from './shared/scenarios';
 
-// React Native binding of the bench protocol, same design as
-// apps/ns-common/controller.ts: the App renders `current`; scenario trees end
-// with a sentinel whose onLayout calls sentinelLayout(); a pending
-// mount/mutate resolves one frame after it.
-
 const APP = 'react-native';
 
 export function createStore<T>(initial: T) {
@@ -94,7 +89,7 @@ export const adapter: BenchAdapter = {
   async unmount() {
     pending = null;
     current.set(null);
-    await nextFrames(2); // the commit lands on the first frame, removal is mounted on the next
+    await nextFrames(2);
   },
 };
 
@@ -111,7 +106,6 @@ function handleUrl(url: string | null | undefined) {
   if (!cmd) return;
   if (cmd.mode === 'show') return show(cmd.scenario, cmd.size);
   runPlan(adapter, cmd.host, cmd.runId, (s) => {
-    // Only on case boundaries: a status re-render must not land inside a measured iteration.
     if (s.iteration === 0) status.set(`${APP} · ${s.phase} ${s.caseIndex + 1}/${s.caseCount} ${s.label}`);
   });
 }

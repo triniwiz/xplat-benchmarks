@@ -81,12 +81,9 @@ function shuffle<T>(items: T[]): T[] {
   return a;
 }
 
-/** Android targets the component explicitly; iOS needs a scheme only this app claims. */
 const schemeFor = (app: AppDef, platform: Platform) => (platform === 'ios' ? appScheme(app.id) : URL_SCHEME);
 
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-
-// ---- commands --------------------------------------------------------------
 
 async function cmdDevices() {
   const targets = [...(await listAndroid()), ...(await listIos())];
@@ -129,11 +126,8 @@ async function cmdRun(argv: string[]) {
       rounds: { type: 'string', default: '3' },
       'app-cooldown': { type: 'string', default: '20' },
       'step-timeout': { type: 'string', default: '60' },
-      // Apps report once per case; a heavy L case (13 iterations of thousands of views) can run for minutes.
       'idle-timeout': { type: 'string', default: '1800' },
-      // Also record memory after a forced GC (tells uncollected garbage from leaks).
       'gc-memory': { type: 'boolean', default: false },
-      // JS CPU profile per case, written to <out>/profiles/ (slows the cases down; hot spots only).
       'cpu-profile': { type: 'boolean', default: false },
       port: { type: 'string', default: String(DEFAULT_PORT) },
       host: { type: 'string' },
@@ -165,13 +159,11 @@ async function cmdRun(argv: string[]) {
   const outDir = values.out ?? join(RESULTS_DIR, `${date}-${slug(device.model ?? target.name)}-${platform}`);
   mkdirSync(outDir, { recursive: true });
 
-  // Generous per-run timeout: every step may take up to step-timeout.
   const steps = cases.reduce((n, c) => n + 2 + getScenario(c.scenario).mutations.length, 0);
   const runTimeoutMs = 60_000 + steps * (plan.warmup + plan.iterations) * Math.min(plan.timeoutMs, 10_000);
 
   const server = await startServer(Number(values.port), log);
   const host = await driver.prepare(server.port);
-  // Keep the device → harness route alive (e.g. adb reverse is lost whenever the adb server restarts).
   const keepAlive = setInterval(() => driver.prepare(server.port).catch(() => {}), 15_000);
   log(`${target.name} (${target.kind}) → harness at ${host}; ${apps.length} apps × ${cases.length} cases × ${values.rounds} rounds`);
 
@@ -270,7 +262,6 @@ async function cmdShow(argv: string[]) {
   const target = await resolveTarget(values.platform, values.device);
   const driver = driverFor(target);
   const app = getApp(values.app);
-  // iOS asks before a URL switches from one foreground app to another; stop the others first.
   for (const other of APPS) if (other.id !== app.id) await driver.stop(other.bundleId[target.platform]);
   await driver.launchUrl(
     app.bundleId[target.platform],

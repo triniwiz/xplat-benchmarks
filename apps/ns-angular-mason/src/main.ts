@@ -5,11 +5,8 @@ import { onLaunchUrl } from './ns-common/launch';
 import { AppComponent } from './app/app.component';
 import { launchQueue } from './ns-common/controller';
 
-// Mason elements (<View>, <Text>, ...) for templates. Web tags (<div>, ...) are
-// not used: they map to Div, a scroll container, where the benchmark uses View.
 installMasonKit({ web: false });
 
-// Must be registered before the app starts; URLs are queued until the bench service exists.
 onLaunchUrl((url) => launchQueue.push(url));
 
 runNativeScriptAngularApp({

@@ -1,17 +1,12 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
 import type { ArtifactMessage, CaseResult, DoneMessage, Plan, RunInfo } from '../../scenarios/src/protocol';
 
-// Serves plans to apps and collects their results. One server handles many
-// runs; each run is keyed by runId (from the deep link).
-
 export interface RunRecord {
   plan: Plan;
   info?: RunInfo;
   cases: CaseResult[];
-  /** Files the app sent (POST /artifact), by name. Not part of the results JSON. */
   artifacts?: Record<string, string>;
   done?: DoneMessage;
-  /** Set when waitForDone gave up. */
   timedOut?: boolean;
 }
 
@@ -25,11 +20,6 @@ interface PendingRun {
 
 export interface BenchServer {
   port: number;
-  /** Register a plan and get a promise that settles when the app reports done or on timeout. */
-  /**
-   * Register a plan; settles when the app reports done, after timeoutMs, or
-   * after idleTimeoutMs without any request from the app (a dead or unreachable app).
-   */
   addRun(plan: Plan, opts: { timeoutMs: number; idleTimeoutMs?: number; onProgress?: (msg: string) => void }): Promise<RunRecord>;
   close(): Promise<void>;
 }

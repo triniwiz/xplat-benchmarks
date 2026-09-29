@@ -1,25 +1,9 @@
 import { isScenarioId, type ScenarioId, type Size } from './scenarios';
 
-// Wire protocol between the in-app runner and the harness HTTP server.
-//
-//   harness ── deep link xplatbench://run?host=H&run=R ──▶ app
-//   app ── GET  http://H/plan?run=R ─────────────────────▶ harness
-//   app ── POST http://H/hello  RunInfo ─────────────────▶ harness
-//   app ── POST http://H/case   CaseResult (per case) ───▶ harness
-//   app ── POST http://H/done   DoneMessage ─────────────▶ harness
-//
-// `xplatbench://show?scenario=S&size=Z` mounts one scenario and leaves it on
-// screen (used by the scroll/memory drivers and for visual checks).
-
 export const PROTOCOL_VERSION = 1;
 export const DEFAULT_PORT = 9797;
 export const URL_SCHEME = 'xplatbench';
 
-/**
- * Per-app scheme (xplatbench-<app>://). Every app also registers the shared
- * scheme, but iOS cannot target a bundle when several apps claim the same
- * scheme (simctl openurl prompts), so iOS launches use the per-app one.
- */
 export function appScheme(app: string): string {
   return `${URL_SCHEME}-${app}`;
 }
@@ -28,7 +12,6 @@ export const LOG_PREFIX = 'XPLATBENCH';
 export type AppId =
   | 'ns-core'
   | 'ns-core-mason'
-  /** Dev only: ns-core-mason against a local nativescript-mason build (apps/ns-core-mason-perf). */
   | 'ns-core-mason-perf'
   | 'ns-angular-mason'
   | 'ns-vue-mason'
@@ -49,19 +32,12 @@ export interface Plan {
   app: AppId;
   warmup: number;
   iterations: number;
-  /** Pause after each unmount, ms. */
   cooldownMs: number;
-  /** Max wait for any mount/mutate/unmount before the case is failed, ms. */
   timeoutMs: number;
-  /**
-   * Record a JS CPU profile per case (adapter.profileStart/profileStop) and send it to
-   * POST /artifact. For finding hot spots only: profiling slows the case down.
-   */
   profile?: boolean;
   cases: PlanCase[];
 }
 
-/** A file an app sends back during a run (e.g. a .cpuprofile). */
 export interface ArtifactMessage {
   runId: string;
   name: string;
@@ -74,9 +50,7 @@ export interface RunInfo {
   platform: 'ios' | 'android';
   osVersion?: string;
   deviceModel?: string;
-  /** Package name → version, e.g. { '@nativescript/core': '9.1.2' }. */
   framework: Record<string, string>;
-  /** Screen width in dp, for checking every app laid out at the same width. */
   screenWidth?: number;
   startedAt: number;
 }
@@ -87,12 +61,7 @@ export interface CaseResult {
   scenario: ScenarioId;
   size: Size;
   fixtureHash: string;
-  /** Series name ('mount', 'unmount', or a mutation name) → ms per measured iteration. */
   samples: Record<string, number[]>;
-  /**
-   * Optional breakdowns, ms per iteration, keyed `<series>.<name>`: marks relative to t0
-   * (e.g. 'mount.layout' = sentinel laid out) and engine-reported durations.
-   */
   phases?: Record<string, number[]>;
   error?: string;
 }
@@ -103,7 +72,6 @@ export interface DoneMessage {
   ok: boolean;
   error?: string;
   durationMs: number;
-  /** App-reported counters after the last case (BenchAdapter.diagnostics). */
   diagnostics?: Record<string, number>;
 }
 
@@ -111,7 +79,6 @@ export type LaunchCommand =
   | { mode: 'run'; host: string; runId: string }
   | { mode: 'show'; scenario: ScenarioId; size: Size };
 
-/** Parses a launch URL without relying on a URL global (not on every engine). */
 export function parseLaunchUrl(url: string | null | undefined): LaunchCommand | null {
   if (!url) return null;
   const m = /^xplatbench(?:-[a-z0-9-]+)?:\/\/([a-z]+)\/?(?:\?(.*))?$/.exec(url.trim());

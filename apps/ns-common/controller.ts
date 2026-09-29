@@ -6,16 +6,8 @@ import { parseLaunchUrl, type AppId } from '../shared/protocol';
 import { runPlan, type BenchAdapter, type PaintTiming } from '../shared/runner';
 import type { ScenarioId, Size } from '../shared/scenarios';
 
-// Bench controller for declarative frameworks (Angular, Vue, React, Svelte,
-// Solid). The framework renders `fixture` reactively; scenario templates end
-// with a sentinel whose layoutChanged handler calls sentinelLayout(). A
-// pending mount/mutate resolves one frame after that (as frames.ts
-// waitPainted does for the imperative apps). Mutations are delegated to
-// whichever scenario component registered a mutator.
-
 export interface ControllerHooks {
   app: AppId;
-  /** Render the scenario (or nothing). Called synchronously; the framework may schedule its own update. */
   render(fixture: ScenarioFixture | null): void;
   setStatus(text: string): void;
 }
@@ -53,7 +45,7 @@ export function createController(hooks: ControllerHooks): BenchController {
     async unmount() {
       pending = null;
       hooks.render(null);
-      await nextFrames(2); // the framework's update may land on the first frame; removal lays out on the next
+      await nextFrames(2);
     },
   };
 
@@ -81,7 +73,6 @@ export function createController(hooks: ControllerHooks): BenchController {
       if (!cmd) return;
       if (cmd.mode === 'show') return controller.show(cmd.scenario, cmd.size);
       runPlan(adapter, cmd.host, cmd.runId, (s) => {
-        // Only on case boundaries: a status relayout must not land inside a measured iteration.
         if (s.iteration === 0) hooks.setStatus(`${app} · ${s.phase} ${s.caseIndex + 1}/${s.caseCount} ${s.label}`);
       });
     },
@@ -89,7 +80,6 @@ export function createController(hooks: ControllerHooks): BenchController {
   return controller;
 }
 
-/** Launch URLs can arrive before the framework has mounted; queue them until a controller exists. */
 export const launchQueue = {
   urls: [] as string[],
   handler: null as ((url: string) => void) | null,

@@ -1,8 +1,3 @@
-// Design tokens shared by every app and the browser reference. All lengths are
-// density-independent units (CSS px on the web, dp on Android, pt on iOS).
-// NativeScript core treats `px` as *device* pixels, so NS core styles must use
-// unitless values; Mason treats `px` as CSS px.
-
 export const colors = {
   bg: '#F5F6FA',
   surface: '#FFFFFF',
@@ -28,7 +23,6 @@ export const space = { xs: 2, sm: 4, md: 8, lg: 12, xl: 16 } as const;
 
 export const radius = { sm: 4, md: 8, lg: 12, pill: 999 } as const;
 
-/** Paragraph font sizes indexed by `Paragraph.size`. */
 export const fontSizes = [12, 14, 16, 20] as const;
 
 export const font = { xs: 10, sm: 12, md: 14, lg: 16, xl: 20 } as const;

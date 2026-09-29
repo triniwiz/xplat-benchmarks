@@ -18,13 +18,7 @@ import type {
 } from './shared/generate';
 import { palette } from './shared/tokens';
 
-// Mason's typings augment core's Style/View in ways that don't unify with
-// core's own types, so Mason views are typed loosely here.
 type CoreView = any;
-
-// Mason builders: Mason View/Text only (View, not Div: Div is a scroll
-// container), styled by app.css, which mirrors the browser reference. Same
-// element structure as ns-core's builders; only element classes and CSS differ.
 
 const text = (className: string, value: string): Text => h(Text, { className, textContent: value });
 const box = (className: string, children?: CoreView[]): View => h(View, { className }, children);
@@ -35,8 +29,6 @@ function wrap(content: CoreView): Built {
   return { root: box('host', [content, s]) as CoreView, sentinel: s as CoreView, placement: 'scroll' };
 }
 
-// ---- nested-chain ----------------------------------------------------------
-
 function chain(d: ChainData): Built {
   let inner: CoreView = text('chain-label', d.label);
   for (let level = d.depth - 1; level >= 0; level--) {
@@ -45,8 +37,6 @@ function chain(d: ChainData): Built {
   }
   return wrap(inner);
 }
-
-// ---- tree-fanout -----------------------------------------------------------
 
 function treeNode(n: TreeNode, parentDir: TreeNode['dir'] | null): CoreView {
   const inRow = parentDir === 'row' ? ' in-row' : '';
@@ -84,8 +74,6 @@ function tree(d: TreeData): Built {
   };
 }
 
-// ---- flex-wrap-tiles / insert-remove ---------------------------------------
-
 const tile = (t: Tile) => box(`tile bgl-${t.color}`, [text('tile-title', t.title), text('tile-sub', t.subtitle)]);
 
 function tiles(d: TilesData): Built {
@@ -103,8 +91,6 @@ function tiles(d: TilesData): Built {
   };
   return built;
 }
-
-// ---- grid-dashboard --------------------------------------------------------
 
 function dashboard(d: DashboardData): Built {
   const header = box('dash-header', [text('dash-title', d.title), ...d.pills.map((p) => text('pill', p))]);
@@ -139,21 +125,15 @@ function dashboard(d: DashboardData): Built {
   return wrap(box('dash', [header, nav, stats, table]));
 }
 
-// ---- text-flow -------------------------------------------------------------
-
 function textFlow(d: TextFlowData): Built {
-  // Mason reads letterSpacing in device pixels.
   const spacing = 0.5 * Screen.mainScreen.scale;
   const paras = d.paragraphs.map((p) => {
-    // No line clamp in Mason: `clamp` paragraphs render in full (reported as a deviation).
     const t = text(`para fs-${p.size}${p.bold ? ' bold' : ''}`, p.text);
     if (p.spacing) (t as any).letterSpacing = spacing;
     return t;
   });
   return wrap(box('text-flow', paras));
 }
-
-// ---- styled-cards / scroll-plain -------------------------------------------
 
 function card(c: Card): CoreView {
   const inner = box('card-inner', [
@@ -175,10 +155,6 @@ function card(c: Card): CoreView {
 function cards(d: CardsData): Built {
   return wrap(box('cards', d.cards.map(card)));
 }
-
-// ---- list-scroll -----------------------------------------------------------
-// Mason's virtualized Ul (UICollectionView / RecyclerView) with keyed item
-// templates. Keyed templates need apps/ns-common/patches (beta.104 bugs).
 
 interface ItemRefs {
   mark: View;
@@ -210,8 +186,6 @@ function createItem(type: ListItem['type']): CoreView {
     refs.badges = box('badges');
     view = box('li-card', [head, refs.body, refs.badges]);
   }
-  // Ul cells size their root to max-content and ignore its margins, so each
-  // cell gets a bare full-width Mason root.
   const cell = box('li-cell', [view]);
   (cell as any).__refs = refs;
   return cell;
@@ -232,8 +206,7 @@ function bindItem(view: CoreView, item: ListItem) {
 }
 
 function list(d: ListData): Built {
-  const ul: any = new Ul(); // runtime Ul is list/UnorderedList; index.d.ts types it as a plain VBase
-  // Templates before items: iOS registers one reuse identifier per template when the native view is created.
+  const ul: any = new Ul();
   ul.itemTemplates = (['a', 'b', 'c'] as const).map((key) => ({ key, createView: () => createItem(key) })) as any;
   ul.itemTemplateSelector = (item: ListItem) => item.type;
   ul.on('itemLoading', (args: any) => bindItem(args.view, d.items[args.index]));
@@ -241,8 +214,6 @@ function list(d: ListData): Built {
   ul.className = 'list body';
   return { root: ul as CoreView, sentinel: ul as CoreView, placement: 'fill' };
 }
-
-// ---- dispatch --------------------------------------------------------------
 
 export function build(f: ScenarioFixture): Built {
   switch (f.fixture) {

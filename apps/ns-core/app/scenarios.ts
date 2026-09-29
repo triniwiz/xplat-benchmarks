@@ -27,10 +27,6 @@ import type {
 } from './shared/generate';
 import { fontSizes, palette } from './shared/tokens';
 
-// NativeScript core builders: idiomatic core layouts (StackLayout,
-// GridLayout for equal columns / grids, FlexboxLayout for wrapping), classes
-// from app.css. Structure follows scenarios/spec.md.
-
 const text = (className: string, value: string) => h(Label, { className, text: value, textWrap: true });
 const sentinel = () => h(StackLayout, { className: 'sentinel' });
 
@@ -43,8 +39,6 @@ function wrap(content: View): Built {
   return { root: h(StackLayout, null, [content, s]), sentinel: s, placement: 'scroll' };
 }
 
-// ---- nested-chain ----------------------------------------------------------
-
 function chain(d: ChainData): Built {
   let inner: View = text('chain-label', d.label);
   for (let level = d.depth - 1; level >= 0; level--) {
@@ -53,8 +47,6 @@ function chain(d: ChainData): Built {
   }
   return wrap(inner);
 }
-
-// ---- tree-fanout -----------------------------------------------------------
 
 function treeNode(n: TreeNode): View {
   if (!n.children.length) return h(StackLayout, { className: `leaf bg-${n.color}` });
@@ -96,8 +88,6 @@ function tree(d: TreeData): Built {
   };
 }
 
-// ---- flex-wrap-tiles / insert-remove ---------------------------------------
-
 const tile = (t: Tile) => h(StackLayout, { className: `tile bgl-${t.color}` }, [text('tile-title', t.title), text('tile-sub', t.subtitle)]);
 
 function tiles(d: TilesData): Built {
@@ -115,8 +105,6 @@ function tiles(d: TilesData): Built {
   };
   return built;
 }
-
-// ---- grid-dashboard --------------------------------------------------------
 
 function place<T extends View>(v: T, row: number, col: number, rowSpan = 1, colSpan = 1): T {
   GridLayout.setRow(v, row);
@@ -175,20 +163,15 @@ function dashboard(d: DashboardData): Built {
   return wrap(grid);
 }
 
-// ---- text-flow -------------------------------------------------------------
-
 function textFlow(d: TextFlowData): Built {
   const paras = d.paragraphs.map((p) => {
     const label = text(`para fs-${p.size}${p.bold ? ' bold' : ''}`, p.text);
-    // core letterSpacing is in em.
     if (p.spacing) label.letterSpacing = p.spacing / fontSizes[p.size];
     if (p.clamp) label.maxLines = 2;
     return label;
   });
   return wrap(h(StackLayout, { className: 'text-flow' }, paras));
 }
-
-// ---- styled-cards / scroll-plain -------------------------------------------
 
 function card(c: Card): View {
   const inner = h(StackLayout, { className: 'card-inner' }, [
@@ -211,8 +194,6 @@ function card(c: Card): View {
 function cards(d: CardsData): Built {
   return wrap(h(StackLayout, { className: 'cards' }, d.cards.map(card)));
 }
-
-// ---- list-scroll -----------------------------------------------------------
 
 interface ItemRefs {
   mark: StackLayout;
@@ -275,13 +256,11 @@ function list(d: ListData): Built {
   lv.itemTemplates = (['a', 'b', 'c'] as const).map((key) => ({ key, createView: () => createItem(key) }));
   lv.itemTemplateSelector = (item: ListItem) => item.type;
   lv.on(ListView.itemLoadingEvent, (args: ItemEventData) => bindItem(args.view, d.items[args.index]));
-  lv.separatorColor = 'transparent' as any; // items draw their own borders, as in the reference
+  lv.separatorColor = 'transparent' as any;
   lv.items = d.items;
   lv.className = 'root';
   return { root: lv, sentinel: lv, placement: 'fill' };
 }
-
-// ---- dispatch --------------------------------------------------------------
 
 export function build(f: ScenarioFixture): Built {
   switch (f.fixture) {

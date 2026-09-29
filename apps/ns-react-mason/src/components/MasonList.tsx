@@ -4,7 +4,6 @@ import { useLayoutEffect, useRef } from 'react';
 import type { ListData, ListItem as Item } from '../shared/generate';
 import { controller, createStore, useStore } from '../store';
 
-// Content of one Ul cell; `type` is fixed per template.
 function ListItem({ type, item }: { type: Item['type']; item: Item }) {
   const badges = (
     <view className="badges">
@@ -46,12 +45,6 @@ function Cell({ type, store }: { type: Item['type']; store: ReturnType<typeof cr
   return <ListItem type={type} item={useStore(store)} />;
 }
 
-/**
- * Mason's virtualized ul (masonkit ships no React list component). Each keyed
- * template's createView renders a Cell root into a detached .li-cell view (the
- * bare full-width Mason root every Ul cell gets, as in ns-core-mason);
- * itemLoading rebinds the new or recycled cell through its store.
- */
 export function MasonList({ data }: { data: ListData }) {
   const ref = useRef<any>(null);
   useLayoutEffect(() => {

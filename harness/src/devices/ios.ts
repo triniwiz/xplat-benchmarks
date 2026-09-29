@@ -40,12 +40,10 @@ export async function listIos(): Promise<Target[]> {
       });
     }
   } catch {
-    // devicectl missing or no devices paired
   }
   return targets;
 }
 
-/** First non-internal IPv4 address; physical iOS devices reach the harness over Wi-Fi. */
 export function lanAddress(): string {
   for (const list of Object.values(networkInterfaces())) {
     for (const a of list ?? []) {
@@ -72,9 +70,6 @@ export function iosDriver(target: Target, hostOverride?: string): DeviceDriver {
         return false;
       }
     },
-    // The URL goes in as the XPLATBENCH_URL environment variable, not a URL
-    // open: simctl openurl asks "Open in …?" for custom schemes, and a launch
-    // targets exactly one bundle.
     async launchUrl(bundleId, url) {
       if (sim) {
         await run('xcrun', ['simctl', 'launch', '--terminate-running-process', target.id, bundleId], {
@@ -91,7 +86,6 @@ export function iosDriver(target: Target, hostOverride?: string): DeviceDriver {
     },
     async stop(bundleId) {
       if (sim) await tryRun('xcrun', ['simctl', 'terminate', target.id, bundleId]);
-      // Physical devices: the next launch uses --terminate-existing.
     },
     async install(appPath) {
       if (sim) await run('xcrun', ['simctl', 'install', target.id, appPath], { timeoutMs: 300_000 });

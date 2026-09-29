@@ -5,7 +5,6 @@ const ADB = process.env.ANDROID_HOME ? `${process.env.ANDROID_HOME}/platform-too
 
 const adb = (serial: string, ...args: string[]) => run(ADB, ['-s', serial, ...args]);
 
-/** Quote for the device-side `sh`, since `adb shell` joins args into one command line. */
 const shq = (s: string) => `'${s.replace(/'/g, `'\\''`)}'`;
 
 export async function listAndroid(): Promise<Target[]> {
@@ -48,7 +47,6 @@ export function androidDriver(target: Target): DeviceDriver {
       await adb(serial, 'shell', 'am', 'force-stop', pkg);
     },
     async memory(pkg) {
-      // App Summary of `dumpsys meminfo`: Java Heap, Native Heap, Graphics, TOTAL PSS (KB).
       const res = await tryRun(ADB, ['-s', serial, 'shell', 'dumpsys', 'meminfo', pkg]);
       if (!res) return undefined;
       const summary = res.stdout.slice(res.stdout.indexOf('App Summary'));
@@ -64,10 +62,9 @@ export function androidDriver(target: Target): DeviceDriver {
       return Object.keys(out).length ? out : undefined;
     },
     async forceGc(pkg) {
-      // `am dumpheap -g` runs a full GC before dumping; the dump itself is discarded.
       const file = '/data/local/tmp/xplatbench-gc.hprof';
       await tryRun(ADB, ['-s', serial, 'shell', 'am', 'dumpheap', '-g', pkg, file]);
-      await new Promise((r) => setTimeout(r, 3000)); // Cleaner / finalizer threads run after the GC
+      await new Promise((r) => setTimeout(r, 3000));
       await tryRun(ADB, ['-s', serial, 'shell', 'rm', '-f', file]);
     },
     async install(apk) {

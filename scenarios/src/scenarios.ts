@@ -1,7 +1,3 @@
-// Scenario catalogue. See scenarios/spec.md for the visual spec each app must
-// reproduce. `fixture` names the generator; relayout scenarios reuse the data
-// of a mount scenario and add named mutations that are timed separately.
-
 export type Size = 'S' | 'M' | 'L';
 export const SIZES: readonly Size[] = ['S', 'M', 'L'];
 
@@ -31,7 +27,6 @@ export interface ScenarioDef {
   title: string;
   fixture: FixtureId;
   sizes: Record<Size, Params>;
-  /** Timed mutations applied, in order, after mount. Each yields a sample series. */
   mutations: readonly string[];
 }
 

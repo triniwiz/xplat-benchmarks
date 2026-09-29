@@ -4,7 +4,6 @@ import android.content.Context
 import com.lynx.tasm.provider.AbsTemplateProvider
 import java.io.IOException
 
-/** Loads the ReactLynx bundle from APK assets (apps/lynx/bundle/dist). */
 class AssetTemplateProvider(context: Context) : AbsTemplateProvider() {
     private val context = context.applicationContext
 

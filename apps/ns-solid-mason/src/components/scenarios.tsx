@@ -4,9 +4,6 @@ import type { Card, CardsData, ChainData, DashboardData, TextFlowData, TilesData
 import { palette } from '../shared/tokens';
 import { controller } from '../store';
 
-// Element-for-element the structure of apps/ns-core-mason/app/scenarios.ts,
-// same CSS. Solid components render no host element, so recursion adds no nodes.
-
 function Sentinel() {
   return <view class="sentinel" on:layoutChanged={() => controller.sentinelLayout()} />;
 }
@@ -134,10 +131,8 @@ export function Dashboard(props: { data: DashboardData }) {
   );
 }
 
-/** Mason reads letterSpacing in device pixels. */
 const SPACING = 0.5 * Screen.mainScreen.scale;
 
-// No line clamp in Mason: clamp paragraphs render in full, as in ns-core-mason.
 export function TextFlow(props: { data: TextFlowData }) {
   return (
     <view class="host">
@@ -178,7 +173,6 @@ export function Cards(props: { data: CardsData }) {
       <view class="cards">
         <For each={props.data.cards}>
           {(c) =>
-            // Inline styles only on the variants that use them.
             c.variant === 2 ? (
               <view class="card v2" style={{ backgroundImage: gradient(c) }}>
                 <CardInner card={c} />
