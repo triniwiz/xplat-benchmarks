@@ -122,6 +122,11 @@ export const APPS: readonly AppDef[] = [
     sharedDir: 'apps/react-native/src/shared',
     bundleId: { ios: 'org.xplatbench.rn', android: 'org.xplatbench.rn' },
     androidActivity: '.MainActivity',
+    notes: [
+      'grid-dashboard: flex-emulated (React Native has no CSS grid).',
+      'Text uses allowFontScaling={false} and textBreakStrategy="simple" to lay out like the other apps (dp text, greedy line breaking).',
+      'list-scroll: FlashList v2; the mount mark is the list container layout, as for the other apps\' lists.',
+    ],
   },
   {
     id: 'lynx',
