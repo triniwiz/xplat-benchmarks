@@ -1,0 +1,21 @@
+{
+  "name": "ns-core-mason-perf",
+  "main": "app/app.ts",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@nativescript/core": "https://pkg.pr.new/@nativescript/core@11434",
+    "@triniwiz/nativescript-masonkit": "file:vendor/masonkit-perf-00002383.tgz"
+  },
+  "devDependencies": {
+    "@nativescript/android": "9.1.1",
+    "@nativescript/ios": "9.1.0",
+    "@nativescript/types": "~9.0.0",
+    "@nativescript/webpack": "~5.0.25",
+    "patch-package": "^8.0.1",
+    "typescript": "~6.0.0"
+  },
+  "scripts": {
+    "sync": "cd ../.. && npm run bench -- sync ns-core-mason-perf"
+  }
+}

@@ -56,6 +56,19 @@ export const APPS: readonly AppDef[] = [
     notes: MASON_NOTES,
   },
   {
+    // Dev only: the same app against a local nativescript-mason build (vendor/masonkit-perf.tgz),
+    // to measure Mason changes side by side with the published package.
+    id: 'ns-core-mason-perf',
+    title: 'NativeScript Core + Mason (local build)',
+    dir: 'apps/ns-core-mason-perf',
+    sharedDir: 'apps/ns-core-mason-perf/app/shared',
+    extraShared: [{ from: 'apps/ns-common', to: 'apps/ns-core-mason-perf/app/ns-common' }],
+    paletteCss: true,
+    bundleId: { ios: 'org.xplatbench.nscoremasonperf', android: 'org.xplatbench.nscoremasonperf' },
+    androidActivity: NS_ACTIVITY,
+    notes: MASON_NOTES,
+  },
+  {
     id: 'ns-angular-mason',
     title: 'NativeScript Angular + Mason',
     dir: 'apps/ns-angular-mason',

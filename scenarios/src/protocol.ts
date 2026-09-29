@@ -28,6 +28,8 @@ export const LOG_PREFIX = 'XPLATBENCH';
 export type AppId =
   | 'ns-core'
   | 'ns-core-mason'
+  /** Dev only: ns-core-mason against a local nativescript-mason build (apps/ns-core-mason-perf). */
+  | 'ns-core-mason-perf'
   | 'ns-angular-mason'
   | 'ns-vue-mason'
   | 'ns-react-mason'
