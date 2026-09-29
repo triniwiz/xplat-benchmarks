@@ -15,6 +15,7 @@ export interface RunRecord {
 
 interface PendingRun {
   record: RunRecord;
+  lastSeen: number;
   resolve: () => void;
   finished: Promise<void>;
   onProgress?: (msg: string) => void;
@@ -23,7 +24,11 @@ interface PendingRun {
 export interface BenchServer {
   port: number;
   /** Register a plan and get a promise that settles when the app reports done or on timeout. */
-  addRun(plan: Plan, opts: { timeoutMs: number; onProgress?: (msg: string) => void }): Promise<RunRecord>;
+  /**
+   * Register a plan; settles when the app reports done, after timeoutMs, or
+   * after idleTimeoutMs without any request from the app (a dead or unreachable app).
+   */
+  addRun(plan: Plan, opts: { timeoutMs: number; idleTimeoutMs?: number; onProgress?: (msg: string) => void }): Promise<RunRecord>;
   close(): Promise<void>;
 }
 
@@ -63,6 +68,7 @@ export function startServer(port: number, log: (msg: string) => void = () => {})
     if (req.method === 'GET' && url.pathname === '/plan') {
       const run = lookup(url.searchParams.get('run'));
       if (!run) return send(res, 404, { error: 'unknown run' });
+      run.lastSeen = Date.now();
       run.onProgress?.('plan fetched');
       return send(res, 200, run.record.plan);
     }
@@ -77,6 +83,7 @@ export function startServer(port: number, log: (msg: string) => void = () => {})
     }
     const run = lookup(body?.runId);
     if (!run) return send(res, 404, { error: 'unknown run' });
+    run.lastSeen = Date.now();
 
     switch (url.pathname) {
       case '/hello':
@@ -122,17 +129,25 @@ export function startServer(port: number, log: (msg: string) => void = () => {})
           const finished = new Promise<void>((r) => (resolveRun = r));
           const pending: PendingRun = {
             record: { plan, cases: [] },
+            lastSeen: Date.now(),
             resolve: resolveRun,
             finished,
             onProgress: opts.onProgress,
           };
           runs.set(plan.runId, pending);
-          const timer = setTimeout(() => {
+          const giveUp = (why: string) => {
             pending.record.timedOut = true;
+            opts.onProgress?.(why);
             resolveRun();
-          }, opts.timeoutMs);
+          };
+          const timer = setTimeout(() => giveUp(`timed out after ${opts.timeoutMs} ms`), opts.timeoutMs);
+          const idleMs = opts.idleTimeoutMs ?? 5 * 60_000;
+          const idle = setInterval(() => {
+            if (Date.now() - pending.lastSeen > idleMs) giveUp(`no request from the app for ${idleMs / 1000}s`);
+          }, 5_000);
           return finished.then(() => {
             clearTimeout(timer);
+            clearInterval(idle);
             runs.delete(plan.runId);
             return pending.record;
           });

@@ -92,13 +92,19 @@ async function getJson<T>(url: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-async function postJson(url: string, body: unknown): Promise<void> {
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) throw new Error(`POST ${url} → ${res.status}`);
+/** POST with retries: a result must not be lost to a transient network blip. */
+async function postJson(url: string, body: unknown, attempts = 4): Promise<void> {
+  const payload = JSON.stringify(body);
+  for (let i = 1; ; i++) {
+    try {
+      const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload });
+      if (!res.ok) throw new Error(`POST ${url} → ${res.status}`);
+      return;
+    } catch (e) {
+      if (i >= attempts) throw e;
+      await sleep(500 * 2 ** (i - 1));
+    }
+  }
 }
 
 function emit(adapter: BenchAdapter, kind: string, payload: unknown): void {

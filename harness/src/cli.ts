@@ -129,6 +129,7 @@ async function cmdRun(argv: string[]) {
       rounds: { type: 'string', default: '3' },
       'app-cooldown': { type: 'string', default: '20' },
       'step-timeout': { type: 'string', default: '60' },
+      'idle-timeout': { type: 'string', default: '300' },
       port: { type: 'string', default: String(DEFAULT_PORT) },
       host: { type: 'string' },
       out: { type: 'string' },
@@ -164,6 +165,8 @@ async function cmdRun(argv: string[]) {
 
   const server = await startServer(Number(values.port), log);
   const host = await driver.prepare(server.port);
+  // Keep the device → harness route alive (e.g. adb reverse is lost whenever the adb server restarts).
+  const keepAlive = setInterval(() => driver.prepare(server.port).catch(() => {}), 15_000);
   log(`${target.name} (${target.kind}) → harness at ${host}; ${apps.length} apps × ${cases.length} cases × ${values.rounds} rounds`);
 
   try {
@@ -174,7 +177,11 @@ async function cmdRun(argv: string[]) {
       for (const app of order) {
         const runId = `r${round}-${app.id}-${Date.now().toString(36)}`;
         const full: Plan = { protocol: PROTOCOL_VERSION, runId, app: app.id, ...plan, cases };
-        const finished = server.addRun(full, { timeoutMs: runTimeoutMs, onProgress: (m) => log(`${app.id}: ${m}`) });
+        const finished = server.addRun(full, {
+          timeoutMs: runTimeoutMs,
+          idleTimeoutMs: Number(values['idle-timeout']) * 1000,
+          onProgress: (m) => log(`${app.id}: ${m}`),
+        });
         await driver.launchUrl(app.bundleId[platform], runUrl(host, runId, schemeFor(app, platform)), app.androidActivity);
         const record = await finished;
         await driver.stop(app.bundleId[platform]);
@@ -186,6 +193,7 @@ async function cmdRun(argv: string[]) {
       }
     }
   } finally {
+    clearInterval(keepAlive);
     await server.close();
   }
   log(`report: ${writeReport(outDir)}`);

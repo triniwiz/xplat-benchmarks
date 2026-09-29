@@ -99,3 +99,16 @@ test('stats', () => {
   assert.equal(s.mad, 1);
   assert.ok(Math.abs(s.p90 - 4.6) < 1e-9);
 });
+
+test('a run with no requests from the app is given up after the idle timeout', async () => {
+  const server = await startServer(0);
+  const plan: Plan = {
+    protocol: PROTOCOL_VERSION, runId: 'idle-run', app: 'ns-core', warmup: 0, iterations: 1,
+    cooldownMs: 0, timeoutMs: 1000, cases: [{ scenario: 'text-flow', size: 'S' }],
+  };
+  const t0 = Date.now();
+  const record = await server.addRun(plan, { timeoutMs: 60_000, idleTimeoutMs: 1 });
+  await server.close();
+  assert.equal(record.timedOut, true);
+  assert.ok(Date.now() - t0 < 15_000, 'idle timeout should fire within one check interval');
+});
