@@ -13,6 +13,7 @@ apps/*/app/shared/
 apps/lynx/bundle/src/shared/
 apps/*/app/ns-common/
 apps/*/src/ns-common/
+apps/*/src/ns-dominative/
 
 # raw results are kept locally; commit curated ones explicitly with -f
 results/*

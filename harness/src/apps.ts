@@ -85,7 +85,10 @@ export const APPS: readonly AppDef[] = [
     title: 'NativeScript React + Mason',
     dir: 'apps/ns-react-mason',
     sharedDir: 'apps/ns-react-mason/src/shared',
-    extraShared: [{ from: 'apps/ns-common', to: 'apps/ns-react-mason/src/ns-common' }],
+    extraShared: [
+      { from: 'apps/ns-common', to: 'apps/ns-react-mason/src/ns-common' },
+      { from: 'apps/ns-dominative', to: 'apps/ns-react-mason/src/ns-dominative' },
+    ],
     paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nsreactmason', android: 'org.xplatbench.nsreactmason' },
     androidActivity: NS_ACTIVITY,
@@ -107,7 +110,10 @@ export const APPS: readonly AppDef[] = [
     title: 'NativeScript Solid + Mason',
     dir: 'apps/ns-solid-mason',
     sharedDir: 'apps/ns-solid-mason/src/shared',
-    extraShared: [{ from: 'apps/ns-common', to: 'apps/ns-solid-mason/src/ns-common' }],
+    extraShared: [
+      { from: 'apps/ns-common', to: 'apps/ns-solid-mason/src/ns-common' },
+      { from: 'apps/ns-dominative', to: 'apps/ns-solid-mason/src/ns-dominative' },
+    ],
     paletteCss: true,
     bundleId: { ios: 'org.xplatbench.nssolidmason', android: 'org.xplatbench.nssolidmason' },
     androidActivity: NS_ACTIVITY,
