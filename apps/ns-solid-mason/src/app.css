@@ -1,0 +1,118 @@
+/* Mason translation of scenarios/reference/styles.css. Mason `px` is a CSS px
+   (dip), so values carry over unchanged. Differences from the reference:
+   - View mirrors the reference `div` rule (flex column, min-width 0).
+   - No line clamp (Mason has no -webkit-line-clamp/max-lines): .clamp is omitted.
+   - letter-spacing is set in code (Mason reads it in device px).
+   - Ul cells get a bare full-width Mason root (.li-cell); see scenarios.ts.
+   - Per-side borders use border-style + border-width shorthands: the
+     border-<side>-style longhands did not render in beta.104. */
+@import './shared/palette.css';
+/* Identical to apps/ns-core-mason/app/app.css. */
+
+View { display: flex; flex-direction: column; min-width: 0; }
+
+.root { background-color: #F5F6FA; }
+.frame { width: 100%; height: 100%; }
+.body { flex: 1 1 0; }
+/* The Mason root sizes to max-content inside the core ScrollView unless told otherwise. */
+.host { width: 100%; }
+.status { height: 24px; font-size: 11px; color: #6B7185; padding: 4px 8px; background-color: #FFFFFF; }
+.sentinel { height: 1px; background-color: #F5F6FA; }
+
+.fs-0 { font-size: 12px; line-height: 17px; }
+.fs-1 { font-size: 14px; line-height: 20px; }
+.fs-2 { font-size: 16px; line-height: 22px; }
+.fs-3 { font-size: 20px; line-height: 28px; }
+
+/* home (core widgets) */
+.home { padding: 12; }
+.home-title { font-size: 16; font-weight: bold; color: #1F2330; margin-bottom: 8; }
+.home-row { margin-bottom: 4; }
+.home-label { font-size: 13; color: #1F2330; vertical-align: center; }
+.home-btn { font-size: 12; padding: 4 10; margin-left: 4; border-radius: 4; background-color: #D0EBFF; color: #1F2330; }
+
+/* nested-chain */
+.chain { padding: 1px 0 1px 1px; border-style: solid; border-width: 0 0 0 1px; }
+.chain-label { font-size: 12px; color: #1F2330; padding: 4px; }
+
+/* tree-fanout (+ relayout-resize, relayout-style) */
+.tree-frame { width: 100%; }
+.tn { padding: 1px; border-width: 1px; border-style: solid; }
+.tn.row { flex-direction: row; }
+.tn.col { flex-direction: column; }
+.in-row { flex: 1 1 0; }
+.leaf { height: 12px; }
+.restyled .tn { padding: 3px; border-color: #3B5BDB; }
+
+/* flex-wrap-tiles (+ insert-remove) */
+.tiles { flex-direction: row; flex-wrap: wrap; padding: 4px; }
+.tile { width: 88px; margin: 4px; padding: 8px; border-radius: 8px; }
+.tile-title { font-size: 14px; font-weight: bold; color: #1F2330; }
+.tile-sub { font-size: 12px; color: #6B7185; }
+
+/* grid-dashboard */
+.dash {
+  display: grid;
+  grid-template-columns: 96px 1fr 1fr;
+  grid-template-rows: 56px auto auto;
+  grid-template-areas: "header header header" "nav stats stats" "nav table table";
+}
+.dash-header { grid-area: header; flex-direction: row; align-items: center; padding: 0 12px; background-color: #FFFFFF; border-style: solid; border-width: 0 0 1px 0; border-color: #D0D4E0; }
+.dash-title { flex: 1 1 0; font-size: 16px; font-weight: bold; color: #1F2330; }
+.pill { margin-left: 4px; padding: 4px 8px; border-radius: 999px; background-color: #F5F6FA; font-size: 12px; color: #1F2330; }
+.dash-nav { grid-area: nav; padding: 8px 0; background-color: #FFFFFF; border-style: solid; border-width: 0 1px 0 0; border-color: #D0D4E0; }
+.nav-item { padding: 8px 12px; font-size: 12px; color: #6B7185; }
+.nav-item.active { color: #3B5BDB; font-weight: bold; background-color: #D0EBFF; }
+.dash-stats { grid-area: stats; display: grid; grid-template-columns: 1fr 1fr; padding: 4px; }
+.stat { margin: 4px; padding: 8px; border-radius: 8px; background-color: #FFFFFF; border-width: 1px; border-style: solid; border-color: #D0D4E0; }
+.stat-label { font-size: 12px; color: #6B7185; }
+.stat-value { font-size: 20px; font-weight: bold; color: #1F2330; }
+.stat-delta { font-size: 12px; }
+.stat-delta.up { color: #2F9E44; }
+.stat-delta.down { color: #E03131; }
+.bars { flex-direction: row; align-items: flex-end; height: 40px; margin-top: 4px; }
+.bar { flex: 1 1 0; margin: 0 1px; border-radius: 2px; background-color: #3B5BDB; }
+.dash-table { grid-area: table; padding: 4px 8px; }
+.trow { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; align-items: center; padding: 6px 0; border-style: solid; border-width: 0 0 1px 0; border-color: #D0D4E0; }
+.thead .cell { font-weight: bold; }
+.cell-name { flex-direction: row; align-items: center; }
+.dot { width: 8px; height: 8px; border-radius: 4px; margin-right: 6px; }
+.cell { font-size: 12px; color: #1F2330; }
+
+/* text-flow */
+.text-flow { padding: 12px; }
+.para { margin-bottom: 8px; color: #1F2330; }
+.bold { font-weight: bold; }
+
+/* styled-cards, scroll-plain */
+.cards { padding: 4px; }
+.card { margin: 8px; background-color: #FFFFFF; }
+.card-inner { padding: 12px; }
+.card-title { font-size: 16px; font-weight: bold; color: #1F2330; }
+.card-body { font-size: 14px; line-height: 20px; color: #6B7185; margin-top: 4px; }
+.chips { flex-direction: row; margin-top: 8px; }
+.chip { padding: 2px 8px; margin-right: 4px; border-radius: 999px; font-size: 12px; color: #1F2330; }
+.v0 { border-radius: 12px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+.v1 { border-radius: 16px 0 16px 0; border-width: 2px; border-style: solid; }
+.v2 { border-radius: 8px; }
+.v2 .card-title, .v2 .card-body { color: #FFFFFF; }
+.v3 { border-style: solid; border-width: 4px 1px 1px 1px; border-color: #D0D4E0; }
+.v4 { opacity: 0.85; transform: rotate(-1deg) scale(0.98); border-radius: 8px; border-width: 1px; border-style: solid; border-color: #D0D4E0; }
+.v5 { border-radius: 12px; overflow: hidden; }
+.band { height: 24px; }
+
+/* list-scroll */
+.li-cell { width: 100%; }
+.list { background-color: #F5F6FA; }
+.li-row { flex-direction: row; align-items: center; padding: 12px 16px; background-color: #FFFFFF; border-style: solid; border-width: 0 0 1px 0; border-color: #D0D4E0; }
+.avatar { width: 32px; height: 32px; border-radius: 16px; margin-right: 12px; }
+.thumb { width: 56px; height: 56px; border-radius: 8px; margin-right: 12px; }
+.li-text { flex: 1 1 0; }
+.li-title { font-size: 14px; font-weight: bold; color: #1F2330; }
+.li-sub { font-size: 12px; color: #6B7185; }
+.li-meta { font-size: 12px; color: #6B7185; margin-left: 8px; }
+.badges { flex-direction: row; margin-top: 4px; }
+.badge { padding: 2px 6px; margin-right: 4px; border-radius: 4px; font-size: 10px; color: #1F2330; }
+.li-card { margin: 8px 12px; padding: 12px; border-radius: 12px; background-color: #FFFFFF; border-width: 1px; border-style: solid; border-color: #D0D4E0; }
+.li-card-head { flex-direction: row; align-items: center; }
+.li-body { font-size: 14px; line-height: 20px; color: #1F2330; margin-top: 8px; }
