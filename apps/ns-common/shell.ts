@@ -1,5 +1,6 @@
 import { Application, GridLayout, Label, ScrollView, StackLayout, type View } from '@nativescript/core';
 import { gc, now } from './clock';
+import { profileStart, profileStop } from './profile';
 import { nextFrames, waitPainted } from './frames';
 import { h } from './h';
 import { deviceInfo } from './info';
@@ -114,12 +115,17 @@ export function startShell({ app, title, build, chrome = coreChrome(), diagnosti
     info: deviceInfo,
     gc,
     diagnostics,
+    profileStart,
+    profileStop,
     align: () => nextFrames(1),
     async mount(f) {
       current = build(f);
+      const built = now();
       const painted = waitPainted(current.sentinel);
       chrome.setBody(current.root, current.placement);
-      return painted;
+      const attached = now();
+      // built: JS tree created; attached: handed to the page (CSS, native views); layout: sentinel laid out.
+      return painted.then((t) => ({ ...t, marks: { built, attached, ...t.marks } }));
     },
     async mutate(_f, name) {
       const painted = waitPainted(current!.sentinel);

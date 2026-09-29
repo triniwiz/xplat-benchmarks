@@ -53,7 +53,19 @@ export interface Plan {
   cooldownMs: number;
   /** Max wait for any mount/mutate/unmount before the case is failed, ms. */
   timeoutMs: number;
+  /**
+   * Record a JS CPU profile per case (adapter.profileStart/profileStop) and send it to
+   * POST /artifact. For finding hot spots only: profiling slows the case down.
+   */
+  profile?: boolean;
   cases: PlanCase[];
+}
+
+/** A file an app sends back during a run (e.g. a .cpuprofile). */
+export interface ArtifactMessage {
+  runId: string;
+  name: string;
+  content: string;
 }
 
 export interface RunInfo {

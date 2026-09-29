@@ -1,5 +1,5 @@
 import { createServer, type IncomingMessage, type Server, type ServerResponse } from 'node:http';
-import type { CaseResult, DoneMessage, Plan, RunInfo } from '../../scenarios/src/protocol';
+import type { ArtifactMessage, CaseResult, DoneMessage, Plan, RunInfo } from '../../scenarios/src/protocol';
 
 // Serves plans to apps and collects their results. One server handles many
 // runs; each run is keyed by runId (from the deep link).
@@ -8,6 +8,8 @@ export interface RunRecord {
   plan: Plan;
   info?: RunInfo;
   cases: CaseResult[];
+  /** Files the app sent (POST /artifact), by name. Not part of the results JSON. */
+  artifacts?: Record<string, string>;
   done?: DoneMessage;
   /** Set when waitForDone gave up. */
   timedOut?: boolean;
@@ -97,6 +99,12 @@ export function startServer(port: number, log: (msg: string) => void = () => {})
         run.onProgress?.(
           `case ${n}/${run.record.plan.cases.length} ${c.scenario}/${c.size}${c.error ? ` ERROR ${c.error}` : ''}`,
         );
+        break;
+      }
+      case '/artifact': {
+        const a = body as ArtifactMessage;
+        (run.record.artifacts ??= {})[a.name] = a.content;
+        run.onProgress?.(`artifact ${a.name} (${Math.round(a.content.length / 1024)} KB)`);
         break;
       }
       case '/done':

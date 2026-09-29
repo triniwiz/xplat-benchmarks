@@ -3,6 +3,7 @@ import {
   LOG_PREFIX,
   PROTOCOL_VERSION,
   type AppId,
+  type ArtifactMessage,
   type CaseResult,
   type DoneMessage,
   type Plan,
@@ -50,6 +51,10 @@ export interface BenchAdapter {
   gc?(): void;
   /** Optional counters reported once after the last case (e.g. live native nodes, for leak checks). */
   diagnostics?(): Promise<Record<string, number>> | Record<string, number>;
+  /** Start a JS CPU profile (Plan.profile). */
+  profileStart?(label: string): void;
+  /** Stop it; returns the profile as text (.cpuprofile JSON), if available. */
+  profileStop?(label: string): Promise<string | undefined> | string | undefined;
   log?(message: string): void;
 }
 
@@ -213,7 +218,22 @@ export async function runPlan(
     let result: CaseResult;
     try {
       const fixture = fixtureFor(scenario, size);
-      result = await runCase(adapter, plan, fixture, (i) => update({ iteration: i }));
+      const label = `${scenario}-${size}`;
+      if (plan.profile) adapter.profileStart?.(label);
+      try {
+        result = await runCase(adapter, plan, fixture, (i) => update({ iteration: i }));
+      } finally {
+        if (plan.profile) {
+          try {
+            const content = await adapter.profileStop?.(label);
+            if (content) await postJson(`${base}/artifact`, { runId, name: `${label}.cpuprofile`, content } satisfies ArtifactMessage);
+          } catch (e) {
+            // Release builds drop console output, so report the failure as an artifact.
+            emit(adapter, 'ERROR', { runId, error: `profile ${label}: ${e}` });
+            await postJson(`${base}/artifact`, { runId, name: `${label}.error.txt`, content: String(e) } satisfies ArtifactMessage).catch(() => {});
+          }
+        }
+      }
     } catch (e) {
       ok = false;
       lastError = `${scenario}/${size}: ${e}`;

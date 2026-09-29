@@ -23,7 +23,7 @@ Commands
   run --platform <ios|android>         Run the in-app layout suite and write results/<date>-<device>/
       [--device <id>] [--apps a,b] [--scenarios id,..|mount|relayout|scroll] [--sizes S,M,L]
       [--iterations 20] [--warmup 3] [--cooldown 100] [--rounds 3] [--app-cooldown 20]
-      [--port ${DEFAULT_PORT}] [--host ip:port] [--out dir]
+      [--port ${DEFAULT_PORT}] [--host ip:port] [--out dir] [--gc-memory] [--cpu-profile]
   show --platform <p> --app <id> --scenario <id> [--size M] [--device <id>] [--screenshot out.png]
                                        Open one scenario on screen (visual parity checks)
   report <results-dir>                 Write REPORT.md for a results folder
@@ -133,6 +133,8 @@ async function cmdRun(argv: string[]) {
       'idle-timeout': { type: 'string', default: '1800' },
       // Also record memory after a forced GC (tells uncollected garbage from leaks).
       'gc-memory': { type: 'boolean', default: false },
+      // JS CPU profile per case, written to <out>/profiles/ (slows the cases down; hot spots only).
+      'cpu-profile': { type: 'boolean', default: false },
       port: { type: 'string', default: String(DEFAULT_PORT) },
       host: { type: 'string' },
       out: { type: 'string' },
@@ -148,6 +150,7 @@ async function cmdRun(argv: string[]) {
     iterations: Number(values.iterations),
     cooldownMs: Number(values.cooldown),
     timeoutMs: Number(values['step-timeout']) * 1000,
+    profile: values['cpu-profile'] || undefined,
   };
 
   let apps: AppDef[] = list(values.apps).map(getApp);
@@ -197,7 +200,14 @@ async function cmdRun(argv: string[]) {
         }
         await driver.stop(app.bundleId[platform]);
         if (record.timedOut) log(`${app.id}: TIMED OUT after ${record.cases.length} cases`);
-        const file: ResultFile = { round, target, device: { ...device, ...(await driver.describe()) }, record, memory, memoryAfterGc };
+        const { artifacts, ...kept } = record;
+        if (artifacts) {
+          const dir = join(outDir, 'profiles');
+          mkdirSync(dir, { recursive: true });
+          for (const [name, content] of Object.entries(artifacts)) writeFileSync(join(dir, `r${round}-${app.id}-${name}`), content);
+          log(`${app.id}: wrote ${Object.keys(artifacts).length} artifact(s) to ${dir}`);
+        }
+        const file: ResultFile = { round, target, device: { ...device, ...(await driver.describe()) }, record: kept, memory, memoryAfterGc };
         writeFileSync(join(outDir, `r${round}-${app.id}.json`), JSON.stringify(file, null, 1));
         log(`${app.id}: wrote r${round}-${app.id}.json; cooling down ${values['app-cooldown']}s`);
         await sleep(Number(values['app-cooldown']) * 1000);
