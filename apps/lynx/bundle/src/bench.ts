@@ -115,7 +115,11 @@ export function show(scenario: ScenarioId, size: Size) {
 /** Handle the launch URL the host passed in globalProps (the harness always cold-starts). */
 export function startFromLaunchUrl() {
   const cmd = parseLaunchUrl(globalProps().launchUrl);
-  if (!cmd) return;
+  if (!cmd) {
+    // Nothing to run: show what the host passed in, for debugging the launch path.
+    status.set(`${APP} · ready · launchUrl=${JSON.stringify(globalProps().launchUrl ?? null)}`);
+    return;
+  }
   if (cmd.mode === 'show') return show(cmd.scenario, cmd.size);
   runPlan(adapter, cmd.host, cmd.runId, (s) => {
     // Only on case boundaries: a status re-render must not land inside a measured iteration.

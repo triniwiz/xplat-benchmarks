@@ -1,0 +1,6 @@
+Pods/
+build/
+xcuserdata/
+*.xcworkspace/xcuserdata/
+# copied from ../../bundle/dist at build time
+main.lynx.bundle

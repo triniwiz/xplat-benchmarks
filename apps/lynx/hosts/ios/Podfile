@@ -1,0 +1,27 @@
+PRIVATE_SPECS = 'https://github.com/lynx-family/Specs.git'
+TRUNK_SPECS = 'https://cdn.cocoapods.org/'
+
+source PRIVATE_SPECS
+source TRUNK_SPECS
+
+platform :ios, '15.0'
+
+# Minimal Lynx host (see apps/lynx/hosts/android): Lynx + PrimJS, Log and
+# Http services (Http backs fetch()). No image service or XElement.
+target 'Hello-Lynx' do
+  pod 'Lynx', '4.1.0', :source => PRIVATE_SPECS, :subspecs => ['Framework']
+  pod 'PrimJS', '4.1.1', :subspecs => ['quickjs', 'napi']
+  pod 'LynxService', '4.1.0', :source => PRIVATE_SPECS, :subspecs => ['Log', 'Http']
+end
+
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      # Xcode 26 promotes some Lynx pod warnings to errors.
+      config.build_settings['GCC_TREAT_WARNINGS_AS_ERRORS'] = 'NO'
+      # Lynx 4.1.0 sources use deprecated UIKit APIs (keyWindow) and build with -Werror.
+      config.build_settings['OTHER_CFLAGS'] = '$(inherited) -Wno-deprecated-declarations -Wno-deprecated-implementations -Wno-error'
+    end
+  end
+end
