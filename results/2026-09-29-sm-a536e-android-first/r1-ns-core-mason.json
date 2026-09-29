@@ -1,0 +1,786 @@
+{
+ "round": 1,
+ "target": {
+  "platform": "android",
+  "id": "R5CT220B37X",
+  "name": "SM A536E",
+  "kind": "device"
+ },
+ "device": {
+  "manufacturer": "samsung",
+  "model": "SM-A536E",
+  "osVersion": "16",
+  "sdk": "36",
+  "abi": "arm64-v8a",
+  "thermalStatus": "0"
+ },
+ "record": {
+  "plan": {
+   "protocol": 1,
+   "runId": "r1-ns-core-mason-mumc0kpz",
+   "app": "ns-core-mason",
+   "warmup": 2,
+   "iterations": 10,
+   "cooldownMs": 100,
+   "timeoutMs": 90000,
+   "cases": [
+    {
+     "scenario": "nested-chain",
+     "size": "S"
+    },
+    {
+     "scenario": "nested-chain",
+     "size": "M"
+    },
+    {
+     "scenario": "nested-chain",
+     "size": "L"
+    },
+    {
+     "scenario": "tree-fanout",
+     "size": "S"
+    },
+    {
+     "scenario": "tree-fanout",
+     "size": "M"
+    },
+    {
+     "scenario": "tree-fanout",
+     "size": "L"
+    },
+    {
+     "scenario": "flex-wrap-tiles",
+     "size": "S"
+    },
+    {
+     "scenario": "flex-wrap-tiles",
+     "size": "M"
+    },
+    {
+     "scenario": "flex-wrap-tiles",
+     "size": "L"
+    },
+    {
+     "scenario": "grid-dashboard",
+     "size": "S"
+    },
+    {
+     "scenario": "grid-dashboard",
+     "size": "M"
+    },
+    {
+     "scenario": "grid-dashboard",
+     "size": "L"
+    },
+    {
+     "scenario": "text-flow",
+     "size": "S"
+    },
+    {
+     "scenario": "text-flow",
+     "size": "M"
+    },
+    {
+     "scenario": "text-flow",
+     "size": "L"
+    },
+    {
+     "scenario": "styled-cards",
+     "size": "S"
+    },
+    {
+     "scenario": "styled-cards",
+     "size": "M"
+    },
+    {
+     "scenario": "styled-cards",
+     "size": "L"
+    },
+    {
+     "scenario": "relayout-resize",
+     "size": "S"
+    },
+    {
+     "scenario": "relayout-resize",
+     "size": "M"
+    },
+    {
+     "scenario": "relayout-resize",
+     "size": "L"
+    },
+    {
+     "scenario": "relayout-style",
+     "size": "S"
+    },
+    {
+     "scenario": "relayout-style",
+     "size": "M"
+    },
+    {
+     "scenario": "relayout-style",
+     "size": "L"
+    },
+    {
+     "scenario": "insert-remove",
+     "size": "S"
+    },
+    {
+     "scenario": "insert-remove",
+     "size": "M"
+    },
+    {
+     "scenario": "insert-remove",
+     "size": "L"
+    }
+   ]
+  },
+  "cases": [
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "nested-chain",
+    "size": "S",
+    "fixtureHash": "23a2666d",
+    "samples": {
+     "mount": [
+      56.7406539991498,
+      48.44627000391483,
+      49.1603080034256,
+      52.04388400167227,
+      49.82192300260067,
+      48.28184600174427,
+      50.352615006268024,
+      43.51850000023842,
+      43.3773849979043,
+      43.63715400546789
+     ],
+     "unmount": [
+      1.0781920030713081,
+      0.9091159999370575,
+      0.9607309997081757,
+      1.084077000617981,
+      0.9495000019669533,
+      0.9975389987230301,
+      1.0288470014929771,
+      0.9088839963078499,
+      0.9681920036673546,
+      1.0480379983782768
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      51.73461499810219,
+      43.5436160042882,
+      44.333269000053406,
+      46.86984600126743,
+      45.25750000029802,
+      43.618577003479004,
+      45.527730002999306,
+      39.01946199685335,
+      38.9313850030303,
+      38.950692005455494
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "nested-chain",
+    "size": "M",
+    "fixtureHash": "ef595819",
+    "samples": {
+     "mount": [
+      73.49750000238419,
+      72.58607699722052,
+      80.68538500368595,
+      74.54811500012875,
+      73.34811499714851,
+      88.37161500006914,
+      79.6744230017066,
+      76.24288500100374,
+      71.1080769971013,
+      70.89573099464178
+     ],
+     "unmount": [
+      1.2064229995012283,
+      0.9194609969854355,
+      1.106614999473095,
+      0.939191997051239,
+      1.2191540002822876,
+      1.295423001050949,
+      1.1335769966244698,
+      1.195923000574112,
+      1.1155769973993301,
+      1.1473460048437119
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      66.92176999896765,
+      66.29680799692869,
+      74.38211600482464,
+      68.44380699843168,
+      67.14153800159693,
+      82.49592300504446,
+      73.66665399819613,
+      69.97323099523783,
+      65.03223099559546,
+      64.7881919965148
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "nested-chain",
+    "size": "L",
+    "fixtureHash": "27a1fe6d",
+    "samples": {
+     "mount": [
+      115.60776899755001,
+      119.41053900122643,
+      119.90438399463892,
+      130.99642299860716,
+      120.07322999835014,
+      123.08753800392151,
+      126.3768850043416,
+      118.46473100036383,
+      119.84815300256014,
+      118.90919200330973
+     ],
+     "unmount": [
+      1.3688069954514503,
+      1.1948839947581291,
+      1.1186150014400482,
+      1.2517689988017082,
+      1.1913459971547127,
+      1.2582310065627098,
+      1.1450380012392998,
+      1.1007689982652664,
+      1.0931539982557297,
+      1.1163079962134361
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      107.54580699652433,
+      111.58250000327826,
+      112.10711500048637,
+      121.11853799968958,
+      110.06942199915648,
+      113.69903799891472,
+      118.39734600484371,
+      108.97699999809265,
+      110.44726900011301,
+      108.99919199943542
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "tree-fanout",
+    "size": "S",
+    "fixtureHash": "633cc86c",
+    "samples": {
+     "mount": [
+      212.15984600037336,
+      224.72646100074053,
+      214.96723100543022,
+      216.55476900190115,
+      225.331615999341,
+      218.19353799521923,
+      226.19542299956083,
+      209.4333459958434,
+      229.40153799951077,
+      205.98615399748087
+     ],
+     "unmount": [
+      1.7950000017881393,
+      1.8766149953007698,
+      1.8548850044608116,
+      1.7409610003232956,
+      1.7945390045642853,
+      1.8787299990653992,
+      1.7433840036392212,
+      1.867077000439167,
+      2.2581919953227043,
+      1.7555379942059517
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      195.9634610041976,
+      209.03919199854136,
+      198.1248840019107,
+      199.47100000083447,
+      211.45523100346327,
+      201.20103799551725,
+      212.95769199728966,
+      195.08634600043297,
+      206.5853459984064,
+      192.8389609977603
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "tree-fanout",
+    "size": "M",
+    "fixtureHash": "9b5e5f28",
+    "samples": {
+     "mount": [
+      649.1283459961414,
+      627.2920389994979,
+      644.2271530032158,
+      645.7871920019388,
+      613.9169609993696,
+      649.7431529983878,
+      658.8359989970922,
+      593.4942310005426,
+      612.9747299998999,
+      582.3449229970574
+     ],
+     "unmount": [
+      3.783229999244213,
+      3.7943079993128777,
+      3.2429229989647865,
+      3.7404230013489723,
+      3.745883993804455,
+      3.4653460010886192,
+      3.372037999331951,
+      3.9651539996266365,
+      3.5128840059041977,
+      2.949423000216484
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      600.0218459963799,
+      588.5868459939957,
+      599.7173460051417,
+      608.5581530034542,
+      568.1892689988017,
+      616.0134999975562,
+      618.1279609948397,
+      559.9370770007372,
+      580.6035379990935,
+      541.5914229974151
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "tree-fanout",
+    "size": "L",
+    "fixtureHash": "43ff134a",
+    "samples": {
+     "mount": [
+      1754.6244210004807,
+      1827.3798070028424,
+      1725.869113996625,
+      1752.5432289987803,
+      1720.8586909994483,
+      1770.5238059982657,
+      1726.81203699857,
+      1744.4489610046148,
+      1745.0263450071216,
+      1994.1764599978924
+     ],
+     "unmount": [
+      33.95084600150585,
+      7.843538999557495,
+      13.076577000319958,
+      9.036231003701687,
+      28.58934599906206,
+      8.868768997490406,
+      17.19115400314331,
+      9.62134600430727,
+      14.5633460059762,
+      11.161114998161793
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      1635.1068060025573,
+      1704.6705380007625,
+      1606.6164599955082,
+      1627.1477679982781,
+      1631.8696909993887,
+      1650.2878450006247,
+      1610.8450760021806,
+      1633.727692000568,
+      1625.4781910032034,
+      1862.0158059969544
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "flex-wrap-tiles",
+    "size": "S",
+    "fixtureHash": "2f65bf41",
+    "samples": {
+     "mount": [
+      709.1162299960852,
+      740.3715380057693,
+      684.0196529999375,
+      720.870846003294,
+      672.8451529964805,
+      786.2899229973555,
+      658.6170000061393,
+      651.0820770040154,
+      664.5369609966874,
+      641.637075997889
+     ],
+     "unmount": [
+      2.7203079983592033,
+      3.1467309966683388,
+      2.6697309985756874,
+      2.7050390020012856,
+      2.6769619956612587,
+      2.646961994469166,
+      2.903846003115177,
+      2.8487309962511063,
+      19.971691995859146,
+      2.6628080010414124
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      666.1688069999218,
+      706.3758450001478,
+      646.4469230026007,
+      687.884769000113,
+      632.2615000009537,
+      745.6533079966903,
+      618.4868840053678,
+      618.2143070027232,
+      622.1633839979768,
+      603.5189609974623
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "flex-wrap-tiles",
+    "size": "M",
+    "fixtureHash": "5ce6932e",
+    "samples": {
+     "mount": [
+      2891.3583439961076,
+      2788.03519000113,
+      2947.5016909986734,
+      3132.8323829993606,
+      3126.977383002639,
+      3309.0862279981375,
+      3259.7598819956183,
+      4366.083727002144,
+      2978.085652001202,
+      5926.285535000265
+     ],
+     "unmount": [
+      17.590922996401787,
+      13.107693001627922,
+      31.454423002898693,
+      17.988154001533985,
+      13.839884996414185,
+      25.791884005069733,
+      14.757845997810364,
+      18.854769006371498,
+      18.26919300109148,
+      23.383423000574112
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      2740.374997995794,
+      2635.6713830009103,
+      2710.723844997585,
+      2965.1429600045085,
+      2958.6953440010548,
+      3078.5237669944763,
+      3092.706997998059,
+      4213.17853499949,
+      2801.1124589964747,
+      5917.33149600029
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "flex-wrap-tiles",
+    "size": "L",
+    "fixtureHash": "9ff6202a",
+    "samples": {
+     "mount": [
+      13465.203489996493,
+      11046.987030997872,
+      10708.684453994036,
+      10533.554992005229,
+      10608.870570003986,
+      10602.320223003626,
+      10417.550647005439,
+      10601.760338999331,
+      10810.857414998114,
+      12184.071336999536
+     ],
+     "unmount": [
+      25.95184699445963,
+      30.958769001066685,
+      33.619768999516964,
+      26.189999997615814,
+      31.55138500034809,
+      32.22315400093794,
+      32.50211499631405,
+      36.39257699996233,
+      52.39553900063038,
+      61.18526900559664
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      12844.76583699882,
+      10357.965493001044,
+      10159.93987699598,
+      9969.191224001348,
+      10053.903878003359,
+      10040.93968500197,
+      9864.260032005608,
+      10027.011416003108,
+      10230.585876993835,
+      11594.485953003168
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "grid-dashboard",
+    "size": "S",
+    "fixtureHash": "7e8c6cab",
+    "samples": {
+     "mount": [
+      450.29473100602627,
+      344.8854610025883,
+      309.7932690009475,
+      308.8638840019703,
+      333.27850000560284,
+      305.7611149996519,
+      347.27184599637985,
+      394.2889229953289,
+      593.3115769997239,
+      327.8644229993224
+     ],
+     "unmount": [
+      2.535461001098156,
+      9.020231001079082,
+      2.0557300001382828,
+      1.9696160033345222,
+      2.263037994503975,
+      2.200845994055271,
+      2.2166149988770485,
+      2.1394609957933426,
+      2.70465400069952,
+      1.9939230009913445
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      435.2449230030179,
+      324.1114220023155,
+      291.5205760002136,
+      290.58157700300217,
+      312.1828460022807,
+      289.86734599620104,
+      329.0793079957366,
+      393.9326149970293,
+      592.8638460040092,
+      327.5196160003543
+     ]
+    }
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "grid-dashboard",
+    "size": "M",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: grid-dashboard/M mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "grid-dashboard",
+    "size": "L",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: grid-dashboard/L mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "text-flow",
+    "size": "S",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: text-flow/S mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "text-flow",
+    "size": "M",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: text-flow/M mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "text-flow",
+    "size": "L",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: text-flow/L mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "styled-cards",
+    "size": "S",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: styled-cards/S mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "styled-cards",
+    "size": "M",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: styled-cards/M mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "styled-cards",
+    "size": "L",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: styled-cards/L mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "relayout-resize",
+    "size": "S",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: relayout-resize/S mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "relayout-resize",
+    "size": "M",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: relayout-resize/M mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "relayout-resize",
+    "size": "L",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: relayout-resize/L mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "relayout-style",
+    "size": "S",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: relayout-style/S mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "relayout-style",
+    "size": "M",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: relayout-style/M mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "relayout-style",
+    "size": "L",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: relayout-style/L mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "insert-remove",
+    "size": "S",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: insert-remove/S mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "insert-remove",
+    "size": "M",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: insert-remove/M mount"
+   },
+   {
+    "runId": "r1-ns-core-mason-mumc0kpz",
+    "app": "ns-core-mason",
+    "scenario": "insert-remove",
+    "size": "L",
+    "fixtureHash": "",
+    "samples": {},
+    "error": "Error: timeout after 90000ms: insert-remove/L mount"
+   }
+  ],
+  "info": {
+   "platform": "android",
+   "osVersion": "16",
+   "deviceModel": "samsung SM-A536E",
+   "framework": {
+    "@nativescript/core": "9.1.3-next.2",
+    "@nativescript/ios": "9.1.0",
+    "@nativescript/android": "9.1.1",
+    "@nativescript/webpack": "5.0.38",
+    "@triniwiz/nativescript-masonkit": "1.0.0-beta.104"
+   },
+   "screenWidth": 384,
+   "runId": "r1-ns-core-mason-mumc0kpz",
+   "app": "ns-core-mason",
+   "startedAt": 1790665519601
+  },
+  "done": {
+   "runId": "r1-ns-core-mason-mumc0kpz",
+   "app": "ns-core-mason",
+   "ok": false,
+   "error": "insert-remove/L: Error: timeout after 90000ms: insert-remove/L mount",
+   "durationMs": 1895728.3494900018
+  }
+ }
+}
