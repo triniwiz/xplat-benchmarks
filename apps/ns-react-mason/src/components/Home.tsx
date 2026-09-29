@@ -3,16 +3,16 @@ import { controller } from '../store';
 
 export function Home() {
   return (
-    <stacklayout className="home">
-      <label className="home-title" text="xplat-benchmarks · NativeScript React + Mason" />
+    <view className="home">
+      <text className="home-title" textContent="xplat-benchmarks · NativeScript React + Mason" />
       {SCENARIOS.map((s) => (
-        <gridlayout key={s.id} className="home-row" columns="*,auto,auto,auto">
-          <label className="home-label" text={s.title} />
-          {SIZES.map((size, i) => (
-            <label key={size} className="home-btn" col={i + 1} text={size} onTap={() => controller.show(s.id, size)} />
+        <view key={s.id} className="home-row">
+          <text className="home-label" textContent={s.title} />
+          {SIZES.map((size) => (
+            <text key={size} className="home-btn" textContent={size} onTap={() => controller.show(s.id, size)} />
           ))}
-        </gridlayout>
+        </view>
       ))}
-    </stacklayout>
+    </view>
   );
 }

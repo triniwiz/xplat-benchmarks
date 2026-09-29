@@ -1,14 +1,14 @@
-<stackLayout class="home">
-  <label class="home-title" text="xplat-benchmarks · NativeScript Svelte + Mason" />
+<view class="home">
+  <text class="home-title" textContent="xplat-benchmarks · NativeScript Svelte + Mason" />
   {#each SCENARIOS as s (s.id)}
-    <gridLayout class="home-row" columns="*,auto,auto,auto">
-      <label class="home-label" text={s.title} />
-      {#each SIZES as size, i (size)}
-        <label class="home-btn" col={i + 1} text={size} on:tap={() => controller.show(s.id, size)} />
+    <view class="home-row">
+      <text class="home-label" textContent={s.title} />
+      {#each SIZES as size (size)}
+        <text class="home-btn" textContent={size} on:tap={() => controller.show(s.id, size)} />
       {/each}
-    </gridLayout>
+    </view>
   {/each}
-</stackLayout>
+</view>
 
 <script lang="ts">
   import { SCENARIOS, SIZES } from '../shared/scenarios';

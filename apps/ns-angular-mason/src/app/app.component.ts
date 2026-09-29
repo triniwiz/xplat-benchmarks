@@ -85,17 +85,17 @@ import { CardsComponent, ChainComponent, DashboardComponent, TextFlowComponent, 
               @case ('scroll-plain') { <bench-cards class="host" [data]="$any(f.data)" /> }
             }
           } @else if (home()) {
-            <StackLayout class="home">
-              <Label class="home-title" text="xplat-benchmarks · NativeScript Angular + Mason"></Label>
+            <View class="home">
+              <Text class="home-title" textContent="xplat-benchmarks · NativeScript Angular + Mason"></Text>
               @for (s of scenarios; track s.id) {
-                <GridLayout class="home-row" columns="*,auto,auto,auto">
-                  <Label class="home-label" [text]="s.title"></Label>
-                  @for (size of sizes; track size; let i = $index) {
-                    <Label class="home-btn" [col]="i + 1" [text]="size" (tap)="bench.show(s.id, size)"></Label>
+                <View class="home-row">
+                  <Text class="home-label" [textContent]="s.title"></Text>
+                  @for (size of sizes; track size) {
+                    <Text class="home-btn" [textContent]="size" (tap)="bench.show(s.id, size)"></Text>
                   }
-                </GridLayout>
+                </View>
               }
-            </StackLayout>
+            </View>
           }
         </Scroll>
       }

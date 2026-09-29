@@ -1,11 +1,11 @@
 <template>
-  <StackLayout class="home">
-    <Label class="home-title" text="xplat-benchmarks · NativeScript Vue + Mason" />
-    <GridLayout v-for="s in SCENARIOS" :key="s.id" class="home-row" columns="*,auto,auto,auto">
-      <Label class="home-label" :text="s.title" />
-      <Label v-for="(size, i) in SIZES" :key="size" class="home-btn" :col="i + 1" :text="size" @tap="controller.show(s.id, size)" />
-    </GridLayout>
-  </StackLayout>
+  <View class="home">
+    <Text class="home-title" textContent="xplat-benchmarks · NativeScript Vue + Mason" />
+    <View v-for="s in SCENARIOS" :key="s.id" class="home-row">
+      <Text class="home-label" :textContent="s.title" />
+      <Text v-for="size in SIZES" :key="size" class="home-btn" :textContent="size" @tap="controller.show(s.id, size)" />
+    </View>
+  </View>
 </template>
 
 <script setup lang="ts">

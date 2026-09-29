@@ -1,4 +1,4 @@
-import { Application, Button, GridLayout, Label, ScrollView, StackLayout, type View } from '@nativescript/core';
+import { Application, GridLayout, Label, ScrollView, StackLayout, type View } from '@nativescript/core';
 import { gc, now } from './clock';
 import { nextFrames, waitPainted } from './frames';
 import { h } from './h';
@@ -35,6 +35,11 @@ export interface Chrome {
   setBody(view: View, placement: Built['placement']): void;
   /** Empty host between iterations. */
   clear(): void;
+  /**
+   * Home screen: one row per scenario with S/M/L buttons. Built from the same
+   * views as the rest of the app (it is what the cold-start metric times).
+   */
+  home(title: string, pick: (scenario: ScenarioId, size: Size) => void): View;
 }
 
 export interface ShellOptions {
@@ -76,6 +81,23 @@ export function coreChrome(): Chrome {
       if (body !== scroll) replaceBody(scroll);
       scroll.content = new StackLayout();
     },
+    home: (title, pick) =>
+      h(StackLayout, { className: 'home' }, [
+        h(Label, { className: 'home-title', text: `xplat-benchmarks · ${title}` }),
+        ...SCENARIOS.map((s) => {
+          const row = h(GridLayout, { className: 'home-row', columns: '*,auto,auto,auto' }, [
+            h(Label, { className: 'home-label', text: s.title }),
+          ]);
+          SIZES.forEach((size, i) => {
+            // Label, not Button: matches the Mason apps' Text buttons (Material buttons are much heavier).
+            const b = h(Label, { className: 'home-btn', text: size });
+            b.on('tap', () => pick(s.id, size));
+            GridLayout.setColumn(b, i + 1);
+            row.addChild(b);
+          });
+          return row;
+        }),
+      ]),
   };
 }
 
@@ -116,23 +138,6 @@ export function startShell({ app, title, build, chrome = coreChrome() }: ShellOp
     });
   };
 
-  const home = () =>
-    h(StackLayout, { className: 'home' }, [
-      h(Label, { className: 'home-title', text: `xplat-benchmarks · ${title}` }),
-      ...SCENARIOS.map((s) => {
-        const row = h(GridLayout, { className: 'home-row', columns: '*,auto,auto,auto' }, [
-          h(Label, { className: 'home-label', text: s.title }),
-        ]);
-        SIZES.forEach((size, i) => {
-          const b = h(Button, { className: 'home-btn', text: size });
-          b.on('tap', () => show(s.id, size));
-          GridLayout.setColumn(b, i + 1);
-          row.addChild(b);
-        });
-        return row;
-      }),
-    ]);
-
   onLaunchUrl((url) => {
     const cmd = parseLaunchUrl(url);
     if (!cmd) return;
@@ -143,6 +148,6 @@ export function startShell({ app, title, build, chrome = coreChrome() }: ShellOp
     });
   });
 
-  chrome.setBody(home(), 'scroll');
+  chrome.setBody(chrome.home(title, show), 'scroll');
   Application.run({ create: () => chrome.root });
 }

@@ -4,18 +4,16 @@ import { controller } from '../store';
 
 export function Home() {
   return (
-    <stacklayout class="home">
-      <label class="home-title" text="xplat-benchmarks · NativeScript Solid + Mason" />
+    <view class="home">
+      <text class="home-title" textContent="xplat-benchmarks · NativeScript Solid + Mason" />
       <For each={SCENARIOS}>
         {(s) => (
-          <gridlayout class="home-row" columns="*,auto,auto,auto">
-            <label class="home-label" text={s.title} />
-            <For each={SIZES}>
-              {(size, i) => <label class="home-btn" col={i() + 1} text={size} on:tap={() => controller.show(s.id, size)} />}
-            </For>
-          </gridlayout>
+          <view class="home-row">
+            <text class="home-label" textContent={s.title} />
+            <For each={SIZES}>{(size) => <text class="home-btn" textContent={size} on:tap={() => controller.show(s.id, size)} />}</For>
+          </view>
         )}
       </For>
-    </stacklayout>
+    </view>
   );
 }
