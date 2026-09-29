@@ -129,7 +129,8 @@ async function cmdRun(argv: string[]) {
       rounds: { type: 'string', default: '3' },
       'app-cooldown': { type: 'string', default: '20' },
       'step-timeout': { type: 'string', default: '60' },
-      'idle-timeout': { type: 'string', default: '300' },
+      // Apps report once per case; a heavy L case (13 iterations of thousands of views) can run for minutes.
+      'idle-timeout': { type: 'string', default: '1800' },
       port: { type: 'string', default: String(DEFAULT_PORT) },
       host: { type: 'string' },
       out: { type: 'string' },

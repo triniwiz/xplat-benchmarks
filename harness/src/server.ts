@@ -141,7 +141,7 @@ export function startServer(port: number, log: (msg: string) => void = () => {})
             resolveRun();
           };
           const timer = setTimeout(() => giveUp(`timed out after ${opts.timeoutMs} ms`), opts.timeoutMs);
-          const idleMs = opts.idleTimeoutMs ?? 5 * 60_000;
+          const idleMs = opts.idleTimeoutMs ?? 30 * 60_000;
           const idle = setInterval(() => {
             if (Date.now() - pending.lastSeen > idleMs) giveUp(`no request from the app for ${idleMs / 1000}s`);
           }, 5_000);
