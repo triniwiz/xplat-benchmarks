@@ -63,6 +63,13 @@ export function androidDriver(target: Target): DeviceDriver {
       }
       return Object.keys(out).length ? out : undefined;
     },
+    async forceGc(pkg) {
+      // `am dumpheap -g` runs a full GC before dumping; the dump itself is discarded.
+      const file = '/data/local/tmp/xplatbench-gc.hprof';
+      await tryRun(ADB, ['-s', serial, 'shell', 'am', 'dumpheap', '-g', pkg, file]);
+      await new Promise((r) => setTimeout(r, 3000)); // Cleaner / finalizer threads run after the GC
+      await tryRun(ADB, ['-s', serial, 'shell', 'rm', '-f', file]);
+    },
     async install(apk) {
       await run(ADB, ['-s', serial, 'install', '-r', apk], { timeoutMs: 300_000 });
     },

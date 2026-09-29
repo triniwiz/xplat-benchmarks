@@ -91,6 +91,8 @@ export interface DoneMessage {
   ok: boolean;
   error?: string;
   durationMs: number;
+  /** App-reported counters after the last case (BenchAdapter.diagnostics). */
+  diagnostics?: Record<string, number>;
 }
 
 export type LaunchCommand =

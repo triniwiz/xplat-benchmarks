@@ -16,6 +16,8 @@ export interface ResultFile {
   record: RunRecord;
   /** App memory (KB) right after the run, before the app is stopped. */
   memory?: Record<string, number>;
+  /** Same, after a forced managed-heap GC (`--gc-memory`). */
+  memoryAfterGc?: Record<string, number>;
 }
 
 export function loadResults(dir: string): ResultFile[] {

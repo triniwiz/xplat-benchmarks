@@ -131,6 +131,8 @@ async function cmdRun(argv: string[]) {
       'step-timeout': { type: 'string', default: '60' },
       // Apps report once per case; a heavy L case (13 iterations of thousands of views) can run for minutes.
       'idle-timeout': { type: 'string', default: '1800' },
+      // Also record memory after a forced GC (tells uncollected garbage from leaks).
+      'gc-memory': { type: 'boolean', default: false },
       port: { type: 'string', default: String(DEFAULT_PORT) },
       host: { type: 'string' },
       out: { type: 'string' },
@@ -187,9 +189,15 @@ async function cmdRun(argv: string[]) {
         const record = await finished;
         const memory = await driver.memory?.(app.bundleId[platform]);
         if (memory) log(`${app.id}: memory after run ${JSON.stringify(memory)}`);
+        let memoryAfterGc: Record<string, number> | undefined;
+        if (values['gc-memory'] && driver.forceGc) {
+          await driver.forceGc(app.bundleId[platform]);
+          memoryAfterGc = await driver.memory?.(app.bundleId[platform]);
+          if (memoryAfterGc) log(`${app.id}: memory after forced GC ${JSON.stringify(memoryAfterGc)}`);
+        }
         await driver.stop(app.bundleId[platform]);
         if (record.timedOut) log(`${app.id}: TIMED OUT after ${record.cases.length} cases`);
-        const file: ResultFile = { round, target, device: { ...device, ...(await driver.describe()) }, record, memory };
+        const file: ResultFile = { round, target, device: { ...device, ...(await driver.describe()) }, record, memory, memoryAfterGc };
         writeFileSync(join(outDir, `r${round}-${app.id}.json`), JSON.stringify(file, null, 1));
         log(`${app.id}: wrote r${round}-${app.id}.json; cooling down ${values['app-cooldown']}s`);
         await sleep(Number(values['app-cooldown']) * 1000);

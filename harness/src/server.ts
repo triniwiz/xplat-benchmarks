@@ -101,7 +101,7 @@ export function startServer(port: number, log: (msg: string) => void = () => {})
       }
       case '/done':
         run.record.done = body as DoneMessage;
-        run.onProgress?.(`done (${body.ok ? 'ok' : `failed: ${body.error}`})`);
+        run.onProgress?.(`done (${body.ok ? 'ok' : `failed: ${body.error}`})${body.diagnostics ? ` diagnostics ${JSON.stringify(body.diagnostics)}` : ''}`);
         run.resolve();
         break;
       default:

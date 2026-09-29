@@ -20,6 +20,8 @@ export interface DeviceDriver {
   install(artifactPath: string): Promise<void>;
   /** Memory of the running app (KB), when the platform can report it. */
   memory?(bundleId: string): Promise<Record<string, number> | undefined>;
+  /** Force a full managed-heap GC in the running app (then give finalizers/cleaners a moment). */
+  forceGc?(bundleId: string): Promise<void>;
   /** Save a PNG of the current screen. */
   screenshot(outPath: string): Promise<void>;
   /** Free-form device facts recorded with every result file. */

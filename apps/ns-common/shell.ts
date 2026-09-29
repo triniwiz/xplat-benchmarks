@@ -47,6 +47,8 @@ export interface ShellOptions {
   title: string;
   build(fixture: ScenarioFixture): Built;
   chrome?: Chrome;
+  /** Reported once after a run (see BenchAdapter.diagnostics). */
+  diagnostics?: BenchAdapter['diagnostics'];
 }
 
 /** Core frame: fixed-height status Label above a core ScrollView (row 1), which 'fill' views replace. */
@@ -101,7 +103,7 @@ export function coreChrome(): Chrome {
   };
 }
 
-export function startShell({ app, title, build, chrome = coreChrome() }: ShellOptions): void {
+export function startShell({ app, title, build, chrome = coreChrome(), diagnostics }: ShellOptions): void {
   const setStatus = (text: string) => chrome.setStatus(text);
   setStatus(`${app} · ready`);
 
@@ -111,6 +113,7 @@ export function startShell({ app, title, build, chrome = coreChrome() }: ShellOp
     now,
     info: deviceInfo,
     gc,
+    diagnostics,
     align: () => nextFrames(1),
     async mount(f) {
       current = build(f);

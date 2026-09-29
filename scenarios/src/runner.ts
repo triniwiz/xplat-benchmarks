@@ -48,6 +48,8 @@ export interface BenchAdapter {
   align?(): Promise<void>;
   /** Best-effort GC hint between iterations. */
   gc?(): void;
+  /** Optional counters reported once after the last case (e.g. live native nodes, for leak checks). */
+  diagnostics?(): Promise<Record<string, number>> | Record<string, number>;
   log?(message: string): void;
 }
 
@@ -238,7 +240,13 @@ export async function runPlan(
     }
   }
 
-  const done: DoneMessage = { runId, app: adapter.app, ok, error: lastError, durationMs: adapter.now() - started };
+  let diagnostics: Record<string, number> | undefined;
+  try {
+    diagnostics = adapter.diagnostics ? await adapter.diagnostics() : undefined;
+  } catch (e) {
+    emit(adapter, 'ERROR', { runId, error: `diagnostics: ${e}` });
+  }
+  const done: DoneMessage = { runId, app: adapter.app, ok, error: lastError, durationMs: adapter.now() - started, diagnostics };
   update({ phase: ok ? 'done' : 'failed', label: lastError ?? 'done' });
   emit(adapter, 'DONE', done);
   try {
