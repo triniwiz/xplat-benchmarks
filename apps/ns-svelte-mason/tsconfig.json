@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": false,
+    "module": "esnext",
+    "target": "ES2020",
+    "moduleResolution": "bundler",
+    "noEmitHelpers": true,
+    "skipLibCheck": true,
+    "lib": ["ESNext", "dom"],
+    "verbatimModuleSyntax": true,
+    "types": ["svelte", "@nativescript/types"]
+  },
+  "include": ["src/**/*"]
+}
