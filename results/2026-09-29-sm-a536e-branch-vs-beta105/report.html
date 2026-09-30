@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>xplat-benchmarks report</title>
+<style>
+.viz-root {
+  color-scheme: light;
+  --page: #f9f9f7; --surface-1: #fcfcfb;
+  --text-primary: #0b0b0b; --text-secondary: #52514e; --text-muted: #898781;
+  --grid: #e1e0d9; --baseline: #c3c2b7; --border: rgba(11,11,11,0.10);
+  --series-1: #2a78d6; --series-2: #eb6834; --series-3: #1baf7a; --series-4: #eda100;
+  --critical: #d03b3b;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface-1: #1a1a19;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #898781;
+    --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
+    --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+  }
+}
+:root[data-theme="dark"] .viz-root {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface-1: #1a1a19;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --text-muted: #898781;
+  --grid: #2c2c2a; --baseline: #383835; --border: rgba(255,255,255,0.10);
+  --series-1: #3987e5; --series-2: #d95926; --series-3: #199e70; --series-4: #c98500;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+.viz-root { background: var(--page); color: var(--text-primary); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; padding: 24px; min-height: 100vh; }
+h1 { font-size: 20px; margin: 0 0 4px; font-weight: 600; }
+h2 { font-size: 16px; margin: 32px 0 4px; font-weight: 600; }
+h3 { font-size: 13px; margin: 16px 0 8px; font-weight: 600; color: var(--text-secondary); }
+.sub { color: var(--text-secondary); margin: 0 0 16px; }
+.warn { color: var(--text-primary); border-left: 3px solid var(--critical); padding: 4px 10px; margin: 8px 0; background: var(--surface-1); }
+.controls { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; margin: 16px 0; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.seg button { font: inherit; background: var(--surface-1); color: var(--text-secondary); border: 0; padding: 6px 12px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--text-primary); color: var(--surface-1); }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; color: var(--text-secondary); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.row { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 540px)); gap: 12px; }
+.card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 12px 12px 8px; }
+.card-title { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+svg text { fill: var(--text-secondary); font-size: 11px; }
+svg .val { fill: var(--text-primary); font-variant-numeric: tabular-nums; }
+svg .tick { fill: var(--text-muted); font-variant-numeric: tabular-nums; font-size: 10px; }
+.bar { cursor: default; }
+.bar:hover .mark-path, .bar:focus .mark-path { filter: brightness(1.12); }
+.bar:focus { outline: none; }
+.bar:focus rect.hit { stroke: var(--text-primary); stroke-width: 1; }
+details { margin-top: 4px; color: var(--text-secondary); font-size: 12px; }
+table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+th, td { text-align: right; padding: 2px 6px; border-bottom: 1px solid var(--grid); }
+th:first-child, td:first-child { text-align: left; }
+.tip { position: fixed; pointer-events: none; background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); font-size: 12px; display: none; z-index: 10; }
+.tip strong { font-size: 14px; display: block; color: var(--text-primary); }
+.tip span { color: var(--text-secondary); }
+ul.notes { color: var(--text-secondary); padding-left: 18px; margin: 4px 0; }
+</style></head>
+<body><div class="viz-root">
+<h1 id="title"></h1><p class="sub" id="subtitle"></p>
+<div id="banners"></div>
+<div class="controls">
+  <div class="seg" role="group" aria-label="Metric">
+    <button type="button" data-metric="painted" aria-pressed="true">Painted (layout + next frame)</button>
+    <button type="button" data-metric="layout" aria-pressed="false">Layout</button>
+  </div>
+  <div class="legend" id="legend"></div>
+</div>
+<div id="sections"></div>
+<h2>Known deviations</h2><ul class="notes" id="notes"></ul>
+<div class="tip" id="tip" role="status"></div>
+</div>
+<script>
+const DATA = {"meta":{"title":"Results: samsung SM-A536E (android 16)","subtitle":"2 round(s) · warmup 2 · 8 iterations per round · median, whisker = p90 · lower is better","emulated":false,"notes":["NativeScript Core: styled-cards v5: core does not clip children to border-radius (overflow: hidden unsupported).","NativeScript Core + Mason: Mason-native frame: Mason root, status Text, Mason Scroll host and Mason Ul; the window root is a core GridLayout only to apply Android insets.","NativeScript Core + Mason: list-scroll: each Ul cell has an extra full-width Mason root (cells size to max-content and ignore root margins).","NativeScript Core + Mason: list-scroll (iOS): the first screen of the Mason Ul fills only ~7 cells and leaves the rest blank (masonkit 1.0.0-beta.104).","NativeScript Core + Mason: text-flow: no line clamp in Mason, so the 2-line clamp paragraphs render in full.","NativeScript Core + Mason: styled-cards v4: stylesheet `transform` (rotate/scale) is not applied inside a Mason-native tree (it was when the host was a core ScrollView; masonkit 1.0.0-beta.105, Android).","NativeScript Core + Mason (local build): Mason-native frame: Mason root, status Text, Mason Scroll host and Mason Ul; the window root is a core GridLayout only to apply Android insets.","NativeScript Core + Mason (local build): list-scroll: each Ul cell has an extra full-width Mason root (cells size to max-content and ignore root margins).","NativeScript Core + Mason (local build): list-scroll (iOS): the first screen of the Mason Ul fills only ~7 cells and leaves the rest blank (masonkit 1.0.0-beta.104).","NativeScript Core + Mason (local build): text-flow: no line clamp in Mason, so the 2-line clamp paragraphs render in full.","NativeScript Core + Mason (local build): styled-cards v4: stylesheet `transform` (rotate/scale) is not applied inside a Mason-native tree (it was when the host was a core ScrollView; masonkit 1.0.0-beta.105, Android)."],"problems":[]},"groups":[{"id":"ns-core","label":"NativeScript core"},{"id":"ns-mason","label":"NativeScript + Mason"},{"id":"react-native","label":"React Native"},{"id":"lynx","label":"Lynx"}],"sections":[{"id":"nested-chain","title":"Nested chain","kind":"mount","series":[{"name":"mount","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":27.4509035050869,"p90":28.741268999874592,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":35.94236600399017,"p90":39.47594249993563,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":33.75594199448824,"p90":38.55071149021387,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":24.82438399642706,"p90":26.266961500048637,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":31.79398050159216,"p90":34.263115003705025,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":29.233980506658554,"p90":34.08667299896479,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":39.64955749362707,"p90":43.6764804944396,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":52.8987689986825,"p90":83.87532699853182,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":47.31421099603176,"p90":56.86294250935316,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":35.85107749700546,"p90":39.950788497924805,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":47.2749994918704,"p90":76.1380965039134,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":41.767461001873016,"p90":51.591231010854244,"n":16}]}}]}]},{"id":"tree-fanout","title":"Tree fan-out","kind":"mount","series":[{"name":"mount","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":223.8928650021553,"p90":235.2500964999199,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":248.08369249850512,"p90":299.3815765082836,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":220.57494249939919,"p90":255.12721150368452,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":210.02786500006914,"p90":227.70711550861597,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":228.10473050922155,"p90":278.8027690127492,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":202.66928850114346,"p90":236.6808660030365,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":557.7766150012612,"p90":577.0377884954214,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":648.1778840050101,"p90":688.6566914990544,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":546.5202879905701,"p90":619.7268649935722,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":528.0377110019326,"p90":549.2528649941087,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":603.9661540091038,"p90":643.0104414969683,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":495.5029989928007,"p90":556.6662300005555,"n":16}]}}]}]},{"id":"flex-wrap-tiles","title":"Flex-wrap tiles","kind":"mount","series":[{"name":"mount","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":737.0595764964819,"p90":771.5400189980865,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":739.472210496664,"p90":787.462787501514,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":584.8812874928117,"p90":629.0427685007453,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":700.4826150014997,"p90":734.0047880038619,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":677.8109219968319,"p90":735.8831919953227,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":531.1261344999075,"p90":578.4985570013523,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":2821.431478507817,"p90":2899.038825005293,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":2756.2787864878774,"p90":2880.4201710000634,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":2208.9840560108423,"p90":2267.709652505815,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":2676.9423635080457,"p90":2754.2884595021605,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":2541.6758640035987,"p90":2665.80415199697,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":1967.8543640002608,"p90":2093.5130179971457,"n":16}]}}]}]},{"id":"grid-dashboard","title":"Grid dashboard","kind":"mount","series":[{"name":"mount","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":240.13898050040007,"p90":262.9438460022211,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":231.80555799603462,"p90":260.8895189985633,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":190.54023050516844,"p90":200.22532650083303,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":230.65019199997187,"p90":254.03288450092077,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":215.22128850221634,"p90":239.2624614983797,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":173.34559600055218,"p90":181.06867250055075,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":804.2234805002809,"p90":817.1924419999123,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":793.0794610008597,"p90":823.3903455063701,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":644.3480184972286,"p90":673.0115189999342,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":774.501057498157,"p90":789.8502880036831,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":733.6850954964757,"p90":764.3448840007186,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":593.4986920058727,"p90":629.1661339998245,"n":16}]}}]}]},{"id":"text-flow","title":"Text flow","kind":"mount","series":[{"name":"mount","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":79.19896200299263,"p90":89.37680700421333,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":82.36065349727869,"p90":85.48719249665737,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":74.17653849720955,"p90":79.33832649886608,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":66.75936549901962,"p90":76.8371914923191,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":66.32115399837494,"p90":68.43809549510479,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":57.99003849923611,"p90":60.73124950379133,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":280.3769610002637,"p90":288.2631729990244,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":290.70611549913883,"p90":310.98096100986004,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":257.14644249528646,"p90":273.3258844986558,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":231.76546150445938,"p90":239.04461549967527,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":228.6621534973383,"p90":250.13836550712585,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":193.23521199077368,"p90":207.95953800529242,"n":16}]}}]}]},{"id":"styled-cards","title":"Styled cards","kind":"mount","series":[{"name":"mount","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":236.3932494968176,"p90":250.03065399825573,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":261.77642349898815,"p90":278.8736149966717,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":220.31401900202036,"p90":280.9650580063462,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":223.04511550068855,"p90":236.5904420018196,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":237.99811550229788,"p90":249.52799950540066,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":193.2169810011983,"p90":255.13448099792004,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":916.3178839981556,"p90":930.4069225043058,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":997.9724415019155,"p90":1043.6266914978623,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":814.0878259986639,"p90":877.9929030016065,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":858.172711007297,"p90":871.3353070020676,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":889.413268506527,"p90":942.0778454914689,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":717.8786915019155,"p90":791.8684030026197,"n":16}]}}]}]},{"id":"relayout-resize","title":"Relayout: root resize","kind":"relayout","series":[{"name":"mount","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":193.95613449811935,"p90":205.03261499851942,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":188.84930750727654,"p90":197.07296150177717,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":167.70126900076866,"p90":178.50988449901342,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":184.21838450431824,"p90":197.3010774999857,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":178.1278079971671,"p90":185.55982699990273,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":158.43263498693705,"p90":168.10740400105715,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":512.0857305079699,"p90":535.0713655054569,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":577.1954225003719,"p90":614.0629225000739,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":483.18953800201416,"p90":512.0904994979501,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":481.3394805043936,"p90":502.93690399080515,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":543.3078265041113,"p90":588.3603070005774,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":449.85369150340557,"p90":480.98913399875164,"n":16}]}}]},{"name":"shrink","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":20.92128900438547,"p90":23.793942004442215,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":18.469115495681763,"p90":20.105114996433258,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":18.3894425034523,"p90":21.716096006333828,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":8.60615399479866,"p90":10.516481004655361,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":10.930999502539635,"p90":12.482711501419544,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":11.386096499860287,"p90":13.609903998672962,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":44.80415399372578,"p90":50.562114998698235,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":34.94911500066519,"p90":39.03140400350094,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":37.9733265042305,"p90":41.545903995633125,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":9.569115497171879,"p90":12.95771150290966,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":16.723231002688408,"p90":19.704635001718998,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":17.281115502119064,"p90":19.925076998770237,"n":16}]}}]},{"name":"grow","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":10.420808009803295,"p90":13.52225000411272,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":9.252134501934052,"p90":13.631442494690418,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":13.590711496770382,"p90":17.32957650721073,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":2.1602884978055954,"p90":5.102038495242596,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":4.542154006659985,"p90":8.2430389970541,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":7.882019005715847,"p90":10.119538493454456,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":30.72867250442505,"p90":33.63346150517464,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":21.85998099297285,"p90":24.256345994770527,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":21.475942000746727,"p90":29.29405750334263,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":7.820038504898548,"p90":11.348807498812675,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":9.24634650349617,"p90":12.324057504534721,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":8.960211001336575,"p90":16.628942504525185,"n":16}]}}]}]},{"id":"relayout-style","title":"Relayout: restyle every node","kind":"relayout","series":[{"name":"mount","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":193.843846000731,"p90":199.96076899766922,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":191.3330384939909,"p90":199.56763499975204,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":175.085326500237,"p90":250.52099949866533,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":182.0611149892211,"p90":190.15265399962664,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":180.40740299969912,"p90":190.1631155014038,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":165.87996099889278,"p90":240.1473075002432,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":514.6662115007639,"p90":531.0673839971423,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":554.8190959990025,"p90":591.66711499542,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":475.11021099984646,"p90":514.6723650023341,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":478.58084550499916,"p90":499.08394200354815,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":519.4345000088215,"p90":557.0742110013962,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":439.43298000097275,"p90":480.04882650077343,"n":16}]}}]},{"name":"restyle","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":32.00073050707579,"p90":35.60965350270271,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":29.422615490853786,"p90":34.49632649868727,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":30.827980995178223,"p90":33.45330750197172,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":20.81199949979782,"p90":22.86948050558567,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":23.273731000721455,"p90":26.798845998942852,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":23.805230490863323,"p90":26.375480502843857,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":89.17238450050354,"p90":91.5198270007968,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":69.8063850030303,"p90":80.08278850466013,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":66.09119249880314,"p90":79.02167350798845,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":55.0195195004344,"p90":66.36532700061798,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":50.99994199723005,"p90":61.60875050723553,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":50.34228799492121,"p90":58.92198050022125,"n":16}]}}]},{"name":"restore","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":27.220211498439312,"p90":28.35700000077486,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":23.89578850567341,"p90":30.04415400326252,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":25.514980494976044,"p90":30.34121199697256,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":19.222672998905182,"p90":20.28150000423193,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":19.082692503929138,"p90":25.354480996727943,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":19.42961499840021,"p90":25.043692499399185,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":72.46325000375509,"p90":75.79273050278425,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":58.53657700121403,"p90":61.43119250237942,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":58.11521150171757,"p90":63.98617249727249,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":51.59278900176287,"p90":54.58332699537277,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":46.22973100095987,"p90":49.231269501149654,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":46.44673100858927,"p90":51.96257650107145,"n":16}]}}]}]},{"id":"insert-remove","title":"Insert / remove at head","kind":"relayout","series":[{"name":"mount","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":678.8956149965525,"p90":703.1318455040455,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":676.9154035001993,"p90":692.7772500067949,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":540.7574224993587,"p90":544.6573840081692,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":650.1484604924917,"p90":669.3133070021868,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":622.7957305014133,"p90":645.6500189974904,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":489.0488649979234,"p90":502.3203075006604,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":2716.2851325049996,"p90":2768.6295564994216,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":2583.7891905009747,"p90":2642.204670995474,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":2024.808517999947,"p90":2159.413190498948,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":2579.4639024958014,"p90":2626.289075501263,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":2374.7990555018187,"p90":2413.327843993902,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":1829.9817290008068,"p90":1948.2142484933138,"n":16}]}}]},{"name":"insert","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":344.7029804959893,"p90":366.27899999916553,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":352.35553799569607,"p90":379.106711499393,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":285.6278844997287,"p90":317.8615959957242,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":326.7074229940772,"p90":349.32549999654293,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":324.2077305018902,"p90":355.7971339970827,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":258.720826998353,"p90":296.1319414973259,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":367.62098049372435,"p90":398.41690350323915,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":350.3214420005679,"p90":431.06815350055695,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":299.05278849601746,"p90":352.4357305020094,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":330.746883995831,"p90":361.680865496397,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":311.68809600174427,"p90":390.6387879997492,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":260.82955749332905,"p90":314.91255750507116,"n":16}]}}]},{"name":"remove","panels":[{"size":"S","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":21.46578800678253,"p90":22.364999994635582,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":19.975826494395733,"p90":31.677750006318092,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":20.454116001725197,"p90":22.165904000401497,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":15.57386551052332,"p90":16.291807495057583,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":15.39342249929905,"p90":18.433288007974625,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":16.091730505228043,"p90":17.17798049747944,"n":16}]}},{"size":"M","bars":{"painted":[{"app":"NS Core","group":"ns-core","median":36.77648099511862,"p90":37.763980999588966,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":38.52813450247049,"p90":42.612826995551586,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":40.14701950550079,"p90":42.9422694966197,"n":16}],"layout":[{"app":"NS Core","group":"ns-core","median":19.77317300438881,"p90":20.750538498163223,"n":16},{"app":"NS Core + Mason","group":"ns-mason","median":27.22375000268221,"p90":30.683461494743824,"n":16},{"app":"NS Core + Mason (local build)","group":"ns-mason","median":28.369846001267433,"p90":31.348365500569344,"n":16}]}}]}]}]};
+// ?theme=light|dark overrides the OS setting (the data-theme scope wins both ways).
+const theme = new URLSearchParams(location.search).get('theme');
+if (theme === 'light' || theme === 'dark') document.documentElement.setAttribute('data-theme', theme);
+const COLOR = { 'ns-core': 'var(--series-1)', 'ns-mason': 'var(--series-2)', 'react-native': 'var(--series-3)', 'lynx': 'var(--series-4)' };
+const el = (tag, attrs = {}, text) => {
+  const n = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (text != null) n.textContent = text;
+  return n;
+};
+const svgEl = (tag, attrs = {}, text) => {
+  const n = document.createElementNS('http://www.w3.org/2000/svg', tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (text != null) n.textContent = text;
+  return n;
+};
+const fmt = (v) => (v >= 100 ? v.toFixed(0) : v.toFixed(1));
+const niceMax = (v) => {
+  const p = Math.pow(10, Math.floor(Math.log10(v || 1)));
+  for (const m of [1, 2, 2.5, 5, 10]) if (v <= m * p) return m * p;
+  return 10 * p;
+};
+
+document.getElementById('title').textContent = DATA.meta.title;
+document.getElementById('subtitle').textContent = DATA.meta.subtitle;
+const banners = document.getElementById('banners');
+if (DATA.meta.emulated) banners.append(el('div', { class: 'warn' }, 'Simulator / emulator run — smoke-test numbers only.'));
+for (const p of DATA.meta.problems) banners.append(el('div', { class: 'warn' }, p));
+for (const n of DATA.meta.notes) document.getElementById('notes').append(el('li', {}, n));
+const legend = document.getElementById('legend');
+for (const g of DATA.groups) {
+  const s = el('span');
+  const sw = el('i'); sw.style.background = COLOR[g.id];
+  s.append(sw, document.createTextNode(g.label));
+  legend.append(s);
+}
+
+const tip = document.getElementById('tip');
+function showTip(evt, bar, metric) {
+  tip.replaceChildren();
+  tip.append(el('strong', {}, fmt(bar.median) + ' ms'), el('span', {}, bar.app + ' · p90 ' + fmt(bar.p90) + ' ms · n ' + bar.n + ' · ' + metric));
+  tip.style.display = 'block';
+  const r = evt.target.getBoundingClientRect ? evt.target.getBoundingClientRect() : { right: evt.clientX, top: evt.clientY };
+  const x = (evt.clientX ?? r.right) + 12, y = (evt.clientY ?? r.top) + 12;
+  tip.style.left = Math.min(x, innerWidth - tip.offsetWidth - 8) + 'px';
+  tip.style.top = Math.min(y, innerHeight - tip.offsetHeight - 8) + 'px';
+}
+const hideTip = () => (tip.style.display = 'none');
+
+function chart(bars, metric) {
+  const labelW = 130, valueW = 52, row = 22, barH = 14, top = 4, axisH = 18, width = 520;
+  const plotW = width - labelW - valueW;
+  const max = niceMax(Math.max(...bars.map((b) => b.p90)));
+  const height = top + bars.length * row + axisH;
+  // Natural size, shrinking only when the card is narrower (text stays 11px).
+  const svg = svgEl('svg', { viewBox: '0 0 ' + width + ' ' + height, width: width, role: 'img' });
+  svg.style.maxWidth = '100%';
+  svg.style.height = 'auto';
+  const x = (v) => labelW + (v / max) * plotW;
+  for (let i = 0; i <= 4; i++) {
+    const v = (max / 4) * i;
+    svg.append(svgEl('line', { x1: x(v), x2: x(v), y1: top, y2: top + bars.length * row, stroke: i === 0 ? 'var(--baseline)' : 'var(--grid)', 'stroke-width': 1 }));
+    svg.append(svgEl('text', { x: x(v), y: height - 4, 'text-anchor': 'middle', class: 'tick' }, v % 1 === 0 ? v.toLocaleString() : v.toFixed(1)));
+  }
+  bars.forEach((b, i) => {
+    const y = top + i * row + (row - barH) / 2;
+    const g = svgEl('g', { class: 'bar', tabindex: 0, 'aria-label': b.app + ': ' + fmt(b.median) + ' ms median, p90 ' + fmt(b.p90) + ' ms' });
+    g.append(svgEl('text', { x: labelW - 8, y: y + barH / 2 + 4, 'text-anchor': 'end' }, b.app));
+    const w = Math.max(1, x(b.median) - labelW);
+    // 4px rounded data-end, square at the baseline.
+    const r = Math.min(4, w / 2);
+    g.append(svgEl('path', { class: 'mark-path', fill: COLOR[b.group],
+      d: 'M' + labelW + ',' + y + 'h' + (w - r) + 'a' + r + ',' + r + ' 0 0 1 ' + r + ',' + r + 'v' + (barH - 2 * r) + 'a' + r + ',' + r + ' 0 0 1 -' + r + ',' + r + 'h-' + (w - r) + 'z' }));
+    // p90 whisker: hairline from the median to p90 with a short cap.
+    g.append(svgEl('line', { x1: x(b.median), x2: x(b.p90), y1: y + barH / 2, y2: y + barH / 2, stroke: 'var(--text-muted)', 'stroke-width': 1 }));
+    g.append(svgEl('line', { x1: x(b.p90), x2: x(b.p90), y1: y + 3, y2: y + barH - 3, stroke: 'var(--text-muted)', 'stroke-width': 1 }));
+    g.append(svgEl('text', { x: x(Math.max(b.p90, b.median)) + 6, y: y + barH / 2 + 4, class: 'val' }, fmt(b.median)));
+    // Hit target: the whole row, bigger than the mark.
+    const hit = svgEl('rect', { class: 'hit', x: 0, y: top + i * row, width: width, height: row, fill: 'transparent' });
+    g.prepend(hit);
+    g.addEventListener('pointermove', (e) => showTip(e, b, metric));
+    g.addEventListener('pointerleave', hideTip);
+    g.addEventListener('focus', (e) => { const r = g.getBoundingClientRect(); showTip({ clientX: r.left + labelW, clientY: r.bottom, target: g }, b, metric); });
+    g.addEventListener('blur', hideTip);
+    svg.append(g);
+  });
+  return svg;
+}
+
+function table(bars) {
+  const t = el('table');
+  const h = el('tr');
+  for (const c of ['App', 'Median ms', 'p90 ms', 'n']) h.append(el('th', {}, c));
+  t.append(h);
+  for (const b of bars) {
+    const r = el('tr');
+    r.append(el('td', {}, b.app), el('td', {}, fmt(b.median)), el('td', {}, fmt(b.p90)), el('td', {}, String(b.n)));
+    t.append(r);
+  }
+  return t;
+}
+
+function render(metric) {
+  const root = document.getElementById('sections');
+  root.replaceChildren();
+  for (const s of DATA.sections) {
+    root.append(el('h2', {}, s.title + ' (' + s.id + ')'));
+    for (const ser of s.series) {
+      root.append(el('h3', {}, ser.name === 'mount' ? 'Mount' : 'Mutation: ' + ser.name));
+      const rowEl = el('div', { class: 'row' });
+      for (const p of ser.panels) {
+        const bars = p.bars[metric].length ? p.bars[metric] : p.bars.painted;
+        const card = el('div', { class: 'card' });
+        card.append(el('div', { class: 'card-title' }, 'Size ' + p.size + (p.bars[metric].length ? '' : ' · layout mark not reported; showing painted')));
+        card.append(chart(bars, metric));
+        const d = el('details'); d.append(el('summary', {}, 'Table'), table(bars));
+        card.append(d);
+        rowEl.append(card);
+      }
+      root.append(rowEl);
+    }
+  }
+}
+
+for (const b of document.querySelectorAll('.seg button')) {
+  b.addEventListener('click', () => {
+    for (const o of document.querySelectorAll('.seg button')) o.setAttribute('aria-pressed', String(o === b));
+    render(b.dataset.metric);
+  });
+}
+render('painted');
+</script></body></html>
