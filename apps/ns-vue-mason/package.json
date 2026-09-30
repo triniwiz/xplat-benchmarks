@@ -4,19 +4,17 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "patch-package --patch-dir ../ns-common/patches",
     "sync": "cd ../.. && npm run bench -- sync ns-vue-mason"
   },
   "dependencies": {
     "@nativescript/core": "https://pkg.pr.new/@nativescript/core@11434",
-    "@triniwiz/nativescript-masonkit": "1.0.0-beta.104",
+    "@triniwiz/nativescript-masonkit": "1.0.0-beta.105",
     "nativescript-vue": "~3.1.2"
   },
   "devDependencies": {
     "@nativescript/android": "9.1.1",
     "@nativescript/types": "~9.0.0",
     "@nativescript/webpack": "~5.0.38",
-    "patch-package": "^8.0.0",
     "typescript": "~5.9.0"
   }
 }

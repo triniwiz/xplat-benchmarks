@@ -15,5 +15,3 @@ cp packages/nativescript-masonkit/src-native/mason-android/masonkit/build/output
 ```
 
 Then copy the tarball to `vendor/masonkit-perf-<commit>.tgz`, point the dependency at it, and `npm install`. Name the tarball after the commit: npm caches `file:` tarballs by integrity. `vendor/` is git-ignored.
-
-Unlike `ns-core-mason`, there's no patch-package step. The branch already has the `Ul` fixes that `apps/ns-common/patches` adds to the published beta.
