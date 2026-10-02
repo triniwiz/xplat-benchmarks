@@ -11,8 +11,23 @@ This repo benchmarks layout performance and CSS support on deep and heavy layout
 | `ns-react-mason` | NativeScript React 19 (`@nativescript-community/react`, dominative) + Mason | running |
 | `ns-svelte-mason` | svelte-native 1.0 (Svelte 4) + Mason | running |
 | `ns-solid-mason` | `@nativescript-community/solid-js` (dominative) + Mason | running |
-| `react-native` | React Native 0.87.1 bare CLI, Fabric, Hermes, FlashList v2 | running (Android; iOS project generated, not yet built) |
-| `lynx` | ReactLynx (rspeedy) bundle in a minimal native host on Lynx SDK 4.1.0 | running (Android; iOS host not yet written) |
+| `react-native` | React Native 0.87.1 bare CLI, Fabric, Hermes, FlashList v2 | running |
+| `lynx` | ReactLynx (rspeedy) bundle in a minimal native host on Lynx SDK 4.1.0 | running |
+| `ng-native` | Angular Native (Expo host) | running (iOS) |
+| `ns-core-mason-perf` | `ns-core-mason` on a local masonkit build (`rebuild-mason.sh`), for A/B work on Mason itself | running |
+
+Native baselines, no framework and no JS. Each one ports the seeded generator, data hash and runner to Swift or Kotlin and builds every scenario by hand:
+
+| App | Stack |
+|---|---|
+| `native-ios` | Swift + UIKit, Auto Layout with nested `UIStackView`s |
+| `native-ios-swiftui` | SwiftUI in a `UIHostingController` (custom `Layout`s for wrap and weighted rows, `LazyVStack` for the list) |
+| `native-ios-mason` | Swift + Mason's Swift API (`MasonUIView`, `MasonText`), UIKit scroll host |
+| `native-android` | Kotlin + Android Views (`FlexboxLayout`, `RecyclerView`) |
+| `native-android-compose` | Jetpack Compose (`FlowRow`, `LazyColumn`), foundation only |
+| `native-android-mason` | Kotlin + Mason's Kotlin API, all-Mason frame like the NS Mason apps |
+
+The Android baselines share their fixtures, hash and runner through `apps/native-android-common`.
 
 `ns-core` and `ns-core-mason` are a controlled pair. They build identical trees with the same imperative helper; only the element classes and the CSS differ. Comparing them isolates the layout engine. Every `ns-*-mason` app shares one stylesheet and the same element structure, so comparing any of them with `ns-core-mason` isolates the cost of that framework.
 
@@ -44,6 +59,8 @@ Each scenario root ends with a 1 dp sentinel view. Mount or mutation time runs f
 | NativeScript (all three) | Sentinel `layoutChanged`, then `requestAnimationFrame` ×2 |
 | React Native | Sentinel `onLayout` (Fabric), then `requestAnimationFrame` |
 | Lynx | `PipelineEntry.paintEnd` from `lynx.performance`, for a `__lynx_timing_flag` on the root. Uses the same Unix-ms clock as `t0`. Also reports `layoutStart`/`layoutEnd` as a phase breakdown. |
+
+The native baselines take the same marks: a sentinel's layout callback (UIKit `layoutSubviews`, SwiftUI a tiny `UIViewRepresentable`, Android an `OnLayoutChangeListener`, Compose `onGloballyPositioned`), then one `CADisplayLink` or Choreographer frame. One difference matters when comparing mutations: in the iOS baselines `setNeedsLayout` waits for UIKit's next update (about 16.5 ms at 60 Hz on the simulator) before any work runs, while the NativeScript apps lay out in the same turn. Compare mutation numbers within the native group, or measure work with a synchronous `layoutIfNeeded`.
 
 Every app runs the same runner, [scenarios/src/runner.ts](scenarios/src/runner.ts), which handles warmup, iterations, unmount, GC hints and reporting. Each app only implements `mount`, `mutate` and `unmount`.
 
@@ -90,6 +107,38 @@ For numbers you intend to publish:
 - Close background apps.
 - Let the device cool down between suites; the harness waits `--app-cooldown` seconds, 20 by default, between apps.
 - Test at least one mid-range Android phone, not only flagships.
+
+On an emulator:
+- **Compile every app ahead of time after each install.** A fresh `adb install` leaves an app at dexopt `verify` (interpreted, then JIT), which runs about 9x slower and drifts run to run: `adb shell cmd package compile -m speed -f <package>`.
+- **Give the AVD enough RAM** (8 GB). With several large APKs installed, 4 GB swaps during a run and stalls whole scenarios.
+- **Sanity-check before trusting a run**: native-android flex-wrap M should take about 100 ms. A busy host (load above its core count) starves the emulator the same way.
+- Prefer a real device for anything you publish.
+
+## Results
+
+Curated runs live in `results/` (committed with `-f`). The latest ones:
+
+**iOS, iPhone 17 Pro Max simulator** ([report](results/2026-10-01-iphone17promax-sim-native-mason/REPORT.md)). Geometric mean of medians against UIKit, lower is faster. Mutations are compared within the native group only (see "Painted").
+
+| | mount S | mount M | mutate S | mutate M |
+|---|---:|---:|---:|---:|
+| UIKit | 1.00 | 1.00 | 1.00 | 1.00 |
+| SwiftUI | 0.84 | 0.77 | 1.36 | 3.91 |
+| UIKit + Mason | 0.74 | 0.64 | 1.08 | 1.21 |
+| NativeScript Core + Mason | 1.00 | 1.12 | | |
+| NativeScript Core | 1.24 | 1.44 | | |
+| React Native | 0.70 | 0.70 | 1.34 | 3.77 |
+
+**Android, Pixel 9 Pro emulator** ([report](results/2026-10-01-pixel9pro-emu-native-compose/REPORT.md)), size M mount, median ms. An emulator run, so only the ratios mean much. It predates the masonkit fixes in [nativescript-mason#76](https://github.com/triniwiz/nativescript-mason/pull/76), which cut native + Mason mutations from about 18 ms to 1 to 4 ms until laid out.
+
+| Size M | tree-fanout | tiles | dashboard | text-flow | styled-cards |
+|---|---:|---:|---:|---:|---:|
+| Views | 19.0 | 104.4 | 29.3 | 32.9 | 31.0 |
+| Compose | 47.4 | 104.2 | 38.8 | 50.7 | 51.4 |
+| Views + Mason | 23.9 | 147.7 | 40.7 | 46.7 | 56.2 |
+| NativeScript Core | 69.4 | 338.0 | 95.6 | 50.2 | 114.1 |
+| NativeScript Core + Mason | 83.0 | 273.3 | 88.2 | 54.4 | 112.6 |
+| React Native | 73.5 | 361.5 | 84.2 | 67.1 | 99.7 |
 
 ## Layout
 
