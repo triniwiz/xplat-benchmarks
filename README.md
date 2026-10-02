@@ -118,16 +118,27 @@ On an emulator:
 
 Curated runs live in `results/` (committed with `-f`). The latest ones:
 
-**iOS, iPhone 17 Pro Max simulator** ([report](results/2026-10-01-iphone17promax-sim-native-mason/REPORT.md)). Geometric mean of medians against UIKit, lower is faster. Mutations are compared within the native group only (see "Painted").
+**iOS, iPhone 17 Pro Max simulator, 2026-10-02** ([report](results/2026-10-02-iphone17promax-sim-full/REPORT.md)), masonkit from [nativescript-mason#76](https://github.com/triniwiz/nativescript-mason/pull/76), 3 rounds. Geometric mean of medians against UIKit, lower is faster. Mutations are compared within the native group only (see "Painted").
 
 | | mount S | mount M | mutate S | mutate M |
 |---|---:|---:|---:|---:|
 | UIKit | 1.00 | 1.00 | 1.00 | 1.00 |
-| SwiftUI | 0.84 | 0.77 | 1.36 | 3.91 |
-| UIKit + Mason | 0.74 | 0.64 | 1.08 | 1.21 |
-| NativeScript Core + Mason | 1.00 | 1.12 | | |
-| NativeScript Core | 1.24 | 1.44 | | |
-| React Native | 0.70 | 0.70 | 1.34 | 3.77 |
+| SwiftUI | 0.82 | 0.77 | 1.49 | 4.44 |
+| UIKit + Mason | 0.71 | 0.54 | 1.03 | 1.11 |
+| NativeScript Core + Mason | 0.90 | 0.95 | | |
+| NativeScript Core | 1.39 | 1.54 | | |
+| React Native | 0.68 | 0.73 | 1.52 | 4.29 |
+
+Size M mount, median ms:
+
+| | tree-fanout | tiles | dashboard | text-flow | styled-cards |
+|---|---:|---:|---:|---:|---:|
+| UIKit | 99.7 | 849.7 | 283.3 | 183.3 | 341.4 |
+| SwiftUI | 232.7 | 299.6 | 99.7 | 116.5 | 133.3 |
+| UIKit + Mason | 67.3 | 283.3 | 100.8 | 133.3 | 183.2 |
+| NativeScript Core + Mason | 164.2 | 607.8 | 192.9 | 129.4 | 303.5 |
+| NativeScript Core | 336.7 | 1090.6 | 285.0 | 199.2 | 374.5 |
+| React Native | 83.1 | 816.5 | 116.6 | 258.2 | 165.8 |
 
 **Android, Pixel 9 Pro emulator** ([report](results/2026-10-01-pixel9pro-emu-native-compose/REPORT.md)), size M mount, median ms. An emulator run, so only the ratios mean much. It predates the masonkit fixes in [nativescript-mason#76](https://github.com/triniwiz/nativescript-mason/pull/76), which cut native + Mason mutations from about 18 ms to 1 to 4 ms until laid out.
 
