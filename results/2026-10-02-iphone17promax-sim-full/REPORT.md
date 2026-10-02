@@ -11,6 +11,7 @@
 - **NativeScript Core**: @nativescript/core 9.1.3-next.2, @nativescript/ios 9.1.0, @nativescript/android 9.1.1, @nativescript/webpack 5.0.38
 - **NativeScript Core + Mason (local build)**: @nativescript/core 9.1.3-next.2, @nativescript/ios 9.1.0, @nativescript/android 9.1.1, @nativescript/webpack 5.0.38, @triniwiz/nativescript-masonkit 1.0.0-beta.106
 - **React Native**: react-native 0.87.1, react 19.2.3, @shopify/flash-list 2.3.2
+- **Lynx**: @lynx-js/react 0.126.2, @lynx-js/rspeedy 0.18.0, lynx-sdk 4.1.0
 - **Native iOS (UIKit)**: UIKit 26.4.1
 - **Native iOS + Mason**: Mason 1.0.0-beta.106, UIKit 26.4.1
 - **Native iOS (SwiftUI)**: SwiftUI 26.4.1
@@ -26,6 +27,10 @@
 - **React Native**: grid-dashboard: flex-emulated (React Native has no CSS grid).
 - **React Native**: Text uses allowFontScaling={false} and textBreakStrategy="simple" to lay out like the other apps (dp text, greedy line breaking).
 - **React Native**: list-scroll: FlashList v2; the mount mark is the list container layout, as for the other apps' lists.
+- **Lynx**: Clock: Date.now() (1 ms resolution); Lynx's background thread has no performance.now().
+- **Lynx**: Painted is observed on the background thread: layoutchange events cross from the main thread, as any Lynx app would see them.
+- **Lynx**: grid-dashboard: grid placed by line numbers (Lynx has no grid-template-areas).
+- **Lynx**: Host registers the Log and HTTP services only (no images in the scenarios); Lynx logs an image-prefetch error at load.
 - **Native iOS (UIKit)**: Native baseline, iOS only: Swift + UIKit, no framework. Swift ports of the seeded generator, hash and runner; clock is CACurrentMediaTime().
 - **Native iOS (UIKit)**: Layout is Auto Layout with nested UIStackViews for every flex row/column (padding and border widths as layout margins, one-sided borders as edge CALayers).
 - **Native iOS (UIKit)**: flex-wrap-tiles / insert-remove: UIKit has no wrapping stack, so a small non-virtualized container packs the tiles into lines in layoutSubviews (tiles measured once with systemLayoutSizeFitting, stretched to the line height).
@@ -55,352 +60,352 @@
 
 **mount**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 20.4 · 25.4 (30) | 18.5 · 20.5 (30) | 16.6 · 17.3 (30) | 33.2 · 33.3 (30) | 33.2 · 33.3 (30) | 33.2 · 33.3 (30) |
-| M | 33.3 · 35.0 (30) | 27.6 · 28.9 (30) | 16.7 · 33.4 (30) | 49.3 · 49.9 (30) | 33.3 · 49.9 (30) | 33.0 · 33.3 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 20.4 · 25.4 (30) | 18.5 · 20.5 (30) | 16.6 · 17.3 (30) | 32.0 · 33.1 (30) | 33.2 · 33.3 (30) | 33.2 · 33.3 (30) | 33.2 · 33.3 (30) |
+| M | 33.3 · 35.0 (30) | 27.6 · 28.9 (30) | 16.7 · 33.4 (30) | 34.0 · 49.0 (30) | 49.3 · 49.9 (30) | 33.3 · 49.9 (30) | 33.0 · 33.3 (30) |
 
 **mount.attached**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 10.3 · 11.6 (30) | 10.8 · 12.2 (30) | – | – | – | – |
-| M | 17.7 · 18.6 (30) | 14.6 · 15.3 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 10.3 · 11.6 (30) | 10.8 · 12.2 (30) | – | – | – | – | – |
+| M | 17.7 · 18.6 (30) | 14.6 · 15.3 (30) | – | – | – | – | – |
 
 **mount.built**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 1.0 · 2.8 (30) | 0.7 · 0.9 (30) | – | – | – | – |
-| M | 0.9 · 1.1 (30) | 0.8 · 0.8 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 1.0 · 2.8 (30) | 0.7 · 0.9 (30) | – | – | – | – | – |
+| M | 0.9 · 1.1 (30) | 0.8 · 0.8 (30) | – | – | – | – | – |
 
 **mount.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 19.3 · 23.7 (30) | 12.7 · 13.9 (30) | 9.8 · 13.2 (30) | 24.1 · 26.4 (30) | 18.9 · 20.2 (30) | 19.4 · 21.3 (30) |
-| M | 32.1 · 33.7 (30) | 16.5 · 17.5 (30) | 13.2 · 19.4 (30) | 30.7 · 35.0 (30) | 18.6 · 19.9 (30) | 19.2 · 19.9 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 19.3 · 23.7 (30) | 12.7 · 13.9 (30) | 9.8 · 13.2 (30) | 19.0 · 27.0 (30) | 24.1 · 26.4 (30) | 18.9 · 20.2 (30) | 19.4 · 21.3 (30) |
+| M | 32.1 · 33.7 (30) | 16.5 · 17.5 (30) | 13.2 · 19.4 (30) | 27.0 · 41.0 (30) | 30.7 · 35.0 (30) | 18.6 · 19.9 (30) | 19.2 · 19.9 (30) |
 
 ## Tree fan-out (`tree-fanout`, mount)
 
 **mount**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 109 · 111 (30) | 60.6 · 69.2 (30) | 34.1 · 49.9 (30) | 49.9 · 50.0 (30) | 33.3 · 49.1 (30) | 66.1 · 66.6 (30) |
-| M | 335 · 340 (30) | 164 · 194 (30) | 83.5 · 100 (30) | 100.0 · 117 (30) | 67.3 · 83.2 (30) | 233 · 233 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 109 · 111 (30) | 60.6 · 69.2 (30) | 34.1 · 49.9 (30) | 34.0 · 107 (30) | 49.9 · 50.0 (30) | 33.3 · 49.1 (30) | 66.1 · 66.6 (30) |
+| M | 335 · 340 (30) | 164 · 194 (30) | 83.5 · 100 (30) | 82.5 · 171 (30) | 100.0 · 117 (30) | 67.3 · 83.2 (30) | 233 · 233 (30) |
 
 **mount.attached**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 41.1 · 42.0 (30) | 51.7 · 56.5 (30) | – | – | – | – |
-| M | 116 · 119 (30) | 136 · 160 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 41.1 · 42.0 (30) | 51.7 · 56.5 (30) | – | – | – | – | – |
+| M | 116 · 119 (30) | 136 · 160 (30) | – | – | – | – | – |
 
 **mount.built**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 6.0 · 6.7 (30) | 4.2 · 4.7 (30) | – | – | – | – |
-| M | 13.6 · 14.6 (30) | 11.9 · 12.8 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 6.0 · 6.7 (30) | 4.2 · 4.7 (30) | – | – | – | – | – |
+| M | 13.6 · 14.6 (30) | 11.9 · 12.8 (30) | – | – | – | – | – |
 
 **mount.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 106 · 108 (30) | 55.9 · 62.7 (30) | 31.3 · 40.6 (30) | 36.8 · 44.5 (30) | 23.7 · 27.9 (30) | 56.4 · 61.3 (30) |
-| M | 327 · 331 (30) | 148 · 174 (30) | 82.7 · 84.7 (30) | 84.7 · 89.3 (30) | 51.1 · 54.5 (30) | 222 · 224 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 106 · 108 (30) | 55.9 · 62.7 (30) | 31.3 · 40.6 (30) | 31.5 · 101 (30) | 36.8 · 44.5 (30) | 23.7 · 27.9 (30) | 56.4 · 61.3 (30) |
+| M | 327 · 331 (30) | 148 · 174 (30) | 82.7 · 84.7 (30) | 69.0 · 163 (30) | 84.7 · 89.3 (30) | 51.1 · 54.5 (30) | 222 · 224 (30) |
 
 ## Flex-wrap tiles (`flex-wrap-tiles`, mount)
 
 **mount**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 276 · 280 (30) | 156 · 187 (30) | 99.8 · 101 (30) | 199 · 200 (30) | 86.5 · 100.0 (30) | 82.8 · 83.3 (30) |
-| M | 1094 · 1121 (30) | 608 · 740 (30) | 816 · 1035 (30) | 850 · 866 (30) | 284 · 351 (30) | 299 · 300 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 276 · 280 (30) | 156 · 187 (30) | 99.8 · 101 (30) | 117 · 382 (30) | 199 · 200 (30) | 86.5 · 100.0 (30) | 82.8 · 83.3 (30) |
+| M | 1094 · 1121 (30) | 608 · 740 (30) | 816 · 1035 (30) | 634 · 900 (30) | 850 · 866 (30) | 284 · 351 (30) | 299 · 300 (30) |
 
 **mount.attached**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 123 · 126 (30) | 96.8 · 112 (30) | – | – | – | – |
-| M | 478 · 490 (30) | 366 · 443 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 123 · 126 (30) | 96.8 · 112 (30) | – | – | – | – | – |
+| M | 478 · 490 (30) | 366 · 443 (30) | – | – | – | – | – |
 
 **mount.built**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 9.8 · 10.3 (30) | 8.4 · 9.1 (30) | – | – | – | – |
-| M | 31.9 · 32.8 (30) | 30.9 · 31.8 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 9.8 · 10.3 (30) | 8.4 · 9.1 (30) | – | – | – | – | – |
+| M | 31.9 · 32.8 (30) | 30.9 · 31.8 (30) | – | – | – | – | – |
 
 **mount.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 240 · 245 (30) | 133 · 158 (30) | 94.1 · 98.7 (30) | 138 · 146 (30) | 62.6 · 69.6 (30) | 57.7 · 62.1 (30) |
-| M | 960 · 986 (30) | 513 · 625 (30) | 807 · 1034 (30) | 604 · 617 (30) | 193 · 238 (30) | 220 · 226 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 240 · 245 (30) | 133 · 158 (30) | 94.1 · 98.7 (30) | 107 · 368 (30) | 138 · 146 (30) | 62.6 · 69.6 (30) | 57.7 · 62.1 (30) |
+| M | 960 · 986 (30) | 513 · 625 (30) | 807 · 1034 (30) | 626 · 890 (30) | 604 · 617 (30) | 193 · 238 (30) | 220 · 226 (30) |
 
 ## Grid dashboard (`grid-dashboard`, mount)
 
 **mount**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 89.1 · 92.1 (30) | 60.5 · 68.9 (30) | 49.5 · 50.9 (30) | 66.2 · 66.6 (30) | 49.9 · 50.0 (30) | 49.6 · 49.9 (30) |
-| M | 286 · 297 (30) | 193 · 229 (30) | 117 · 118 (30) | 283 · 300 (30) | 102 · 119 (30) | 99.8 · 116 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 89.1 · 92.1 (30) | 60.5 · 68.9 (30) | 49.5 · 50.9 (30) | 33.5 · 49.1 (30) | 66.2 · 66.6 (30) | 49.9 · 50.0 (30) | 49.6 · 49.9 (30) |
+| M | 286 · 297 (30) | 193 · 229 (30) | 117 · 118 (30) | 200 · 275 (30) | 283 · 300 (30) | 102 · 119 (30) | 99.8 · 116 (30) |
 
 **mount.attached**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 43.2 · 45.7 (30) | 40.1 · 43.0 (30) | – | – | – | – |
-| M | 139 · 144 (30) | 117 · 138 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 43.2 · 45.7 (30) | 40.1 · 43.0 (30) | – | – | – | – | – |
+| M | 139 · 144 (30) | 117 · 138 (30) | – | – | – | – | – |
 
 **mount.built**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 3.9 · 4.5 (30) | 3.0 · 3.2 (30) | – | – | – | – |
-| M | 13.9 · 14.5 (30) | 10.7 · 11.3 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 3.9 · 4.5 (30) | 3.0 · 3.2 (30) | – | – | – | – | – |
+| M | 13.9 · 14.5 (30) | 10.7 · 11.3 (30) | – | – | – | – | – |
 
 **mount.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 83.0 · 86.0 (30) | 53.0 · 59.4 (30) | 39.0 · 46.0 (30) | 47.0 · 49.3 (30) | 32.7 · 36.2 (30) | 35.7 · 40.0 (30) |
-| M | 266 · 276 (30) | 165 · 196 (30) | 104 · 112 (30) | 248 · 258 (30) | 75.7 · 85.3 (30) | 84.1 · 89.9 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 83.0 · 86.0 (30) | 53.0 · 59.4 (30) | 39.0 · 46.0 (30) | 31.5 · 37.2 (30) | 47.0 · 49.3 (30) | 32.7 · 36.2 (30) | 35.7 · 40.0 (30) |
+| M | 266 · 276 (30) | 165 · 196 (30) | 104 · 112 (30) | 197 · 261 (30) | 248 · 258 (30) | 75.7 · 85.3 (30) | 84.1 · 89.9 (30) |
 
 ## Text flow (`text-flow`, mount)
 
 **mount**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 54.2 · 55.6 (30) | 39.4 · 40.5 (30) | 82.8 · 83.6 (30) | 66.3 · 68.3 (30) | 66.5 · 83.2 (30) | 47.9 · 49.9 (30) |
-| M | 201 · 207 (30) | 130 · 149 (30) | 250 · 269 (30) | 183 · 200 (30) | 133 · 150 (30) | 116 · 117 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 54.2 · 55.6 (30) | 39.4 · 40.5 (30) | 82.8 · 83.6 (30) | 50.0 · 50.1 (30) | 66.3 · 68.3 (30) | 66.5 · 83.2 (30) | 47.9 · 49.9 (30) |
+| M | 201 · 207 (30) | 130 · 149 (30) | 250 · 269 (30) | 117 · 120 (30) | 183 · 200 (30) | 133 · 150 (30) | 116 · 117 (30) |
 
 **mount.attached**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 13.7 · 14.4 (30) | 8.6 · 9.3 (30) | – | – | – | – |
-| M | 45.2 · 47.3 (30) | 24.6 · 25.8 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 13.7 · 14.4 (30) | 8.6 · 9.3 (30) | – | – | – | – | – |
+| M | 45.2 · 47.3 (30) | 24.6 · 25.8 (30) | – | – | – | – | – |
 
 **mount.built**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 0.9 · 1.0 (30) | 0.9 · 0.9 (30) | – | – | – | – |
-| M | 2.9 · 3.1 (30) | 2.5 · 2.6 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 0.9 · 1.0 (30) | 0.9 · 0.9 (30) | – | – | – | – | – |
+| M | 2.9 · 3.1 (30) | 2.5 · 2.6 (30) | – | – | – | – | – |
 
 **mount.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 29.0 · 30.6 (30) | 18.9 · 19.9 (30) | 71.9 · 74.4 (30) | 33.5 · 38.0 (30) | 31.8 · 36.2 (30) | 17.5 · 25.6 (30) |
-| M | 104 · 107 (30) | 57.0 · 65.1 (30) | 248 · 255 (30) | 91.9 · 94.8 (30) | 54.9 · 57.1 (30) | 55.4 · 59.0 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 29.0 · 30.6 (30) | 18.9 · 19.9 (30) | 71.9 · 74.4 (30) | 38.0 · 41.1 (30) | 33.5 · 38.0 (30) | 31.8 · 36.2 (30) | 17.5 · 25.6 (30) |
+| M | 104 · 107 (30) | 57.0 · 65.1 (30) | 248 · 255 (30) | 108 · 113 (30) | 91.9 · 94.8 (30) | 54.9 · 57.1 (30) | 55.4 · 59.0 (30) |
 
 ## Styled cards (`styled-cards`, mount)
 
 **mount**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 102 · 104 (30) | 82.3 · 93.7 (30) | 50.1 · 66.8 (30) | 66.4 · 66.6 (30) | 66.6 · 67.5 (30) | 49.8 · 66.3 (30) |
-| M | 378 · 392 (30) | 303 · 362 (30) | 166 · 183 (30) | 341 · 350 (30) | 183 · 217 (30) | 133 · 133 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 102 · 104 (30) | 82.3 · 93.7 (30) | 50.1 · 66.8 (30) | 66.0 · 105 (30) | 66.4 · 66.6 (30) | 66.6 · 67.5 (30) | 49.8 · 66.3 (30) |
+| M | 378 · 392 (30) | 303 · 362 (30) | 166 · 183 (30) | 167 · 619 (30) | 341 · 350 (30) | 183 · 217 (30) | 133 · 133 (30) |
 
 **mount.attached**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 51.4 · 53.3 (30) | 43.9 · 47.1 (30) | – | – | – | – |
-| M | 192 · 199 (30) | 151 · 177 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 51.4 · 53.3 (30) | 43.9 · 47.1 (30) | – | – | – | – | – |
+| M | 192 · 199 (30) | 151 · 177 (30) | – | – | – | – | – |
 
 **mount.built**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 3.3 · 3.6 (30) | 3.0 · 3.2 (30) | – | – | – | – |
-| M | 12.8 · 13.6 (30) | 11.4 · 12.1 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 3.3 · 3.6 (30) | 3.0 · 3.2 (30) | – | – | – | – | – |
+| M | 12.8 · 13.6 (30) | 11.4 · 12.1 (30) | – | – | – | – | – |
 
 **mount.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 88.9 · 91.3 (30) | 57.7 · 64.0 (30) | 48.6 · 57.5 (30) | 48.3 · 50.8 (30) | 33.7 · 35.5 (30) | 32.3 · 42.4 (30) |
-| M | 331 · 344 (30) | 206 · 244 (30) | 158 · 167 (30) | 281 · 291 (30) | 82.8 · 95.3 (30) | 97.8 · 102 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 88.9 · 91.3 (30) | 57.7 · 64.0 (30) | 48.6 · 57.5 (30) | 51.0 · 93.4 (30) | 48.3 · 50.8 (30) | 33.7 · 35.5 (30) | 32.3 · 42.4 (30) |
+| M | 331 · 344 (30) | 206 · 244 (30) | 158 · 167 (30) | 154 · 610 (30) | 281 · 291 (30) | 82.8 · 95.3 (30) | 97.8 · 102 (30) |
 
 ## Relayout: root resize (`relayout-resize`, relayout)
 
 **mount**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 107 · 112 (30) | 60.5 · 68.6 (30) | 33.4 · 50.2 (30) | 49.8 · 49.9 (30) | 33.3 · 48.6 (30) | 66.6 · 66.6 (30) |
-| M | 328 · 338 (30) | 158 · 194 (30) | 91.6 · 100 (30) | 99.9 · 117 (30) | 69.0 · 83.2 (30) | 233 · 235 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 107 · 112 (30) | 60.5 · 68.6 (30) | 33.4 · 50.2 (30) | 34.0 · 50.0 (30) | 49.8 · 49.9 (30) | 33.3 · 48.6 (30) | 66.6 · 66.6 (30) |
+| M | 328 · 338 (30) | 158 · 194 (30) | 91.6 · 100 (30) | 83.0 · 566 (30) | 99.9 · 117 (30) | 69.0 · 83.2 (30) | 233 · 235 (30) |
 
 **mount.attached**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 40.7 · 42.6 (30) | 51.3 · 57.3 (30) | – | – | – | – |
-| M | 114 · 117 (30) | 131 · 160 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 40.7 · 42.6 (30) | 51.3 · 57.3 (30) | – | – | – | – | – |
+| M | 114 · 117 (30) | 131 · 160 (30) | – | – | – | – | – |
 
 **mount.built**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 6.1 · 7.1 (30) | 4.5 · 4.8 (30) | – | – | – | – |
-| M | 13.9 · 14.6 (30) | 12.2 · 13.0 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 6.1 · 7.1 (30) | 4.5 · 4.8 (30) | – | – | – | – | – |
+| M | 13.9 · 14.6 (30) | 12.2 · 13.0 (30) | – | – | – | – | – |
 
 **mount.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 104 · 109 (30) | 55.6 · 62.4 (30) | 31.1 · 37.7 (30) | 35.7 · 45.0 (30) | 20.3 · 28.0 (30) | 60.1 · 62.9 (30) |
-| M | 320 · 330 (30) | 143 · 175 (30) | 83.4 · 85.3 (30) | 84.8 · 89.8 (30) | 52.1 · 56.1 (30) | 224 · 229 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 104 · 109 (30) | 55.6 · 62.4 (30) | 31.1 · 37.7 (30) | 29.0 · 39.0 (30) | 35.7 · 45.0 (30) | 20.3 · 28.0 (30) | 60.1 · 62.9 (30) |
+| M | 320 · 330 (30) | 143 · 175 (30) | 83.4 · 85.3 (30) | 69.5 · 556 (30) | 84.8 · 89.8 (30) | 52.1 · 56.1 (30) | 224 · 229 (30) |
 
 **shrink**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 51.1 · 54.1 (30) | 8.4 · 15.4 (30) | 16.2 · 17.0 (30) | 33.2 · 33.3 (30) | 33.3 · 33.3 (30) | 49.5 · 50.0 (30) |
-| M | 145 · 150 (30) | 20.2 · 24.7 (30) | 49.9 · 50.3 (30) | 33.2 · 33.3 (30) | 49.6 · 50.0 (30) | 167 · 167 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 51.1 · 54.1 (30) | 8.4 · 15.4 (30) | 16.2 · 17.0 (30) | 17.0 · 17.0 (30) | 33.2 · 33.3 (30) | 33.3 · 33.3 (30) | 49.5 · 50.0 (30) |
+| M | 145 · 150 (30) | 20.2 · 24.7 (30) | 49.9 · 50.3 (30) | 17.0 · 17.0 (30) | 33.2 · 33.3 (30) | 49.6 · 50.0 (30) | 167 · 167 (30) |
 
 **shrink.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 50.5 · 53.5 (30) | 3.2 · 11.4 (30) | 14.6 · 15.2 (30) | 16.9 · 17.0 (30) | 20.2 · 21.4 (30) | 36.0 · 36.8 (30) |
-| M | 144 · 149 (30) | 7.8 · 9.3 (30) | 45.8 · 46.9 (30) | 17.2 · 17.5 (30) | 24.5 · 25.4 (30) | 154 · 158 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 50.5 · 53.5 (30) | 3.2 · 11.4 (30) | 14.6 · 15.2 (30) | 5.0 · 6.1 (30) | 16.9 · 17.0 (30) | 20.2 · 21.4 (30) | 36.0 · 36.8 (30) |
+| M | 144 · 149 (30) | 7.8 · 9.3 (30) | 45.8 · 46.9 (30) | 11.0 · 12.0 (30) | 17.2 · 17.5 (30) | 24.5 · 25.4 (30) | 154 · 158 (30) |
 
 **grow**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 50.4 · 51.8 (30) | 15.5 · 17.0 (30) | 16.2 · 17.3 (30) | 33.3 · 33.3 (30) | 33.3 · 33.3 (30) | 33.3 · 33.3 (30) |
-| M | 180 · 187 (30) | 20.6 · 24.1 (30) | 50.0 · 50.6 (30) | 33.3 · 33.3 (30) | 49.8 · 50.0 (30) | 66.6 · 66.6 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 50.4 · 51.8 (30) | 15.5 · 17.0 (30) | 16.2 · 17.3 (30) | 17.0 · 17.0 (30) | 33.3 · 33.3 (30) | 33.3 · 33.3 (30) | 33.3 · 33.3 (30) |
+| M | 180 · 187 (30) | 20.6 · 24.1 (30) | 50.0 · 50.6 (30) | 17.0 · 17.0 (30) | 33.3 · 33.3 (30) | 49.8 · 50.0 (30) | 66.6 · 66.6 (30) |
 
 **grow.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 49.7 · 51.2 (30) | 11.7 · 13.1 (30) | 14.5 · 15.0 (30) | 17.0 · 17.2 (30) | 20.8 · 21.9 (30) | 19.3 · 19.6 (30) |
-| M | 179 · 185 (30) | 7.9 · 8.8 (30) | 44.0 · 45.2 (30) | 17.4 · 17.5 (30) | 24.3 · 24.6 (30) | 63.2 · 63.9 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 49.7 · 51.2 (30) | 11.7 · 13.1 (30) | 14.5 · 15.0 (30) | 5.0 · 6.0 (30) | 17.0 · 17.2 (30) | 20.8 · 21.9 (30) | 19.3 · 19.6 (30) |
+| M | 179 · 185 (30) | 7.9 · 8.8 (30) | 44.0 · 45.2 (30) | 11.0 · 13.0 (30) | 17.4 · 17.5 (30) | 24.3 · 24.6 (30) | 63.2 · 63.9 (30) |
 
 ## Relayout: restyle every node (`relayout-style`, relayout)
 
 **mount**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 109 · 113 (30) | 60.9 · 69.8 (30) | 33.3 · 50.2 (30) | 49.9 · 65.2 (30) | 33.4 · 49.4 (30) | 66.3 · 66.7 (30) |
-| M | 325 · 332 (30) | 159 · 192 (30) | 99.5 · 100 (30) | 99.9 · 117 (30) | 66.6 · 83.1 (30) | 233 · 235 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 109 · 113 (30) | 60.9 · 69.8 (30) | 33.3 · 50.2 (30) | 34.5 · 50.0 (30) | 49.9 · 65.2 (30) | 33.4 · 49.4 (30) | 66.3 · 66.7 (30) |
+| M | 325 · 332 (30) | 159 · 192 (30) | 99.5 · 100 (30) | 83.0 · 551 (30) | 99.9 · 117 (30) | 66.6 · 83.1 (30) | 233 · 235 (30) |
 
 **mount.attached**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 41.1 · 42.2 (30) | 52.1 · 57.8 (30) | – | – | – | – |
-| M | 114 · 117 (30) | 131 · 158 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 41.1 · 42.2 (30) | 52.1 · 57.8 (30) | – | – | – | – | – |
+| M | 114 · 117 (30) | 131 · 158 (30) | – | – | – | – | – |
 
 **mount.built**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 6.5 · 7.2 (30) | 4.6 · 4.9 (30) | – | – | – | – |
-| M | 14.1 · 14.7 (30) | 12.3 · 12.9 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 6.5 · 7.2 (30) | 4.6 · 4.9 (30) | – | – | – | – | – |
+| M | 14.1 · 14.7 (30) | 12.3 · 12.9 (30) | – | – | – | – | – |
 
 **mount.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 106 · 110 (30) | 56.0 · 63.3 (30) | 31.0 · 36.6 (30) | 36.1 · 45.7 (30) | 24.1 · 28.1 (30) | 59.9 · 64.5 (30) |
-| M | 317 · 324 (30) | 143 · 173 (30) | 84.0 · 85.3 (30) | 85.1 · 90.3 (30) | 44.5 · 55.4 (30) | 224 · 229 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 106 · 110 (30) | 56.0 · 63.3 (30) | 31.0 · 36.6 (30) | 30.5 · 40.0 (30) | 36.1 · 45.7 (30) | 24.1 · 28.1 (30) | 59.9 · 64.5 (30) |
+| M | 317 · 324 (30) | 143 · 173 (30) | 84.0 · 85.3 (30) | 68.5 · 538 (30) | 85.1 · 90.3 (30) | 44.5 · 55.4 (30) | 224 · 229 (30) |
 
 **restyle**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 65.3 · 67.8 (30) | 17.4 · 20.7 (30) | 33.3 · 34.0 (30) | 33.3 · 33.3 (30) | 33.3 · 33.3 (30) | 49.9 · 50.0 (30) |
-| M | 217 · 224 (30) | 55.1 · 67.4 (30) | 66.7 · 67.2 (30) | 33.3 · 33.3 (30) | 49.7 · 50.0 (30) | 183 · 183 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 65.3 · 67.8 (30) | 17.4 · 20.7 (30) | 33.3 · 34.0 (30) | 17.0 · 17.1 (30) | 33.3 · 33.3 (30) | 33.3 · 33.3 (30) | 49.9 · 50.0 (30) |
+| M | 217 · 224 (30) | 55.1 · 67.4 (30) | 66.7 · 67.2 (30) | 33.0 · 34.0 (30) | 33.3 · 33.3 (30) | 49.7 · 50.0 (30) | 183 · 183 (30) |
 
 **restyle.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 64.3 · 66.8 (30) | 12.9 · 15.3 (30) | 20.1 · 20.8 (30) | 17.3 · 17.5 (30) | 20.3 · 21.5 (30) | 42.3 · 43.2 (30) |
-| M | 215 · 222 (30) | 42.0 · 51.2 (30) | 60.4 · 61.8 (30) | 18.2 · 18.4 (30) | 24.4 · 25.5 (30) | 175 · 179 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 64.3 · 66.8 (30) | 12.9 · 15.3 (30) | 20.1 · 20.8 (30) | 8.0 · 9.1 (30) | 17.3 · 17.5 (30) | 20.3 · 21.5 (30) | 42.3 · 43.2 (30) |
+| M | 215 · 222 (30) | 42.0 · 51.2 (30) | 60.4 · 61.8 (30) | 18.5 · 20.0 (30) | 18.2 · 18.4 (30) | 24.4 · 25.5 (30) | 175 · 179 (30) |
 
 **restore**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 65.2 · 67.2 (30) | 16.7 · 20.6 (30) | 33.3 · 33.8 (30) | 33.3 · 33.3 (30) | 33.3 · 33.3 (30) | 49.8 · 50.0 (30) |
-| M | 184 · 188 (30) | 47.9 · 59.2 (30) | 66.7 · 67.4 (30) | 33.3 · 33.3 (30) | 49.8 · 50.0 (30) | 199 · 200 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 65.2 · 67.2 (30) | 16.7 · 20.6 (30) | 33.3 · 33.8 (30) | 17.0 · 17.1 (30) | 33.3 · 33.3 (30) | 33.3 · 33.3 (30) | 49.8 · 50.0 (30) |
+| M | 184 · 188 (30) | 47.9 · 59.2 (30) | 66.7 · 67.4 (30) | 33.0 · 34.0 (30) | 33.3 · 33.3 (30) | 49.8 · 50.0 (30) | 199 · 200 (30) |
 
 **restore.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 64.2 · 66.2 (30) | 12.7 · 15.4 (30) | 20.1 · 20.7 (30) | 17.4 · 17.5 (30) | 20.8 · 21.6 (30) | 44.6 · 45.4 (30) |
-| M | 182 · 186 (30) | 35.9 · 43.6 (30) | 58.2 · 60.2 (30) | 18.2 · 18.4 (30) | 24.6 · 25.5 (30) | 182 · 186 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 64.2 · 66.2 (30) | 12.7 · 15.4 (30) | 20.1 · 20.7 (30) | 7.0 · 9.0 (30) | 17.4 · 17.5 (30) | 20.8 · 21.6 (30) | 44.6 · 45.4 (30) |
+| M | 182 · 186 (30) | 35.9 · 43.6 (30) | 58.2 · 60.2 (30) | 18.0 · 19.0 (30) | 18.2 · 18.4 (30) | 24.6 · 25.5 (30) | 182 · 186 (30) |
 
 ## Insert / remove at head (`insert-remove`, relayout)
 
 **mount**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 270 · 281 (30) | 153 · 188 (30) | 99.7 · 117 (30) | 200 · 200 (30) | 99.7 · 100.0 (30) | 83.0 · 83.3 (30) |
-| M | 1082 · 1101 (30) | 757 · 774 (30) | 717 · 883 (30) | 849 · 883 (30) | 283 · 366 (30) | 300 · 300 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 270 · 281 (30) | 153 · 188 (30) | 99.7 · 117 (30) | 117 · 176 (30) | 200 · 200 (30) | 99.7 · 100.0 (30) | 83.0 · 83.3 (30) |
+| M | 1082 · 1101 (30) | 757 · 774 (30) | 717 · 883 (30) | 567 · 969 (30) | 849 · 883 (30) | 283 · 366 (30) | 300 · 300 (30) |
 
 **mount.attached**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 122 · 124 (30) | 95.0 · 111 (30) | – | – | – | – |
-| M | 472 · 485 (30) | 458 · 467 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 122 · 124 (30) | 95.0 · 111 (30) | – | – | – | – | – |
+| M | 472 · 485 (30) | 458 · 467 (30) | – | – | – | – | – |
 
 **mount.built**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 10.0 · 10.5 (30) | 8.9 · 9.2 (30) | – | – | – | – |
-| M | 31.9 · 33.5 (30) | 31.0 · 32.0 (30) | – | – | – | – |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 10.0 · 10.5 (30) | 8.9 · 9.2 (30) | – | – | – | – | – |
+| M | 31.9 · 33.5 (30) | 31.0 · 32.0 (30) | – | – | – | – | – |
 
 **mount.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 236 · 245 (30) | 131 · 157 (30) | 98.1 · 101 (30) | 139 · 146 (30) | 63.8 · 67.0 (30) | 59.7 · 63.6 (30) |
-| M | 951 · 967 (30) | 637 · 650 (30) | 708 · 869 (30) | 603 · 619 (30) | 189 · 240 (30) | 220 · 226 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 236 · 245 (30) | 131 · 157 (30) | 98.1 · 101 (30) | 108 · 160 (30) | 139 · 146 (30) | 63.8 · 67.0 (30) | 59.7 · 63.6 (30) |
+| M | 951 · 967 (30) | 637 · 650 (30) | 708 · 869 (30) | 557 · 965 (30) | 603 · 619 (30) | 189 · 240 (30) | 220 · 226 (30) |
 
 **insert**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 220 · 229 (30) | 70.1 · 89.5 (30) | 117 · 133 (30) | 83.3 · 100.0 (30) | 49.8 · 50.0 (30) | 49.7 · 50.0 (30) |
-| M | 463 · 475 (30) | 98.9 · 102 (30) | 400 · 483 (30) | 116 · 117 (30) | 49.9 · 66.6 (30) | 99.9 · 100 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 220 · 229 (30) | 70.1 · 89.5 (30) | 117 · 133 (30) | 50.0 · 120 (30) | 83.3 · 100.0 (30) | 49.8 · 50.0 (30) | 49.7 · 50.0 (30) |
+| M | 463 · 475 (30) | 98.9 · 102 (30) | 400 · 483 (30) | 117 · 153 (30) | 116 · 117 (30) | 49.9 · 66.6 (30) | 99.9 · 100 (30) |
 
 **insert.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 205 · 214 (30) | 60.4 · 76.7 (30) | 115 · 130 (30) | 58.3 · 61.4 (30) | 30.7 · 33.7 (30) | 33.2 · 34.7 (30) |
-| M | 446 · 458 (30) | 86.1 · 88.3 (30) | 385 · 472 (30) | 67.2 · 69.9 (30) | 37.0 · 43.2 (30) | 89.6 · 91.6 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 205 · 214 (30) | 60.4 · 76.7 (30) | 115 · 130 (30) | 46.5 · 107 (30) | 58.3 · 61.4 (30) | 30.7 · 33.7 (30) | 33.2 · 34.7 (30) |
+| M | 446 · 458 (30) | 86.1 · 88.3 (30) | 385 · 472 (30) | 114 · 149 (30) | 67.2 · 69.9 (30) | 37.0 · 43.2 (30) | 89.6 · 91.6 (30) |
 
 **remove**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 88.2 · 93.3 (30) | 7.4 · 9.5 (30) | 117 · 117 (30) | 33.3 · 33.3 (30) | 32.7 · 33.3 (30) | 33.0 · 33.3 (30) |
-| M | 343 · 350 (30) | 16.4 · 18.8 (30) | 416 · 446 (30) | 50.0 · 50.0 (30) | 33.0 · 33.3 (30) | 51.8 · 52.9 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 88.2 · 93.3 (30) | 7.4 · 9.5 (30) | 117 · 117 (30) | 17.0 · 17.0 (30) | 33.3 · 33.3 (30) | 32.7 · 33.3 (30) | 33.0 · 33.3 (30) |
+| M | 343 · 350 (30) | 16.4 · 18.8 (30) | 416 · 446 (30) | 16.0 · 17.0 (30) | 50.0 · 50.0 (30) | 33.0 · 33.3 (30) | 51.8 · 52.9 (30) |
 
 **remove.layout**
 
-| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
-|---|---:|---:|---:|---:|---:|---:|
-| S | 87.3 · 92.3 (30) | 5.7 · 7.9 (30) | 107 · 112 (30) | 16.9 · 16.9 (30) | 19.2 · 19.5 (30) | 20.7 · 20.8 (30) |
-| M | 339 · 347 (30) | 14.8 · 15.7 (30) | 405 · 430 (30) | 27.0 · 28.1 (30) | 26.0 · 28.5 (30) | 49.5 · 50.4 (30) |
+| size | NativeScript Core | NativeScript Core + Mason (local build) | React Native | Lynx | Native iOS (UIKit) | Native iOS + Mason | Native iOS (SwiftUI) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| S | 87.3 · 92.3 (30) | 5.7 · 7.9 (30) | 107 · 112 (30) | 7.0 · 7.4 (30) | 16.9 · 16.9 (30) | 19.2 · 19.5 (30) | 20.7 · 20.8 (30) |
+| M | 339 · 347 (30) | 14.8 · 15.7 (30) | 405 · 430 (30) | 15.0 · 16.0 (30) | 27.0 · 28.1 (30) | 26.0 · 28.5 (30) | 49.5 · 50.4 (30) |

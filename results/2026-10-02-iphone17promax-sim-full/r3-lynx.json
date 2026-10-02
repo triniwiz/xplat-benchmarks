@@ -1,0 +1,1256 @@
+{
+ "round": 1,
+ "target": {
+  "platform": "ios",
+  "id": "77FC41CA-E994-4D30-9450-83EF55760A1F",
+  "name": "iPhone 17 Pro Max",
+  "kind": "simulator",
+  "osVersion": "26.4"
+ },
+ "device": {
+  "name": "iPhone 17 Pro Max",
+  "kind": "simulator",
+  "osVersion": "26.4"
+ },
+ "record": {
+  "plan": {
+   "protocol": 1,
+   "runId": "r1-lynx-mur1mgb9",
+   "app": "lynx",
+   "warmup": 3,
+   "iterations": 10,
+   "cooldownMs": 100,
+   "timeoutMs": 60000,
+   "cases": [
+    {
+     "scenario": "nested-chain",
+     "size": "S"
+    },
+    {
+     "scenario": "nested-chain",
+     "size": "M"
+    },
+    {
+     "scenario": "tree-fanout",
+     "size": "S"
+    },
+    {
+     "scenario": "tree-fanout",
+     "size": "M"
+    },
+    {
+     "scenario": "flex-wrap-tiles",
+     "size": "S"
+    },
+    {
+     "scenario": "flex-wrap-tiles",
+     "size": "M"
+    },
+    {
+     "scenario": "grid-dashboard",
+     "size": "S"
+    },
+    {
+     "scenario": "grid-dashboard",
+     "size": "M"
+    },
+    {
+     "scenario": "text-flow",
+     "size": "S"
+    },
+    {
+     "scenario": "text-flow",
+     "size": "M"
+    },
+    {
+     "scenario": "styled-cards",
+     "size": "S"
+    },
+    {
+     "scenario": "styled-cards",
+     "size": "M"
+    },
+    {
+     "scenario": "relayout-resize",
+     "size": "S"
+    },
+    {
+     "scenario": "relayout-resize",
+     "size": "M"
+    },
+    {
+     "scenario": "relayout-style",
+     "size": "S"
+    },
+    {
+     "scenario": "relayout-style",
+     "size": "M"
+    },
+    {
+     "scenario": "insert-remove",
+     "size": "S"
+    },
+    {
+     "scenario": "insert-remove",
+     "size": "M"
+    }
+   ]
+  },
+  "cases": [
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "nested-chain",
+    "size": "S",
+    "fixtureHash": "23a2666d",
+    "samples": {
+     "mount": [
+      17,
+      16,
+      16,
+      33,
+      17,
+      16,
+      18,
+      17,
+      16,
+      31
+     ],
+     "unmount": [
+      33,
+      33,
+      33,
+      34,
+      34,
+      34,
+      33,
+      34,
+      33,
+      33
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      16,
+      13,
+      14,
+      25,
+      12,
+      14,
+      14,
+      14,
+      13,
+      19
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "nested-chain",
+    "size": "M",
+    "fixtureHash": "ef595819",
+    "samples": {
+     "mount": [
+      34,
+      33,
+      34,
+      33,
+      33,
+      34,
+      34,
+      34,
+      33,
+      33
+     ],
+     "unmount": [
+      33,
+      32,
+      32,
+      34,
+      33,
+      33,
+      33,
+      34,
+      34,
+      34
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      23,
+      23,
+      23,
+      24,
+      22,
+      27,
+      25,
+      28,
+      32,
+      24
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "tree-fanout",
+    "size": "S",
+    "fixtureHash": "633cc86c",
+    "samples": {
+     "mount": [
+      82,
+      50,
+      34,
+      34,
+      33,
+      34,
+      34,
+      183,
+      34,
+      34
+     ],
+     "unmount": [
+      33,
+      33,
+      34,
+      33,
+      34,
+      33,
+      33,
+      34,
+      32,
+      33
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      72,
+      33,
+      25,
+      27,
+      29,
+      25,
+      26,
+      177,
+      23,
+      27
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "tree-fanout",
+    "size": "M",
+    "fixtureHash": "9b5e5f28",
+    "samples": {
+     "mount": [
+      134,
+      68,
+      66,
+      84,
+      66,
+      150,
+      67,
+      67,
+      67,
+      417
+     ],
+     "unmount": [
+      33,
+      34,
+      34,
+      33,
+      34,
+      34,
+      34,
+      34,
+      34,
+      33
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      119,
+      62,
+      62,
+      73,
+      64,
+      143,
+      62,
+      62,
+      61,
+      411
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "flex-wrap-tiles",
+    "size": "S",
+    "fixtureHash": "2f65bf41",
+    "samples": {
+     "mount": [
+      116,
+      116,
+      116,
+      533,
+      167,
+      116,
+      116,
+      117,
+      367,
+      116
+     ],
+     "unmount": [
+      34,
+      34,
+      33,
+      33,
+      33,
+      33,
+      33,
+      33,
+      33,
+      33
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      104,
+      105,
+      107,
+      529,
+      165,
+      109,
+      99,
+      101,
+      352,
+      99
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "flex-wrap-tiles",
+    "size": "M",
+    "fixtureHash": "5ce6932e",
+    "samples": {
+     "mount": [
+      399,
+      900,
+      399,
+      882,
+      399,
+      917,
+      399,
+      900,
+      400,
+      899
+     ],
+     "unmount": [
+      33,
+      32,
+      34,
+      34,
+      34,
+      33,
+      34,
+      33,
+      32,
+      33
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      390,
+      885,
+      392,
+      879,
+      392,
+      906,
+      393,
+      888,
+      389,
+      894
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "grid-dashboard",
+    "size": "S",
+    "fixtureHash": "7e8c6cab",
+    "samples": {
+     "mount": [
+      50,
+      49,
+      32,
+      32,
+      49,
+      34,
+      33,
+      33,
+      33,
+      33
+     ],
+     "unmount": [
+      33,
+      32,
+      33,
+      33,
+      34,
+      33,
+      33,
+      34,
+      34,
+      34
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      36,
+      34,
+      25,
+      26,
+      44,
+      33,
+      32,
+      25,
+      24,
+      32
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "grid-dashboard",
+    "size": "M",
+    "fixtureHash": "8246ae09",
+    "samples": {
+     "mount": [
+      199,
+      199,
+      200,
+      200,
+      200,
+      666,
+      199,
+      200,
+      200,
+      199
+     ],
+     "unmount": [
+      34,
+      34,
+      34,
+      33,
+      34,
+      33,
+      33,
+      33,
+      34,
+      34
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      196,
+      197,
+      193,
+      198,
+      199,
+      663,
+      190,
+      194,
+      187,
+      192
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "text-flow",
+    "size": "S",
+    "fixtureHash": "e7f47d7d",
+    "samples": {
+     "mount": [
+      50,
+      50,
+      51,
+      34,
+      34,
+      33,
+      50,
+      50,
+      49,
+      50
+     ],
+     "unmount": [
+      33,
+      33,
+      34,
+      34,
+      33,
+      34,
+      34,
+      32,
+      34,
+      34
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      38,
+      41,
+      35,
+      28,
+      29,
+      33,
+      37,
+      42,
+      39,
+      39
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "text-flow",
+    "size": "M",
+    "fixtureHash": "afa7fabb",
+    "samples": {
+     "mount": [
+      135,
+      117,
+      116,
+      118,
+      116,
+      116,
+      116,
+      116,
+      116,
+      117
+     ],
+     "unmount": [
+      34,
+      33,
+      33,
+      33,
+      34,
+      33,
+      34,
+      32,
+      33,
+      34
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      126,
+      106,
+      109,
+      106,
+      109,
+      107,
+      107,
+      112,
+      107,
+      112
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "styled-cards",
+    "size": "S",
+    "fixtureHash": "41e70f23",
+    "samples": {
+     "mount": [
+      66,
+      66,
+      49,
+      67,
+      67,
+      66,
+      67,
+      66,
+      467,
+      51
+     ],
+     "unmount": [
+      33,
+      34,
+      33,
+      34,
+      33,
+      34,
+      33,
+      34,
+      33,
+      33
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      52,
+      50,
+      42,
+      54,
+      51,
+      51,
+      51,
+      50,
+      453,
+      41
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "styled-cards",
+    "size": "M",
+    "fixtureHash": "a8f8912e",
+    "samples": {
+     "mount": [
+      166,
+      149,
+      166,
+      616,
+      166,
+      167,
+      167,
+      167,
+      168,
+      634
+     ],
+     "unmount": [
+      33,
+      33,
+      33,
+      33,
+      33,
+      33,
+      34,
+      33,
+      34,
+      33
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      150,
+      148,
+      149,
+      609,
+      150,
+      161,
+      154,
+      157,
+      152,
+      618
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "relayout-resize",
+    "size": "S",
+    "fixtureHash": "633cc86c",
+    "samples": {
+     "mount": [
+      33,
+      34,
+      51,
+      33,
+      33,
+      34,
+      33,
+      33,
+      34,
+      33
+     ],
+     "unmount": [
+      33,
+      33,
+      34,
+      33,
+      35,
+      33,
+      34,
+      33,
+      34,
+      34
+     ],
+     "shrink": [
+      17,
+      16,
+      18,
+      17,
+      17,
+      16,
+      16,
+      17,
+      17,
+      18
+     ],
+     "grow": [
+      16,
+      17,
+      16,
+      16,
+      16,
+      17,
+      16,
+      17,
+      16,
+      17
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      25,
+      26,
+      39,
+      25,
+      24,
+      27,
+      24,
+      26,
+      25,
+      25
+     ],
+     "shrink.layout": [
+      5,
+      5,
+      6,
+      5,
+      5,
+      5,
+      4,
+      5,
+      5,
+      5
+     ],
+     "grow.layout": [
+      5,
+      5,
+      5,
+      5,
+      4,
+      6,
+      5,
+      5,
+      4,
+      5
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "relayout-resize",
+    "size": "M",
+    "fixtureHash": "9b5e5f28",
+    "samples": {
+     "mount": [
+      566,
+      68,
+      66,
+      66,
+      83,
+      67,
+      66,
+      67,
+      83,
+      584
+     ],
+     "unmount": [
+      33,
+      34,
+      34,
+      34,
+      33,
+      33,
+      33,
+      33,
+      33,
+      33
+     ],
+     "shrink": [
+      16,
+      17,
+      16,
+      16,
+      17,
+      17,
+      17,
+      17,
+      17,
+      16
+     ],
+     "grow": [
+      16,
+      17,
+      16,
+      16,
+      16,
+      17,
+      16,
+      16,
+      17,
+      17
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      556,
+      61,
+      64,
+      61,
+      74,
+      64,
+      63,
+      61,
+      75,
+      567
+     ],
+     "shrink.layout": [
+      12,
+      12,
+      11,
+      11,
+      12,
+      12,
+      11,
+      13,
+      11,
+      11
+     ],
+     "grow.layout": [
+      13,
+      11,
+      11,
+      11,
+      10,
+      11,
+      12,
+      11,
+      12,
+      13
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "relayout-style",
+    "size": "S",
+    "fixtureHash": "633cc86c",
+    "samples": {
+     "mount": [
+      35,
+      33,
+      49,
+      33,
+      32,
+      33,
+      50,
+      34,
+      32,
+      33
+     ],
+     "unmount": [
+      33,
+      32,
+      33,
+      34,
+      35,
+      32,
+      33,
+      32,
+      34,
+      33
+     ],
+     "restyle": [
+      18,
+      17,
+      17,
+      16,
+      16,
+      18,
+      17,
+      18,
+      17,
+      16
+     ],
+     "restore": [
+      15,
+      18,
+      17,
+      18,
+      17,
+      16,
+      17,
+      16,
+      18,
+      16
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      23,
+      22,
+      36,
+      24,
+      24,
+      27,
+      34,
+      27,
+      26,
+      25
+     ],
+     "restyle.layout": [
+      7,
+      7,
+      8,
+      7,
+      9,
+      7,
+      12,
+      8,
+      7,
+      8
+     ],
+     "restore.layout": [
+      7,
+      7,
+      7,
+      7,
+      7,
+      7,
+      10,
+      8,
+      7,
+      7
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "relayout-style",
+    "size": "M",
+    "fixtureHash": "9b5e5f28",
+    "samples": {
+     "mount": [
+      533,
+      66,
+      67,
+      67,
+      67,
+      67,
+      65,
+      83,
+      68,
+      584
+     ],
+     "unmount": [
+      33,
+      35,
+      34,
+      34,
+      33,
+      34,
+      33,
+      33,
+      35,
+      34
+     ],
+     "restyle": [
+      32,
+      34,
+      34,
+      32,
+      34,
+      32,
+      33,
+      32,
+      34,
+      35
+     ],
+     "restore": [
+      32,
+      34,
+      34,
+      33,
+      35,
+      34,
+      33,
+      32,
+      35,
+      34
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      516,
+      62,
+      61,
+      63,
+      61,
+      62,
+      60,
+      76,
+      62,
+      575
+     ],
+     "restyle.layout": [
+      18,
+      20,
+      19,
+      19,
+      18,
+      20,
+      18,
+      19,
+      21,
+      19
+     ],
+     "restore.layout": [
+      18,
+      20,
+      18,
+      18,
+      18,
+      18,
+      18,
+      19,
+      21,
+      19
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "insert-remove",
+    "size": "S",
+    "fixtureHash": "2f65bf41",
+    "samples": {
+     "mount": [
+      117,
+      118,
+      582,
+      118,
+      116,
+      117,
+      117,
+      116,
+      116,
+      116
+     ],
+     "unmount": [
+      33,
+      34,
+      34,
+      34,
+      33,
+      34,
+      34,
+      34,
+      33,
+      34
+     ],
+     "insert": [
+      51,
+      49,
+      66,
+      51,
+      49,
+      51,
+      49,
+      483,
+      49,
+      50
+     ],
+     "remove": [
+      17,
+      16,
+      16,
+      17,
+      17,
+      17,
+      16,
+      16,
+      16,
+      17
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      106,
+      107,
+      567,
+      104,
+      106,
+      107,
+      107,
+      107,
+      105,
+      105
+     ],
+     "insert.layout": [
+      48,
+      48,
+      63,
+      46,
+      46,
+      48,
+      47,
+      471,
+      47,
+      47
+     ],
+     "remove.layout": [
+      7,
+      6,
+      7,
+      7,
+      7,
+      7,
+      6,
+      13,
+      7,
+      7
+     ]
+    }
+   },
+   {
+    "runId": "r1-lynx-mur1mgb9",
+    "app": "lynx",
+    "scenario": "insert-remove",
+    "size": "M",
+    "fixtureHash": "5ce6932e",
+    "samples": {
+     "mount": [
+      433,
+      966,
+      416,
+      950,
+      432,
+      984,
+      433,
+      950,
+      700,
+      433
+     ],
+     "unmount": [
+      33,
+      34,
+      33,
+      33,
+      33,
+      34,
+      34,
+      33,
+      33,
+      32
+     ],
+     "insert": [
+      116,
+      149,
+      116,
+      150,
+      99,
+      167,
+      117,
+      149,
+      116,
+      116
+     ],
+     "remove": [
+      16,
+      16,
+      16,
+      16,
+      16,
+      16,
+      17,
+      17,
+      16,
+      16
+     ]
+    },
+    "phases": {
+     "mount.layout": [
+      421,
+      961,
+      414,
+      933,
+      418,
+      973,
+      427,
+      944,
+      686,
+      420
+     ],
+     "insert.layout": [
+      104,
+      148,
+      113,
+      132,
+      97,
+      151,
+      107,
+      148,
+      114,
+      102
+     ],
+     "remove.layout": [
+      15,
+      15,
+      15,
+      15,
+      16,
+      15,
+      16,
+      16,
+      15,
+      15
+     ]
+    }
+   }
+  ],
+  "info": {
+   "platform": "ios",
+   "osVersion": "26.4.1",
+   "deviceModel": "arm64",
+   "framework": {
+    "@lynx-js/react": "0.126.2",
+    "@lynx-js/rspeedy": "0.18.0",
+    "lynx-sdk": "4.1.0"
+   },
+   "screenWidth": 440,
+   "runId": "r1-lynx-mur1mgb9",
+   "app": "lynx",
+   "startedAt": 1790950394848
+  },
+  "done": {
+   "runId": "r1-lynx-mur1mgb9",
+   "app": "lynx",
+   "ok": true,
+   "durationMs": 86914
+  }
+ }
+}

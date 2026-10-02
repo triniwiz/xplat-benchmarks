@@ -128,6 +128,9 @@ Curated runs live in `results/` (committed with `-f`). The latest ones:
 | NativeScript Core + Mason | 0.90 | 0.95 | | |
 | NativeScript Core | 1.39 | 1.54 | | |
 | React Native | 0.68 | 0.73 | 1.52 | 4.29 |
+| Lynx | 0.67 | 0.70 | 0.41 | 0.85 |
+
+Lynx is timed to its own `paintEnd` (see "Painted"), so like the NativeScript apps its mutations carry no UIKit wait.
 
 Size M mount, median ms:
 
@@ -139,6 +142,7 @@ Size M mount, median ms:
 | NativeScript Core + Mason | 164.2 | 607.8 | 192.9 | 129.4 | 303.5 |
 | NativeScript Core | 336.7 | 1090.6 | 285.0 | 199.2 | 374.5 |
 | React Native | 83.1 | 816.5 | 116.6 | 258.2 | 165.8 |
+| Lynx | 75.0 | 641.0 | 200.0 | 116.5 | 167.0 |
 
 **Android, Pixel 9 Pro emulator** ([report](results/2026-10-01-pixel9pro-emu-native-compose/REPORT.md)), size M mount, median ms. An emulator run, so only the ratios mean much. It predates the masonkit fixes in [nativescript-mason#76](https://github.com/triniwiz/nativescript-mason/pull/76), which cut native + Mason mutations from about 18 ms to 1 to 4 ms until laid out.
 
