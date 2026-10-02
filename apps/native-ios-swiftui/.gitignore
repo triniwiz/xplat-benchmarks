@@ -1,0 +1,3 @@
+build/
+# written by `npm run bench -- sync` (unused: the Swift port lives in NativeIOSSwiftUI/Fixtures)
+shared/

@@ -1,0 +1,2 @@
+rootProject.name = 'xplatbench-native-android-compose'
+include ':app'

@@ -1,0 +1,67 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "org.jetbrains.kotlin.plugin.compose"
+
+// Jetpack Compose counterpart of apps/native-android: same Kotlin fixture generator, hash, runner
+// and clock (apps/native-android-common), every scenario tree built with Compose.
+def common = "../../native-android-common/src"
+def composeBom = "2026.09.00"
+def activityComposeVersion = "1.13.0"
+
+android {
+    namespace "org.xplatbench.nativeandroidcompose"
+    compileSdk 37
+
+    defaultConfig {
+        applicationId "org.xplatbench.nativeandroidcompose"
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
+        buildConfigField "String", "COMPOSE_BOM", "\"$composeBom\""
+    }
+
+    buildFeatures {
+        buildConfig true
+        compose true
+    }
+
+    buildTypes {
+        release {
+            // Debug keystore and no R8, as native-android. `-Pminify` turns R8 on for comparison.
+            signingConfig signingConfigs.debug
+            minifyEnabled project.hasProperty("minify")
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    sourceSets {
+        main.java.srcDirs += ["$common/main/kotlin"]
+        test.java.srcDirs += ["$common/test/kotlin"]
+    }
+
+    testOptions {
+        unitTests.all {
+            systemProperty "xplatbench.manifest", file("../../../scenarios/fixtures/manifest.json").absolutePath
+            testLogging { events "passed", "failed"; showStandardStreams true }
+        }
+    }
+}
+
+dependencies {
+    implementation(platform("androidx.compose:compose-bom:$composeBom"))
+    implementation("androidx.compose.foundation:foundation")
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.activity:activity-compose:$activityComposeVersion")
+    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    testImplementation("junit:junit:4.13.2")
+}

@@ -1,0 +1,5 @@
+build/
+# Mason.xcframework (+ MASON_VERSION) copied from a nativescript-mason checkout; see scripts/build-ios.sh
+vendor/
+# written by `npm run bench -- sync` (unused: the Swift port lives in NativeIOSMason/Fixtures)
+shared/

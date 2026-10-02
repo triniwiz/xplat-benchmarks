@@ -1,0 +1,18 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Same AGP / Kotlin as apps/lynx/hosts/android and apps/react-native (RN 0.87.1).
+        classpath("com.android.tools.build:gradle:9.2.1")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.0")
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}

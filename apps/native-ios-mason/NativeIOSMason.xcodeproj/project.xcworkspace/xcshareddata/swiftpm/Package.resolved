@@ -1,0 +1,15 @@
+{
+  "originHash" : "71ec7242ac54baccb473e4eef11608822b2a8de9db68fd7fead55d680f77eb7a",
+  "pins" : [
+    {
+      "identity" : "font-manager",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/NativeScript/font-manager",
+      "state" : {
+        "revision" : "7d8c22f131be27658997e4a3dc0b35d364ee8054",
+        "version" : "1.0.20"
+      }
+    }
+  ],
+  "version" : 3
+}

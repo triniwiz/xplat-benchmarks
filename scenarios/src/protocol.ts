@@ -19,7 +19,14 @@ export type AppId =
   | 'ns-svelte-mason'
   | 'ns-solid-mason'
   | 'react-native'
-  | 'lynx';
+  | 'lynx'
+  | 'ng-native'
+  | 'native-ios'
+  | 'native-ios-mason'
+  | 'native-ios-swiftui'
+  | 'native-android'
+  | 'native-android-mason'
+  | 'native-android-compose';
 
 export interface PlanCase {
   scenario: ScenarioId;

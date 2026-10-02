@@ -1,0 +1,63 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+
+// Native Android baseline: Kotlin + Android Views, no framework. The fixture generator, hash and
+// runner are Kotlin ports shared with native-android-mason (apps/native-android-common).
+def common = "../../native-android-common/src"
+def flexboxVersion = "3.0.0"
+def recyclerviewVersion = "1.4.0"
+
+android {
+    namespace "org.xplatbench.nativeandroid"
+    compileSdk 37
+
+    defaultConfig {
+        applicationId "org.xplatbench.nativeandroid"
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
+        buildConfigField "String", "FLEXBOX_VERSION", "\"$flexboxVersion\""
+        buildConfigField "String", "RECYCLERVIEW_VERSION", "\"$recyclerviewVersion\""
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    buildTypes {
+        release {
+            // Debug keystore, like the other benchmark apps' local release builds.
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    sourceSets {
+        main.java.srcDirs += ["$common/main/kotlin"]
+        test.java.srcDirs += ["$common/test/kotlin"]
+    }
+
+    testOptions {
+        unitTests.all {
+            systemProperty "xplatbench.manifest", file("../../../scenarios/fixtures/manifest.json").absolutePath
+            testLogging { events "passed", "failed"; showStandardStreams true }
+        }
+    }
+}
+
+dependencies {
+    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation("com.google.android.flexbox:flexbox:$flexboxVersion")
+    implementation("androidx.recyclerview:recyclerview:$recyclerviewVersion")
+    testImplementation("junit:junit:4.13.2")
+}

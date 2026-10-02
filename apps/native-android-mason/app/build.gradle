@@ -1,0 +1,74 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+
+// Native Android + Mason: the same shell and runner as native-android, but every scenario tree (and
+// the frame) is built with masonkit, Mason's Android library, from Kotlin. No NativeScript, no JS.
+// libs/masonkit-release.aar is a copy of
+// nativescript-mason/packages/nativescript-masonkit/platforms/android/masonkit-release.aar.
+def common = "../../native-android-common/src"
+def masonkitVersion = "1.0.0-beta.106"
+
+android {
+    namespace "org.xplatbench.nativeandroidmason"
+    compileSdk 37
+
+    defaultConfig {
+        applicationId "org.xplatbench.nativeandroidmason"
+        minSdk 24
+        targetSdk 36
+        versionCode 1
+        versionName "1.0"
+        buildConfigField "String", "MASONKIT_VERSION", "\"$masonkitVersion (local AAR)\""
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    buildTypes {
+        release {
+            // Debug keystore, like the other benchmark apps' local release builds.
+            signingConfig signingConfigs.debug
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+
+    sourceSets {
+        main.java.srcDirs += ["$common/main/kotlin"]
+        test.java.srcDirs += ["$common/test/kotlin"]
+    }
+
+    testOptions {
+        unitTests.all {
+            systemProperty "xplatbench.manifest", file("../../../scenarios/fixtures/manifest.json").absolutePath
+            testLogging { events "passed", "failed"; showStandardStreams true }
+        }
+    }
+
+    packaging {
+        jniLibs.useLegacyPackaging = true
+    }
+}
+
+dependencies {
+    implementation(files("libs/masonkit-release.aar"))
+    // masonkit's own dependencies (platforms/android/include.gradle, plus what the NativeScript
+    // runtime normally provides: recyclerview for ListView, appcompat for its bundled demo activity).
+    implementation("com.google.code.gson:gson:2.10")
+    implementation("com.github.bumptech.glide:glide:4.14.2")
+    implementation("org.nativescript:fontmanager:1.0.20")
+    implementation("androidx.recyclerview:recyclerview:1.4.0")
+    implementation("androidx.appcompat:appcompat:1.7.1")
+
+    implementation("androidx.core:core-ktx:1.16.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    testImplementation("junit:junit:4.13.2")
+}

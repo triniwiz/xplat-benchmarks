@@ -1,0 +1,7 @@
+.gradle/
+build/
+app/build/
+local.properties
+.kotlin/
+# written by `npm run bench -- sync` (unused: the Kotlin port lives in apps/native-android-common)
+shared/
