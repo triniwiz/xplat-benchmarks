@@ -58,7 +58,7 @@ Each scenario root ends with a 1 dp sentinel view. Mount or mutation time runs f
 |---|---|
 | NativeScript (all three) | Sentinel `layoutChanged`, then `requestAnimationFrame` ×2 |
 | React Native | Sentinel `onLayout` (Fabric), then `requestAnimationFrame` |
-| Lynx | `PipelineEntry.paintEnd` from `lynx.performance`, for a `__lynx_timing_flag` on the root. Uses the same Unix-ms clock as `t0`. Also reports `layoutStart`/`layoutEnd` as a phase breakdown. |
+| Lynx | Sentinel `bindlayoutchange`, then `requestAnimationFrame`. Checked against Lynx's own `PipelineEntry.paintEnd` for the same updates: this end always lands 1 to 14 ms after `paintEnd`, so it includes the main-thread UI work that follows Lynx's off-thread layout. |
 
 The native baselines take the same marks: a sentinel's layout callback (UIKit `layoutSubviews`, SwiftUI a tiny `UIViewRepresentable`, Android an `OnLayoutChangeListener`, Compose `onGloballyPositioned`), then one `CADisplayLink` or Choreographer frame. One difference matters when comparing mutations: in the iOS baselines `setNeedsLayout` waits for UIKit's next update (about 16.5 ms at 60 Hz on the simulator) before any work runs, while the NativeScript apps lay out in the same turn. Compare mutation numbers within the native group, or measure work with a synchronous `layoutIfNeeded`.
 
@@ -130,7 +130,7 @@ Curated runs live in `results/` (committed with `-f`). The latest ones:
 | React Native | 0.68 | 0.73 | 1.52 | 4.29 |
 | Lynx | 0.67 | 0.70 | 0.41 | 0.85 |
 
-Lynx is timed to its own `paintEnd` (see "Painted"), so like the NativeScript apps its mutations carry no UIKit wait.
+Lynx is timed like the NativeScript apps (sentinel, then one frame), so its mutations carry no UIKit wait either.
 
 Size M mount, median ms:
 
