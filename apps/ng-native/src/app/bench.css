@@ -1,0 +1,149 @@
+/* Mirrors apps/react-native/src/styles.ts; px is a point here, as dp/pt is there. */
+.root { flex: 1; background-color: #F5F6FA; }
+.status { height: 24px; font-size: 11px; color: #6B7185; padding: 4px 8px; background-color: #FFFFFF; }
+.body { flex: 1; }
+.sentinel { height: 1px; background-color: #F5F6FA; }
+
+.home { padding: 12px; }
+.home-title { font-size: 16px; font-weight: bold; color: #1F2330; margin-bottom: 8px; }
+.home-row { flex-direction: row; align-items: center; margin-bottom: 4px; }
+.home-label { flex: 1; font-size: 13px; color: #1F2330; }
+.home-btn { font-size: 12px; padding: 4px 10px; margin-left: 4px; border-radius: 4px; background-color: #D0EBFF; color: #1F2330; overflow: hidden; }
+
+.chain { padding: 1px 0 1px 1px; border-left-width: 1px; }
+.chain-label { font-size: 12px; color: #1F2330; padding: 4px; }
+
+.tn { padding: 1px; border-width: 1px; }
+.tn-restyled { padding: 3px; border-color: #3B5BDB; }
+.row { flex-direction: row; }
+.in-row { flex: 1; }
+.leaf { height: 12px; }
+
+.tiles { flex-direction: row; flex-wrap: wrap; padding: 4px; }
+.tile { width: 88px; margin: 4px; padding: 8px; border-radius: 8px; }
+.tile-title { font-size: 14px; font-weight: bold; color: #1F2330; }
+.tile-sub { font-size: 12px; color: #6B7185; }
+
+.dash-header { height: 56px; flex-direction: row; align-items: center; padding: 0 12px; background-color: #FFFFFF; border-bottom-width: 1px; border-color: #D0D4E0; }
+.dash-title { flex: 1; font-size: 16px; font-weight: bold; color: #1F2330; }
+.pill { margin-left: 4px; padding: 4px 8px; border-radius: 999px; background-color: #F5F6FA; font-size: 12px; color: #1F2330; overflow: hidden; }
+.dash-body { flex-direction: row; }
+.dash-nav { width: 96px; padding: 8px 0; background-color: #FFFFFF; border-right-width: 1px; border-color: #D0D4E0; }
+.nav-item { padding: 8px 12px; font-size: 12px; color: #6B7185; }
+.nav-active { color: #3B5BDB; font-weight: bold; background-color: #D0EBFF; }
+.dash-main { flex: 1; }
+.dash-stats { padding: 4px; }
+.stat-row { flex-direction: row; }
+.stat { flex: 1; margin: 4px; padding: 8px; border-radius: 8px; background-color: #FFFFFF; border-width: 1px; border-color: #D0D4E0; }
+.stat-label { font-size: 12px; color: #6B7185; }
+.stat-value { font-size: 20px; font-weight: bold; color: #1F2330; }
+.stat-delta { font-size: 12px; }
+.up { color: #2F9E44; }
+.down { color: #E03131; }
+.bars { flex-direction: row; align-items: flex-end; height: 40px; margin-top: 4px; }
+.bar { flex: 1; margin: 0 1px; border-radius: 2px; background-color: #3B5BDB; }
+.dash-table { padding: 4px 8px; }
+.trow { flex-direction: row; align-items: center; padding: 6px 0; border-bottom-width: 1px; border-color: #D0D4E0; }
+.cell-name { flex: 2; flex-direction: row; align-items: center; }
+.cell-col { flex: 1; }
+.dot { width: 8px; height: 8px; border-radius: 4px; margin-right: 6px; }
+.cell { font-size: 12px; color: #1F2330; }
+.bold { font-weight: bold; }
+
+.text-flow { padding: 12px; }
+.para { margin-bottom: 8px; color: #1F2330; }
+.ls { letter-spacing: 0.5px; }
+.fs-0 { font-size: 12px; line-height: 17px; }
+.fs-1 { font-size: 14px; line-height: 20px; }
+.fs-2 { font-size: 16px; line-height: 22px; }
+.fs-3 { font-size: 20px; line-height: 28px; }
+
+.cards { padding: 4px; }
+.card { margin: 8px; background-color: #FFFFFF; }
+.card-inner { padding: 12px; }
+.card-title { font-size: 16px; font-weight: bold; color: #1F2330; }
+.card-body { font-size: 14px; line-height: 20px; color: #6B7185; margin-top: 4px; }
+.white { color: #FFFFFF; }
+.chips { flex-direction: row; margin-top: 8px; }
+.chip { padding: 2px 8px; margin-right: 4px; border-radius: 999px; font-size: 12px; color: #1F2330; overflow: hidden; }
+.v0 { border-radius: 12px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); }
+.v1 { border-top-left-radius: 16px; border-bottom-right-radius: 16px; border-width: 2px; }
+.v2 { border-radius: 8px; }
+.v3 { border-top-width: 4px; border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-color: #D0D4E0; }
+.v4 { opacity: 0.85; transform: rotate(-1deg) scale(0.98); border-radius: 8px; border-width: 1px; border-color: #D0D4E0; }
+.v5 { border-radius: 12px; overflow: hidden; }
+.band { height: 24px; }
+
+/* Generated from scenarios/src/tokens.ts: card variant 2 gradients and variant 3 top borders. */
+.btc-0 { border-top-color: #E03131; }
+.btc-1 { border-top-color: #F08C00; }
+.btc-2 { border-top-color: #2F9E44; }
+.btc-3 { border-top-color: #1098AD; }
+.btc-4 { border-top-color: #1C7ED6; }
+.btc-5 { border-top-color: #7048E8; }
+.btc-6 { border-top-color: #C2255C; }
+.btc-7 { border-top-color: #5C940D; }
+.grad-0-0 { background-image: linear-gradient(135deg, #E03131, #E03131); }
+.grad-0-1 { background-image: linear-gradient(135deg, #E03131, #F08C00); }
+.grad-0-2 { background-image: linear-gradient(135deg, #E03131, #2F9E44); }
+.grad-0-3 { background-image: linear-gradient(135deg, #E03131, #1098AD); }
+.grad-0-4 { background-image: linear-gradient(135deg, #E03131, #1C7ED6); }
+.grad-0-5 { background-image: linear-gradient(135deg, #E03131, #7048E8); }
+.grad-0-6 { background-image: linear-gradient(135deg, #E03131, #C2255C); }
+.grad-0-7 { background-image: linear-gradient(135deg, #E03131, #5C940D); }
+.grad-1-0 { background-image: linear-gradient(135deg, #F08C00, #E03131); }
+.grad-1-1 { background-image: linear-gradient(135deg, #F08C00, #F08C00); }
+.grad-1-2 { background-image: linear-gradient(135deg, #F08C00, #2F9E44); }
+.grad-1-3 { background-image: linear-gradient(135deg, #F08C00, #1098AD); }
+.grad-1-4 { background-image: linear-gradient(135deg, #F08C00, #1C7ED6); }
+.grad-1-5 { background-image: linear-gradient(135deg, #F08C00, #7048E8); }
+.grad-1-6 { background-image: linear-gradient(135deg, #F08C00, #C2255C); }
+.grad-1-7 { background-image: linear-gradient(135deg, #F08C00, #5C940D); }
+.grad-2-0 { background-image: linear-gradient(135deg, #2F9E44, #E03131); }
+.grad-2-1 { background-image: linear-gradient(135deg, #2F9E44, #F08C00); }
+.grad-2-2 { background-image: linear-gradient(135deg, #2F9E44, #2F9E44); }
+.grad-2-3 { background-image: linear-gradient(135deg, #2F9E44, #1098AD); }
+.grad-2-4 { background-image: linear-gradient(135deg, #2F9E44, #1C7ED6); }
+.grad-2-5 { background-image: linear-gradient(135deg, #2F9E44, #7048E8); }
+.grad-2-6 { background-image: linear-gradient(135deg, #2F9E44, #C2255C); }
+.grad-2-7 { background-image: linear-gradient(135deg, #2F9E44, #5C940D); }
+.grad-3-0 { background-image: linear-gradient(135deg, #1098AD, #E03131); }
+.grad-3-1 { background-image: linear-gradient(135deg, #1098AD, #F08C00); }
+.grad-3-2 { background-image: linear-gradient(135deg, #1098AD, #2F9E44); }
+.grad-3-3 { background-image: linear-gradient(135deg, #1098AD, #1098AD); }
+.grad-3-4 { background-image: linear-gradient(135deg, #1098AD, #1C7ED6); }
+.grad-3-5 { background-image: linear-gradient(135deg, #1098AD, #7048E8); }
+.grad-3-6 { background-image: linear-gradient(135deg, #1098AD, #C2255C); }
+.grad-3-7 { background-image: linear-gradient(135deg, #1098AD, #5C940D); }
+.grad-4-0 { background-image: linear-gradient(135deg, #1C7ED6, #E03131); }
+.grad-4-1 { background-image: linear-gradient(135deg, #1C7ED6, #F08C00); }
+.grad-4-2 { background-image: linear-gradient(135deg, #1C7ED6, #2F9E44); }
+.grad-4-3 { background-image: linear-gradient(135deg, #1C7ED6, #1098AD); }
+.grad-4-4 { background-image: linear-gradient(135deg, #1C7ED6, #1C7ED6); }
+.grad-4-5 { background-image: linear-gradient(135deg, #1C7ED6, #7048E8); }
+.grad-4-6 { background-image: linear-gradient(135deg, #1C7ED6, #C2255C); }
+.grad-4-7 { background-image: linear-gradient(135deg, #1C7ED6, #5C940D); }
+.grad-5-0 { background-image: linear-gradient(135deg, #7048E8, #E03131); }
+.grad-5-1 { background-image: linear-gradient(135deg, #7048E8, #F08C00); }
+.grad-5-2 { background-image: linear-gradient(135deg, #7048E8, #2F9E44); }
+.grad-5-3 { background-image: linear-gradient(135deg, #7048E8, #1098AD); }
+.grad-5-4 { background-image: linear-gradient(135deg, #7048E8, #1C7ED6); }
+.grad-5-5 { background-image: linear-gradient(135deg, #7048E8, #7048E8); }
+.grad-5-6 { background-image: linear-gradient(135deg, #7048E8, #C2255C); }
+.grad-5-7 { background-image: linear-gradient(135deg, #7048E8, #5C940D); }
+.grad-6-0 { background-image: linear-gradient(135deg, #C2255C, #E03131); }
+.grad-6-1 { background-image: linear-gradient(135deg, #C2255C, #F08C00); }
+.grad-6-2 { background-image: linear-gradient(135deg, #C2255C, #2F9E44); }
+.grad-6-3 { background-image: linear-gradient(135deg, #C2255C, #1098AD); }
+.grad-6-4 { background-image: linear-gradient(135deg, #C2255C, #1C7ED6); }
+.grad-6-5 { background-image: linear-gradient(135deg, #C2255C, #7048E8); }
+.grad-6-6 { background-image: linear-gradient(135deg, #C2255C, #C2255C); }
+.grad-6-7 { background-image: linear-gradient(135deg, #C2255C, #5C940D); }
+.grad-7-0 { background-image: linear-gradient(135deg, #5C940D, #E03131); }
+.grad-7-1 { background-image: linear-gradient(135deg, #5C940D, #F08C00); }
+.grad-7-2 { background-image: linear-gradient(135deg, #5C940D, #2F9E44); }
+.grad-7-3 { background-image: linear-gradient(135deg, #5C940D, #1098AD); }
+.grad-7-4 { background-image: linear-gradient(135deg, #5C940D, #1C7ED6); }
+.grad-7-5 { background-image: linear-gradient(135deg, #5C940D, #7048E8); }
+.grad-7-6 { background-image: linear-gradient(135deg, #5C940D, #C2255C); }
+.grad-7-7 { background-image: linear-gradient(135deg, #5C940D, #5C940D); }
