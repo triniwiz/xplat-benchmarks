@@ -6,7 +6,7 @@ import UIKit
 /// "Painted", as in native-ios: a mount or mutation changes SwiftUI state and bumps the scenario's
 /// LayoutProbe generation in the same transaction. The sentinel (last child of the scenario root, a
 /// 1pt UIViewRepresentable) gets that generation in updateUIView during SwiftUI's update and marks
-/// itself with setNeedsLayout. The hosting view runs the SwiftUI update and layout in its own
+/// itself with setNeedsLayout. The hosting view is laid out right away (layoutIfNeeded) and runs the SwiftUI update and layout in its own
 /// layoutSubviews, and Core Animation lays layers out top-down, depth-first, so the sentinel's
 /// layoutSubviews runs after SwiftUI has placed the whole tree. That callback records the `layout`
 /// mark; the next CADisplayLink tick (the commit has been handed to the render server) ends the sample.
@@ -56,6 +56,8 @@ final class Bench: BenchAdapter {
         s.probe.onLayout = { [weak self] in self?.painted() }
         model.home = false
         if s.isList { model.list = s } else { model.scenario = s }
+        // Lay out now, as the other stacks do, rather than at UIKit's next update.
+        host?.view.layoutIfNeeded()
     }
 
     func mutate(_ fixture: ScenarioFixture, _ mutation: String, _ done: @escaping (PaintTiming?) -> Void) {
@@ -63,6 +65,7 @@ final class Bench: BenchAdapter {
         s.mutate(mutation)
         s.probe.gen += 1
         pending = done
+        host?.view.layoutIfNeeded()
     }
 
     func unmount(_ done: @escaping () -> Void) {

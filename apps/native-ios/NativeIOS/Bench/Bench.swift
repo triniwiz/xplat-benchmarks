@@ -3,8 +3,8 @@ import UIKit
 /// The BenchAdapter for UIKit.
 ///
 /// "Painted": after a mount or mutation the sentinel (last child of the scenario root) is marked
-/// with setNeedsLayout, as is the scroll host. Core Animation lays layers out top-down,
-/// depth-first, in the commit that follows, so the sentinel's layoutSubviews runs after every
+/// with setNeedsLayout, as is the scroll host, and the window is laid out right away
+/// (layoutIfNeeded). Layers lay out top-down, depth-first, so the sentinel's layoutSubviews runs after every
 /// view before it in the tree has been laid out and its own frame is final (Auto Layout has been
 /// solved for the whole window by then). That callback records the `layout` mark; the next
 /// CADisplayLink tick (the commit has been handed to the render server) is the end of the sample.
@@ -57,6 +57,7 @@ final class Bench: BenchAdapter {
             l.table.onLayout = { [weak self] in self?.painted() }
             vc.showList(l.table)
             l.table.setNeedsLayout()
+            vc.view.layoutIfNeeded()
             return
         }
         let s = buildScenario(fixture)
@@ -65,6 +66,8 @@ final class Bench: BenchAdapter {
         vc.content.addArrangedSubview(s.root)
         s.sentinel.setNeedsLayout()
         vc.host.setNeedsLayout()
+        // Lay out now, as the other stacks do, rather than at UIKit's next update.
+        vc.view.layoutIfNeeded()
     }
 
     func mutate(_ fixture: ScenarioFixture, _ mutation: String, _ done: @escaping (PaintTiming?) -> Void) {
@@ -73,6 +76,7 @@ final class Bench: BenchAdapter {
         s.mutate(mutation)
         s.sentinel.setNeedsLayout()
         vc.host.setNeedsLayout()
+        vc.view.layoutIfNeeded()
     }
 
     func unmount(_ done: @escaping () -> Void) {

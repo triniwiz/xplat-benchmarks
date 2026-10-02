@@ -60,7 +60,7 @@ Each scenario root ends with a 1 dp sentinel view. Mount or mutation time runs f
 | React Native | Sentinel `onLayout` (Fabric), then `requestAnimationFrame`. Checked from the native side: Fabric's single mount transaction always finishes before `onLayout`, and on text-heavy scenes the main thread then spends up to ~190 ms drawing before it can run a frame; the end lands after that, so the measurement includes it. |
 | Lynx | Sentinel `bindlayoutchange`, then `requestAnimationFrame`. Checked against Lynx's own `PipelineEntry.paintEnd` for the same updates: this end always lands 1 to 14 ms after `paintEnd`, so it includes the main-thread UI work that follows Lynx's off-thread layout. |
 
-The native baselines take the same marks: a sentinel's layout callback (UIKit `layoutSubviews`, SwiftUI a tiny `UIViewRepresentable`, Android an `OnLayoutChangeListener`, Compose `onGloballyPositioned`), then one `CADisplayLink` or Choreographer frame. One difference matters when comparing mutations: in the iOS baselines `setNeedsLayout` waits for UIKit's next update (about 16.5 ms at 60 Hz on the simulator) before any work runs, while the NativeScript apps lay out in the same turn. Compare mutation numbers within the native group, or measure work with a synchronous `layoutIfNeeded`.
+The native baselines take the same marks: a sentinel's layout callback (UIKit `layoutSubviews`, SwiftUI a tiny `UIViewRepresentable`, Android an `OnLayoutChangeListener`, Compose `onGloballyPositioned`), then one `CADisplayLink` or Choreographer frame. The iOS baselines lay the window out right away (`layoutIfNeeded`) after a mount or mutation, like every other stack does, instead of waiting for UIKit's next update; before 2026-10-02 they waited, which added up to a frame to every native iOS sample.
 
 Every app runs the same runner, [scenarios/src/runner.ts](scenarios/src/runner.ts), which handles warmup, iterations, unmount, GC hints and reporting. Each app only implements `mount`, `mutate` and `unmount`.
 
@@ -118,31 +118,31 @@ On an emulator:
 
 Curated runs live in `results/` (committed with `-f`). The latest ones:
 
-**iOS, iPhone 17 Pro Max simulator, 2026-10-02** ([report](results/2026-10-02-iphone17promax-sim-full/REPORT.md)), masonkit from [nativescript-mason#76](https://github.com/triniwiz/nativescript-mason/pull/76), 3 rounds. Geometric mean of medians against UIKit, lower is faster. Mutations are compared within the native group only (see "Painted").
+**iOS, iPhone 17 Pro Max simulator, 2026-10-02** ([report](results/2026-10-02-iphone17promax-sim-fair/REPORT.md)), masonkit from [nativescript-mason#76](https://github.com/triniwiz/nativescript-mason/pull/76), 3 rounds, every stack laying out immediately. Geometric mean of painted times against UIKit, lower is faster.
 
 | | mount S | mount M | mutate S | mutate M |
 |---|---:|---:|---:|---:|
 | UIKit | 1.00 | 1.00 | 1.00 | 1.00 |
-| SwiftUI | 0.82 | 0.77 | 1.49 | 4.44 |
-| UIKit + Mason | 0.71 | 0.54 | 1.03 | 1.11 |
-| NativeScript Core + Mason | 0.90 | 0.95 | | |
-| NativeScript Core | 1.39 | 1.54 | | |
-| React Native | 0.68 | 0.73 | 1.52 | 4.29 |
-| Lynx | 0.67 | 0.70 | 0.41 | 0.85 |
-
-Lynx is timed like the NativeScript apps (sentinel, then one frame), so its mutations carry no UIKit wait either.
+| SwiftUI | 0.85 | 0.80 | 1.14 | 2.94 |
+| UIKit + Mason | **0.60** | **0.45** | 0.71 | 0.83 |
+| NativeScript Core + Mason | 1.19 | 1.18 | **0.58** | 0.99 |
+| NativeScript Core | 1.64 | 1.68 | 2.09 | 5.79 |
+| React Native | 0.87 | 0.74 | 1.14 | 2.49 |
+| Lynx | 0.81 | 0.78 | 0.69 | **0.69** |
 
 Size M mount, median ms:
 
-| | tree-fanout | tiles | dashboard | text-flow | styled-cards |
-|---|---:|---:|---:|---:|---:|
-| UIKit | 99.7 | 849.7 | 283.3 | 183.3 | 341.4 |
-| SwiftUI | 232.7 | 299.6 | 99.7 | 116.5 | 133.3 |
-| UIKit + Mason | 67.3 | 283.3 | 100.8 | 133.3 | 183.2 |
-| NativeScript Core + Mason | 164.2 | 607.8 | 192.9 | 129.4 | 303.5 |
-| NativeScript Core | 336.7 | 1090.6 | 285.0 | 199.2 | 374.5 |
-| React Native | 83.1 | 816.5 | 116.6 | 258.2 | 165.8 |
-| Lynx | 75.0 | 641.0 | 200.0 | 116.5 | 167.0 |
+| | nested-chain | tree-fanout | tiles | dashboard | text-flow | styled-cards |
+|---|---:|---:|---:|---:|---:|---:|
+| UIKit | 27.8 | 90.7 | 666.2 | 232.9 | 78.8 | 265.8 |
+| SwiftUI | 31.9 | 183.2 | 204.7 | 81.9 | 99.0 | 88.1 |
+| UIKit + Mason | 16.6 | 53.6 | 201.1 | 83.2 | 45.6 | 84.3 |
+| NativeScript Core + Mason | 27.1 | 155.2 | 579.2 | 182.0 | 125.8 | 288.0 |
+| NativeScript Core | 33.3 | 267.2 | 864.9 | 229.7 | 165.4 | 305.3 |
+| React Native | 16.6 | 83.3 | 600.0 | 100.0 | 100.1 | 133.3 |
+| Lynx | 33.0 | 67.0 | 532.5 | 174.5 | 99.0 | 134.0 |
+
+The native and RN apps end on a 60 Hz frame and the NativeScript apps on their own `requestAnimationFrame`, so small values are frame steps.
 
 **Android, Pixel 9 Pro emulator** ([report](results/2026-10-01-pixel9pro-emu-native-compose/REPORT.md)), size M mount, median ms. An emulator run, so only the ratios mean much. It predates the masonkit fixes in [nativescript-mason#76](https://github.com/triniwiz/nativescript-mason/pull/76), which cut native + Mason mutations from about 18 ms to 1 to 4 ms until laid out.
 

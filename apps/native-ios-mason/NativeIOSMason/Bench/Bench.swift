@@ -5,8 +5,8 @@ import UIKit
 ///
 /// "Painted" is defined as in native-ios: the sentinel's layoutSubviews, then one CADisplayLink
 /// tick. The sentinel is a plain UIView, a leaf of the Mason tree after every other node of the
-/// scenario. After a mount or mutation it and the scroll host get setNeedsLayout. Core Animation
-/// lays layers out top-down and depth-first in the commit that follows, so the host's
+/// scenario. After a mount or mutation it and the scroll host get setNeedsLayout and the window is
+/// laid out right away (layoutIfNeeded). Layers lay out top-down and depth-first, so the host's
 /// layoutSubviews runs first and does the Mason pass (compute + applying every frame, sentinel
 /// included); then the Mason views' own layoutSubviews run (text views, shadows, the root's
 /// autoComputeIfRoot, which finds the compute already applied), and the sentinel's layoutSubviews
@@ -65,6 +65,7 @@ final class Bench: BenchAdapter {
             l.table.onLayout = { [weak self] in self?.painted() }
             vc.showList(l.table)
             l.table.setNeedsLayout()
+            vc.view.layoutIfNeeded()
             return
         }
         let s = buildScenario(fixture, sentinel: sentinel)
@@ -73,6 +74,8 @@ final class Bench: BenchAdapter {
         vc.host.setRoot(s.root)
         sentinel.setNeedsLayout()
         vc.host.setNeedsLayout()
+        // Lay out now, as the other stacks do, rather than at UIKit's next update.
+        vc.view.layoutIfNeeded()
     }
 
     func mutate(_ fixture: ScenarioFixture, _ mutation: String, _ done: @escaping (PaintTiming?) -> Void) {
@@ -81,6 +84,7 @@ final class Bench: BenchAdapter {
         s.mutate(mutation)
         sentinel.setNeedsLayout()
         vc.host.setNeedsLayout()
+        vc.view.layoutIfNeeded()
     }
 
     func unmount(_ done: @escaping () -> Void) {
