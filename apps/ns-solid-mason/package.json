@@ -21,6 +21,7 @@
     "@nativescript-dom/core-types": "~1.0.32",
     "@nativescript-dom/solidjs-types": "~1.0.25",
     "@nativescript/android": "9.1.1",
+    "@nativescript/ios": "9.1.0",
     "@nativescript/types": "~9.0.0",
     "@nativescript/webpack": "~5.0.38",
     "babel-loader": "^9.1.3",
