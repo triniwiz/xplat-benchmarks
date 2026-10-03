@@ -17,6 +17,8 @@ export interface DeviceDriver {
   install(artifactPath: string): Promise<void>;
   memory?(bundleId: string): Promise<Record<string, number> | undefined>;
   forceGc?(bundleId: string): Promise<void>;
+  /** Compile an installed app ahead of time so runs don't start interpreted (Android). */
+  compile?(bundleId: string): Promise<void>;
   screenshot(outPath: string): Promise<void>;
   describe(): Promise<Record<string, string>>;
 }

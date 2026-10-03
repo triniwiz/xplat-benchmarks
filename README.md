@@ -74,25 +74,35 @@ Every app runs the same runner, [scenarios/src/runner.ts](scenarios/src/runner.t
 
 ## Running
 
-Requirements: Node 22 or later, Xcode, the Android SDK, and the NativeScript CLI (`ns`).
+Requirements:
+- Node 22 or later, Xcode with an iOS simulator, the Android SDK and a JDK 17.
+- The NativeScript CLI (`ns`) for the NativeScript apps, CocoaPods for React Native and Lynx on iOS.
+- The UIKit + Mason app (`native-ios-mason`) copies `Mason.xcframework` from a [nativescript-mason](https://github.com/triniwiz/nativescript-mason) checkout next to this repo (or set `MASON_REPO`); the Views + Mason app ships its masonkit AAR in `app/libs`.
 
 ```bash
 npm install
 npm run fixtures            # regenerate fixtures, the manifest and the browser reference
 npm test                    # determinism, protocol end-to-end, stats
 npm run bench -- devices    # list connected targets
-npm run bench -- sync       # copy scenarios/src into every app (the harness does this before builds)
 
-# In-app layout suite (the apps must be installed; release builds):
-npm run bench -- run --platform android --rounds 3
-npm run bench -- run --platform ios --device <udid> --apps ns-core,ns-core-mason --scenarios mount --sizes S,M
+# Build and install. Android: release APKs to build/android/, installed and compiled ahead of time.
+npm run bench -- build --platform android --install --device <serial>
+# iOS: release simulator builds to build/ios/, installed on the simulator.
+scripts/build-ios.sh <simulator-udid>                  # every app with an iOS build
+scripts/build-ios.sh <simulator-udid> native-ios lynx  # or just some
+
+# Run the in-app layout suite against what is installed:
+npm run bench -- run --platform ios --device <udid> --rounds 3 --sizes S,M
+npm run bench -- run --platform android --device <serial> --apps native-android,ns-core-mason --rounds 3
 
 # Open one scenario on screen, e.g. to check visual parity:
-npm run bench -- show --platform android --app ns-core-mason --scenario grid-dashboard --size S --screenshot /tmp/dash.png
+npm run bench -- show --platform ios --device <udid> --app ns-core-mason --scenario grid-dashboard --size S --screenshot /tmp/dash.png
 
 npm run bench -- report results/<folder>
 ```
 
+- **What `run` uses.** It launches whatever is installed. On iOS nothing is installed for you, so rebuild and reinstall (`scripts/build-ios.sh`) after every change.
+- **Testing a local Mason build.** `apps/ns-core-mason-perf/rebuild-mason.sh [--ios] [path/to/nativescript-mason]` packs a local masonkit into `ns-core-mason-perf`; then rebuild that app. Compare two builds with interleaved rounds rather than back-to-back runs.
 - **How the app reaches the harness.**
   - The harness serves plans and collects results on port 9797.
   - Android reaches it through `adb reverse`.
@@ -162,5 +172,6 @@ scenarios/   shared source of truth: spec, tokens, seeded generator, runner and 
 harness/     Node CLI: devices, sync, run (HTTP plan/result server + deep links), show, report
 apps/        one independent project per stack (no workspace hoisting across stacks)
 drivers/     Android Macrobenchmark module and iOS XCUITest project (phase 4)
+scripts/     build-ios.sh: release-build and install the iOS apps on a simulator
 results/     raw results (git-ignored; commit curated runs with -f)
 ```

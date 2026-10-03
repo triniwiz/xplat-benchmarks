@@ -235,6 +235,7 @@ async function cmdBuild(argv: string[]) {
       log(`${app.id}: built ${artifact} in ${((Date.now() - t0) / 1000).toFixed(0)}s`);
       if (driver) {
         await driver.install(artifact);
+        await driver.compile?.(app.bundleId[platform]);
         log(`${app.id}: installed on ${driver.target.name}`);
       }
     } catch (e) {

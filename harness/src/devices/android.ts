@@ -70,6 +70,10 @@ export function androidDriver(target: Target): DeviceDriver {
     async install(apk) {
       await run(ADB, ['-s', serial, 'install', '-r', apk], { timeoutMs: 300_000 });
     },
+    async compile(pkg) {
+      // A fresh install runs interpreted/JIT (dexopt "verify"), about 9x slower and noisy.
+      await run(ADB, ['-s', serial, 'shell', 'cmd', 'package', 'compile', '-m', 'speed', '-f', pkg], { timeoutMs: 600_000 });
+    },
     async screenshot(outPath) {
       const remote = '/data/local/tmp/xplatbench-screen.png';
       await adb(serial, 'shell', 'screencap', '-p', remote);
