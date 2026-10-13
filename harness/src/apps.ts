@@ -282,6 +282,28 @@ export const APPS: readonly AppDef[] = [
       'gc() is Runtime.gc() between iterations; unmount clears the body state and waits 2 frames.',
     ],
   },
+  {
+    id: 'dartnative',
+    title: 'DartNative',
+    dir: 'apps/dartnative',
+    // Dart ports of the seeded generator, hash and runner (apps/dartnative/lib/bench); sync still copies the TS here, unused. `dn test` checks the hashes.
+    sharedDir: 'apps/dartnative/shared',
+    bundleId: { ios: 'org.xplatbench.dartnative', android: 'org.xplatbench.dartnative' },
+    androidActivity: 'org.xplatbench.xplatbench_dn.MainActivity',
+    notes: [
+      'DartNative 1.2: Flutter-style widgets in AOT Dart, mounted as real Android Views (iOS: UIKit) and laid out by Yoga, all on the main thread. Release build (arm64). Dart ports of the seeded generator, hash and runner; clock is a Dart Stopwatch. DartNative has no release mode for the iOS simulator, so iOS numbers come from a device.',
+      'The app is licensed (key compiled in); on a cold start the key is exchanged for a token in the background, which can overlap the first case (warmup covers it).',
+      'Painted: setState is applied in the next frame (diff, native view mutations and Yoga layout in one main-thread pass). The scenario root registers a post-frame callback from its build; the first one that sees the 1 dp sentinel\'s native frame (findRenderObject → localToGlobal/size) at a new position or size is the `layout` mark, with a per-frame fallback. The second DartNativePerformance frame callback (Choreographer / CADisplayLink) after the mark ends the sample. Android: the flush lands between vsyncs and the views are drawn in the next frame\'s traversal, so this is the frame after the one that drew them, as the native apps. iOS: the flush runs inside the display-link tick and the first callback fires in that same tick (91% of samples within 2 ms of the mark), so the second one is the next frame, as native-ios. The end time is taken inside that callback (Dart microtasks queued from it can run tens of ms later). `built` is the scenario root\'s build.',
+      'Borders: DartNative only renders uniform borders, so one-sided ones are extra views: the chain\'s left border is an outer box in the border colour with 1 dp left padding, table/list row bottoms and the nav\'s right edge are 1 dp ColoredBoxes, styled-cards v3 is a 4 dp band inside a 1 dp grey frame.',
+      'tree-fanout: rows are Row + Expanded, columns Column(stretch). relayout-resize: FractionallySizedBox is not supported by DartNative 1.2 (logged as a fallback that renders nothing), so 80% is Row(Expanded(flex: 4), Spacer(flex: 1)); the tree widget is reused so only the frame changes. relayout-style passes a flag down and rebuilds every node.',
+      'flex-wrap-tiles: Wrap; tiles in a line do not stretch to the tallest one (Wrap has no stretch). insert-remove: tiles are unkeyed, the Flutter default for stateless children. With a ValueKey per tile the same insert took ~5.5 s and the remove ~11 s at S (keyed reorder path), so keyed M/L would hit the step timeout.',
+      'grid-dashboard: flex-emulated, as React Native: header, then a Row(stretch) of nav and a Column of stat pairs (Row(stretch) of two Expanded cards) and table rows (Expanded flex 2/1/1/1). Row stretch is Yoga\'s; IntrinsicHeight rendered nothing.',
+      'Text: Text with TextStyle; line height via TextStyle.height only where React Native sets lineHeight; font sizes are SP (font scale 1 on the test device). Clamp is maxLines: 2 with ellipsis.',
+      'styled-cards: v0 BoxShadow (an elevation shadow on Android), v1 per-corner BorderRadius with a 2 dp border, v2 LinearGradient corner to corner, v4 Opacity + Transform.rotate + Transform.scale, v5 ClipRRect.',
+      'list-scroll: FastList (RecyclerView) with one builder for the three item types; the FastList itself is the sentinel (its first layout builds the visible rows).',
+      'No gc() hook in Dart; unmount clears the body and waits 2 frames.',
+    ],
+  },
 ];
 
 export function getApp(id: string): AppDef {

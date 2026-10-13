@@ -52,6 +52,11 @@ function steps(app: AppDef, platform: Platform, apkOut: string): { steps: Step[]
       artifact: join(dir, 'app/build/outputs/apk/release/app-release.apk'),
     };
   }
+  if (app.id === 'dartnative') {
+    return {
+      steps: [{ cwd: dir, cmd: 'scripts/build-android.sh', args: [apkOut] }],
+    };
+  }
   throw new Error(`No build recipe for ${app.id}`);
 }
 

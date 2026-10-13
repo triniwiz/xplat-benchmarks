@@ -1,6 +1,6 @@
 # xplat-benchmarks
 
-This repo benchmarks layout performance and CSS support on deep and heavy layouts across cross-platform frameworks, on iOS and Android. NativeScript is the main subject and is tested in three variants. React Native and Lynx are the comparison stacks.
+This repo benchmarks layout performance and CSS support on deep and heavy layouts across cross-platform frameworks, on iOS and Android. NativeScript is the main subject and is tested in three variants. React Native, Lynx and DartNative are the comparison stacks.
 
 | App | Stack | Status |
 |---|---|---|
@@ -14,6 +14,7 @@ This repo benchmarks layout performance and CSS support on deep and heavy layout
 | `react-native` | React Native 0.87.1 bare CLI, Fabric, Hermes, FlashList v2 | running |
 | `lynx` | ReactLynx (rspeedy) bundle in a minimal native host on Lynx SDK 4.1.0 | running |
 | `ng-native` | Angular Native (Expo host) | running (iOS) |
+| `dartnative` | [DartNative](https://dartnative.com) 1.2: Flutter-style widgets in AOT Dart, rendered to UIKit / Android views with Yoga. Needs a licence key; see [apps/dartnative/README.md](apps/dartnative/README.md) | running (Android; iOS on a device only) |
 | `ns-core-mason-perf` | `ns-core-mason` on a local masonkit build (`rebuild-mason.sh`), for A/B work on Mason itself | running |
 
 Native baselines, no framework and no JS. Each one ports the seeded generator, data hash and runner to Swift or Kotlin and builds every scenario by hand:
@@ -77,6 +78,7 @@ Every app runs the same runner, [scenarios/src/runner.ts](scenarios/src/runner.t
 Requirements:
 - Node 22 or later, Xcode with an iOS simulator, the Android SDK and a JDK 17.
 - The NativeScript CLI (`ns`) for the NativeScript apps, CocoaPods for React Native and Lynx on iOS.
+- The DartNative CLI (`dn`) and a licence key for `dartnative` ([setup](apps/dartnative/README.md#setup)).
 - The UIKit + Mason app (`native-ios-mason`) copies `Mason.xcframework` from a [nativescript-mason](https://github.com/triniwiz/nativescript-mason) checkout next to this repo (or set `MASON_REPO`); the Views + Mason app ships its masonkit AAR in `app/libs`.
 
 ```bash
@@ -90,6 +92,8 @@ npm run bench -- build --platform android --install --device <serial>
 # iOS: release simulator builds to build/ios/, installed on the simulator.
 scripts/build-ios.sh <simulator-udid>                  # every app with an iOS build
 scripts/build-ios.sh <simulator-udid> native-ios lynx  # or just some
+# iOS device: release builds signed with your team, to build/ios-device/, installed with devicectl.
+TEAM=<team-id> scripts/build-ios.sh <device-coredevice-id> dartnative native-ios
 
 # Run the in-app layout suite against what is installed:
 npm run bench -- run --platform ios --device <udid> --rounds 3 --sizes S,M
@@ -106,7 +110,8 @@ npm run bench -- report results/<folder>
 - **How the app reaches the harness.**
   - The harness serves plans and collects results on port 9797.
   - Android reaches it through `adb reverse`.
-  - Physical iOS devices reach the Mac's LAN IP over Wi-Fi; pass `--host ip:port` to override it.
+  - Physical iOS devices reach the Mac's LAN IP over Wi-Fi (link-local 169.254.* interfaces, such as a cabled device's, are skipped); pass `--host ip:port` to override it.
+  - On a device, each app asks once for Local Network access; tap Allow, and keep the device unlocked (Auto-Lock: Never) for the whole run.
 - **Launching.** Apps are launched cold with `xplatbench://run?host=…&run=…`. `xplatbench://show?scenario=…&size=…` mounts one scenario and leaves it on screen.
 - **Output.** Results go to `results/<date>-<device>-<platform>/`: one JSON file per round and app, plus `REPORT.md`.
 

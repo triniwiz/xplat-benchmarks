@@ -26,7 +26,8 @@ export type AppId =
   | 'native-ios-swiftui'
   | 'native-android'
   | 'native-android-mason'
-  | 'native-android-compose';
+  | 'native-android-compose'
+  | 'dartnative';
 
 export interface PlanCase {
   scenario: ScenarioId;

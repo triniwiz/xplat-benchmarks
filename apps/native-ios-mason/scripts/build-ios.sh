@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
-# Release build for the iOS simulator (arm64) into apps/native-ios-mason/build; prints the .app path.
+# Release build for the iOS simulator (arm64), or a device with IOS_SDK=iphoneos TEAM=<id>, into apps/native-ios-mason/build; prints the .app path.
 # Mason comes from vendor/Mason.xcframework. If it is missing, it is copied from a nativescript-mason
 # checkout's dist (MASON_REPO, default ../nativescript-mason next to this repo), with its version.
 # Usage: scripts/build-ios.sh [extra xcodebuild args]
 set -euo pipefail
+SDK="${IOS_SDK:-iphonesimulator}"
+if [ "$SDK" = iphoneos ]; then
+  DEST='generic/platform=iOS'; SIGN=(-allowProvisioningUpdates DEVELOPMENT_TEAM="${TEAM:?TEAM is required for device builds}" CODE_SIGN_STYLE=Automatic CODE_SIGN_IDENTITY="Apple Development")
+else
+  DEST='generic/platform=iOS Simulator'; SIGN=()
+fi
 APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 ROOT="$(cd "$APP_DIR/../.." && pwd)"
 DERIVED="$APP_DIR/build"
@@ -22,17 +28,17 @@ if ! xcodebuild \
   -project "$APP_DIR/NativeIOSMason.xcodeproj" \
   -scheme NativeIOSMason \
   -configuration Release \
-  -sdk iphonesimulator \
-  -destination 'generic/platform=iOS Simulator' \
+  -sdk "$SDK" \
+  -destination "$DEST" \
   -derivedDataPath "$DERIVED" \
   ARCHS=arm64 ONLY_ACTIVE_ARCH=YES \
   COMPILER_INDEX_STORE_ENABLE=NO \
   MASON_VERSION="$MASON_VERSION" \
-  "$@" build > "$LOG" 2>&1; then
+  ${SIGN[@]+"${SIGN[@]}"} "$@" build > "$LOG" 2>&1; then
   grep -E "error:|BUILD FAILED" "$LOG" | head -40 >&2 || tail -40 "$LOG" >&2
   echo "build failed; full log: $LOG" >&2
   exit 1
 fi
-APP="$DERIVED/Build/Products/Release-iphonesimulator/NativeIOSMason.app"
+APP="$DERIVED/Build/Products/Release-$SDK/NativeIOSMason.app"
 [ -d "$APP" ] || { echo "build succeeded but $APP is missing" >&2; exit 1; }
 echo "$APP"

@@ -47,7 +47,7 @@ export async function listIos(): Promise<Target[]> {
 export function lanAddress(): string {
   for (const list of Object.values(networkInterfaces())) {
     for (const a of list ?? []) {
-      if (a.family === 'IPv4' && !a.internal) return a.address;
+      if (a.family === 'IPv4' && !a.internal && !a.address.startsWith('169.254.')) return a.address;
     }
   }
   throw new Error('No LAN IPv4 address found; pass --host explicitly');
