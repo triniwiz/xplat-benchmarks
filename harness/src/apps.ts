@@ -237,7 +237,7 @@ export const APPS: readonly AppDef[] = [
       'grid-dashboard: flex-emulated, as in React Native (Android Views have no CSS grid); table rows use 2:1:1:1 weights.',
       'Text: TextView with dp sizes, includeFontPadding=false, simple break strategy, no hyphenation (as React Native); lineHeight only where styles.ts sets it.',
       'styled-cards: v0 shadow is a 3 dp elevation shadow (not a CSS blur), v2 gradient is GradientDrawable TL_BR, v4 is View alpha/rotation/scale, v5 clips with clipToOutline.',
-      'Painted: the sentinel\'s OnLayoutChangeListener records the `layout` mark (it is the last child, laid out after the rest of the tree in the same traversal); the next Choreographer frame ends the sample. Steps resume inside the Choreographer frame callback, so a mount\'s layout runs in that same frame (as requestAnimationFrame in NativeScript).',
+      'Painted: the sentinel\'s OnLayoutChangeListener records the `layout` mark (it is the last child, laid out after the rest of the tree in the same traversal); the next Choreographer frame ends the sample. Steps resume inside the Choreographer frame callback, so a mount\'s layout runs in that same frame (as in the NativeScript apps).',
       'list-scroll: RecyclerView with one view type per item type; the RecyclerView is the sentinel (its first layout builds the visible cells).',
       'gc() is Runtime.gc() between iterations; unmount waits 2 frames.',
     ],

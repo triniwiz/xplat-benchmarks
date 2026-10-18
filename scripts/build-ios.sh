@@ -12,7 +12,7 @@ if [ ${#APPS[@]} -eq 0 ]; then
         react-native lynx native-ios native-ios-swiftui native-ios-mason)
 fi
 if xcrun simctl list devices | grep -q "$UDID"; then
-  DEVICE=0; SDK=iphonesimulator; DEST='generic/platform=iOS Simulator'; SIGN=()
+  DEVICE=0; SDK=iphonesimulator; DEST='generic/platform=iOS Simulator'; SIGN=(ARCHS="$(uname -m)" ONLY_ACTIVE_ARCH=YES)
 else
   DEVICE=1; SDK=iphoneos; DEST='generic/platform=iOS'
   export TEAM="${TEAM:?set TEAM to your Apple development team id for device builds}"
@@ -20,14 +20,14 @@ else
 fi
 export IOS_SDK="$SDK"
 export LANG="${LANG:-en_US.UTF-8}" LC_ALL="${LC_ALL:-en_US.UTF-8}"   # CocoaPods needs a UTF-8 locale
-SUFFIX="$([ "$DEVICE" = 1 ] && echo -device)"
+SUFFIX="$([ "$DEVICE" = 1 ] && echo -device || true)"
 OUT="$ROOT/build/ios$SUFFIX"; LOGS="$ROOT/build/logs"; DD="$ROOT/build/ios-derived$SUFFIX"
 mkdir -p "$OUT" "$LOGS"
 cd "$ROOT" && npm run bench -- sync >/dev/null
 
 xcode_app() { # <workspace> <scheme> <log> -> prints the built .app
   xcodebuild -workspace "$1" -scheme "$2" -configuration Release -sdk "$SDK" \
-    -destination "$DEST" -derivedDataPath "$DD/$2" ${SIGN[@]+"${SIGN[@]}"} build > "$3" 2>&1
+    -destination "$DEST" -derivedDataPath "$DD/$2" ${SIGN[@]+"${SIGN[@]}"} build > "$3" 2>&1 &&
   find "$DD/$2/Build/Products/Release-$SDK" -maxdepth 1 -name '*.app' | head -1
 }
 

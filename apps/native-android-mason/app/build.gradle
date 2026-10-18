@@ -3,10 +3,10 @@ apply plugin: "org.jetbrains.kotlin.android"
 
 // Native Android + Mason: the same shell and runner as native-android, but every scenario tree (and
 // the frame) is built with masonkit, Mason's Android library, from Kotlin. No NativeScript, no JS.
-// libs/masonkit-release.aar is a copy of
-// nativescript-mason/packages/nativescript-masonkit/platforms/android/masonkit-release.aar.
+// libs/masonkit-release.aar is platforms/android/masonkit-release.aar from the
+// @triniwiz/nativescript-masonkit npm package of masonkitVersion.
 def common = "../../native-android-common/src"
-def masonkitVersion = "1.0.0-beta.106"
+def masonkitVersion = "1.0.0-beta.118"
 
 android {
     namespace "org.xplatbench.nativeandroidmason"
@@ -18,7 +18,7 @@ android {
         targetSdk 36
         versionCode 1
         versionName "1.0"
-        buildConfigField "String", "MASONKIT_VERSION", "\"$masonkitVersion (local AAR)\""
+        buildConfigField "String", "MASONKIT_VERSION", "\"$masonkitVersion\""
     }
 
     buildFeatures {
