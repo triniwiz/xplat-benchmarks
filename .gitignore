@@ -33,3 +33,11 @@ apps/lynx/hosts/android/local.properties
 
 # release artifacts and logs from `bench build`
 build/
+
+apps/nsh/.nsh/
+apps/nsh/hosts/android/.gradle/
+apps/nsh/hosts/android/build/
+apps/nsh/hosts/android/app/build/
+apps/nsh/hosts/android/app/libs/
+apps/nsh/hosts/android/app/src/main/assets/
+apps/nsh/hosts/android/local.properties
