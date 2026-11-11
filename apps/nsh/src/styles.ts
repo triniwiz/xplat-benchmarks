@@ -48,7 +48,7 @@ export const s = {
   trow: { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', alignItems: 'center', paddingVertical: 6, borderBottomWidth: 1, borderColor: colors.border },
   cellName: { flexDirection: 'row', alignItems: 'center' },
   dot: { width: 8, height: 8, borderRadius: 4, marginRight: 6 },
-  cell: { fontSize: 12, color: colors.text },
+  cell: { flexShrink: 1, fontSize: 12, color: colors.text },
   bold: { fontWeight: 'bold' },
 
   textFlow: { padding: 12 },
