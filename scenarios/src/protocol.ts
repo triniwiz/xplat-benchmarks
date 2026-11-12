@@ -28,7 +28,8 @@ export type AppId =
   | 'native-android'
   | 'native-android-mason'
   | 'native-android-compose'
-  | 'dartnative';
+  | 'dartnative'
+  | 'whisker';
 
 export interface PlanCase {
   scenario: ScenarioId;

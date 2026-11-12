@@ -324,6 +324,25 @@ export const APPS: readonly AppDef[] = [
       'No gc() hook in Dart; unmount clears the body and waits 2 frames.',
     ],
   },
+  {
+    id: 'whisker',
+    title: 'Whisker',
+    dir: 'apps/whisker',
+    // Rust ports of the seeded generator, hash and runner (apps/whisker/src/bench); sync still copies the TS here, unused. `cargo test` checks the hashes.
+    sharedDir: 'apps/whisker/shared',
+    bundleId: { ios: 'org.xplatbench.whisker', android: 'org.xplatbench.whisker' },
+    androidActivity: '.MainActivity',
+    notes: [
+      'Whisker 0.18.0 (pre-alpha): Rust components with signals and typed `css!`; style resolution and Taffy layout run in Rust, and the frame is applied to Android views by Whisker\'s Kotlin host, all on the main thread inside one Choreographer callback. Release build (arm64-v8a only: the Whisker Gradle plugin builds no other ABI), so on an x86_64 emulator the Rust code runs under ARM translation and the numbers only show that the pipeline works. Android only: iOS needs a macOS host.',
+      'Rust ports of the seeded generator, hash and runner; clock is `std::time::Instant` (CLOCK_MONOTONIC) in ms. The runner runs on a worker thread with blocking HTTP/1.0 over `std::net`; every step is posted to the UI thread with Whisker\'s `RuntimeDispatcher` and runs at the start of the next `drive_frame`, where `t0` is read, so a step starts on a frame boundary (as `align` + `t0` do in the JS apps).',
+      'Painted: the 1 dp sentinel\'s `observe_layout` callback (after the Taffy pass) is the `layout` mark; Whisker\'s `on_next_frame_applied` then fires inside the same callback once the Kotlin host has updated the views, and the sample ends in the next Choreographer callback. Checked against `dumpsys gfxinfo` framestats for mounts at M, restyle and insert: the end always lands after the UI thread finished drawing that commit (`SyncQueued`). `align` and `unmount` force a frame by toggling a 0-height element so the wait is a real frame.',
+      'Runner divergences: per-step timeouts are enforced on the worker (a late UI completion is dropped); no gc() (Rust has no collector), no diagnostics, no profiling; `unmount` after a case error has a timeout. The launch URL is read once at startup over JNI (the generated MainActivity only forwards intents to Kotlin listeners), so a run needs a cold start, which the harness always does. The JavaVM comes from `JNI_GetCreatedJavaVMs` in libnativehelper, public from Android 12, so minSdk is 31 and older devices refuse the install.',
+      'Text: system font only; line height is set only where the reference CSS sets it (text-flow paragraphs, card and list bodies), elsewhere it is Whisker\'s natural line height (a StaticLayout without font padding), 0 to 2 device px per text box shorter than the NativeScript apps on the same emulator; Whisker sizes text by display density, so it ignores the system font scale (checked at 1.3). text-flow: two-line clamp is `max_lines: 2` + `text_overflow: Ellipsis`; Whisker 0.18 truncates to two lines but draws no ellipsis on Android.',
+      'grid-dashboard: real CSS grid (Taffy) with numeric line placement (no `grid-area` in 0.18). styled-cards: box shadow, per-corner radius, linear gradient, per-side borders, opacity + rotate/scale, and overflow clipping are all native Whisker styles; v4 is drawn offset from its CSS position by an amount that grows with its y offset in the list (about 9 dp right of and above the reference for the first v4 card, about 24 dp right for the second): Whisker builds the CSS matrix around the box centre, but applies it with `View.setAnimationMatrix` while it positions views with `translationX`/`translationY`, and Android applies the animation matrix before the translation, so the rotation and scale also act on the view\'s layout offset. No transform-origin or function order cancels an offset that depends on the layout position.',
+      'relayout-style: one `restyled` signal read by a computed style on every inner node (no descendant selectors). insert-remove: keyed `ForEach` (by tile id), so only the 100 head tiles are created or removed.',
+      'list-scroll: Whisker `List`, which windows items in Rust under a ScrollView (it mounts and unmounts item subtrees; it does not recycle native views and has no item-type API); the List element is the sentinel.',
+    ],
+  },
 ];
 
 export function getApp(id: string): AppDef {
