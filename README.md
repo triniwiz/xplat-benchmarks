@@ -16,6 +16,7 @@ This repo benchmarks layout performance and CSS support on deep and heavy layout
 | `nsh` | [Native Shell](https://nsh.dev) 0.4.0: a TSX bundle on QuickJS in a minimal native host that embeds `nsh.aar` | running (Android) |
 | `ng-native` | Angular Native (Expo host) | running (iOS) |
 | `dartnative` | [DartNative](https://dartnative.com) 1.2: Flutter-style widgets in AOT Dart, rendered to UIKit / Android views with Yoga. Needs a licence key; see [apps/dartnative/README.md](apps/dartnative/README.md) | running (Android; iOS on a device only) |
+| `whisker` | [Whisker](https://whisker.rs) 0.18 (pre-alpha): Rust UI with signals and typed CSS, laid out by Taffy in Rust and rendered to Android views. Rust ports of the generator, hash and runner (`cargo test` checks the hashes) | running (Android) |
 | `ns-core-mason-perf` | `ns-core-mason` on a local masonkit build (`rebuild-mason.sh`), for A/B work on Mason itself | running |
 
 Native baselines, no framework and no JS. Each one ports the seeded generator, data hash and runner to Swift or Kotlin and builds every scenario by hand:
@@ -62,6 +63,7 @@ Each scenario root ends with a 1 dp sentinel view. Mount or mutation time runs f
 | React Native | Sentinel `onLayout` (Fabric), then `requestAnimationFrame`. Checked from the native side: Fabric's single mount transaction always finishes before `onLayout`, and on text-heavy scenes the main thread then spends up to ~190 ms drawing before it can run a frame; the end lands after that, so the measurement includes it. |
 | Lynx | Sentinel `bindlayoutchange`, then `requestAnimationFrame`. Checked against Lynx's own `PipelineEntry.paintEnd` for the same updates: this end always lands 1 to 14 ms after `paintEnd`, so it includes the main-thread UI work that follows Lynx's off-thread layout. |
 | Native Shell | Sentinel `onLayout`, then a second `requestAnimationFrame`, both on NSH's engine thread. NSH drives rAF from a Choreographer callback on the main thread, so the first one fires as the main thread starts drawing the commit and the second only after that draw. Checked on the emulator with a main-thread message trace and `dumpsys gfxinfo framestats`: the end landed after the main thread's draw in 154 of 154 samples (styled-cards M medians: first rAF 28 ms after layout, draw done 46 ms, end 63 ms). |
+| Whisker | Sentinel layout observer (after the Rust Taffy pass), then Whisker's frame-applied callback (the Android views were updated in the same Choreographer callback), then the next Choreographer frame. Checked against `dumpsys gfxinfo` framestats: the end always lands after the UI thread finished drawing that commit (`SyncQueued`). |
 
 The native baselines take the same marks: a sentinel's layout callback (UIKit `layoutSubviews`, SwiftUI a tiny `UIViewRepresentable`, Android an `OnLayoutChangeListener`, Compose `onGloballyPositioned`), then one `CADisplayLink` or Choreographer frame. The iOS baselines lay the window out right away (`layoutIfNeeded`) after a mount or mutation, like every other stack does, instead of waiting for UIKit's next update; before 2026-10-02 they waited, which added up to a frame to every native iOS sample.
 
@@ -82,6 +84,7 @@ Requirements:
 - The NativeScript CLI (`ns`) for the NativeScript apps, CocoaPods for React Native and Lynx on iOS.
 - The Native Shell CLI (`nsh`, [install](https://nsh.dev)) for `nsh`. Its build finds the install through `nsh` on `PATH`, or `NSH_HOME`.
 - The DartNative CLI (`dn`) and a licence key for `dartnative` ([setup](apps/dartnative/README.md#setup)).
+- For `whisker`: Rust with the `aarch64-linux-android` target, the Whisker CLI (`cargo install whisker-cli --version 0.18.0`), and NDK 27.1 (or another NDK whisker-build 0.18 accepts) in the Android SDK. On Windows also `cargo-ndk`, because the build script compiles the Rust library itself there (`whisker build-android` 0.18 cannot find the NDK tools on Windows). The app needs Android 12 or later.
 - The UIKit + Mason app (`native-ios-mason`) copies `Mason.xcframework` from a [nativescript-mason](https://github.com/triniwiz/nativescript-mason) checkout next to this repo (or set `MASON_REPO`); the Views + Mason app ships its masonkit AAR in `app/libs`.
 
 ```bash
