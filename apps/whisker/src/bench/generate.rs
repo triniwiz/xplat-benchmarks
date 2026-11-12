@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use serde::{Serialize, Serializer};
 
 use super::hash::{fnv1a, hash_json};
@@ -164,11 +166,11 @@ pub struct ListData {
 pub enum FixtureData {
     Chain(ChainData),
     Tree(TreeData),
-    Tiles(TilesData),
+    Tiles(Arc<TilesData>),
     Dashboard(DashboardData),
     TextFlow(TextFlowData),
     Cards(CardsData),
-    List(ListData),
+    List(Arc<ListData>),
 }
 
 pub struct ScenarioFixture {
@@ -314,12 +316,12 @@ pub fn generate(fixture: FixtureId, size: Size) -> FixtureData {
         Params::Tiles { count, insert } => {
             let tiles = (0..count).map(|i| tile(rng, i)).collect();
             let insert = (0..insert).map(|i| tile(rng, count + i)).collect();
-            FixtureData::Tiles(TilesData { tiles, insert })
+            FixtureData::Tiles(Arc::new(TilesData { tiles, insert }))
         }
         Params::Dashboard { nav, stats, rows } => FixtureData::Dashboard(dashboard(rng, nav, stats, rows)),
         Params::TextFlow { paragraphs } => FixtureData::TextFlow(text_flow(rng, paragraphs)),
         Params::Cards { cards: count } => FixtureData::Cards(cards(rng, count)),
-        Params::List { items } => FixtureData::List(list(rng, items)),
+        Params::List { items } => FixtureData::List(Arc::new(list(rng, items))),
     }
 }
 
