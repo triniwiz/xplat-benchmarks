@@ -66,6 +66,11 @@ function steps(app: AppDef, platform: Platform, apkOut: string): { steps: Step[]
       steps: [{ cwd: dir, cmd: 'scripts/build-android.sh', args: [apkOut] }],
     };
   }
+  if (app.id === 'whisker') {
+    return {
+      steps: [{ cwd: dir, cmd: 'node', args: ['scripts/build-android.mjs', apkOut] }],
+    };
+  }
   throw new Error(`No build recipe for ${app.id}`);
 }
 
