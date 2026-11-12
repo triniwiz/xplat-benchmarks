@@ -20,6 +20,7 @@ export type AppId =
   | 'ns-solid-mason'
   | 'react-native'
   | 'lynx'
+  | 'nsh'
   | 'ng-native'
   | 'native-ios'
   | 'native-ios-mason'

@@ -46,6 +46,15 @@ function steps(app: AppDef, platform: Platform, apkOut: string): { steps: Step[]
       artifact: join(dir, 'hosts/android/app/build/outputs/apk/release/app-release.apk'),
     };
   }
+  if (app.id === 'nsh') {
+    return {
+      steps: [
+        { cwd: dir, cmd: 'node', args: ['scripts/prepare-android.mjs'] },
+        { cwd: join(dir, 'hosts/android'), cmd: './gradlew', args: ['assembleRelease', '--console=plain', '-q'] },
+      ],
+      artifact: join(dir, 'hosts/android/app/build/outputs/apk/release/app-release.apk'),
+    };
+  }
   if (app.id === 'native-android' || app.id === 'native-android-mason' || app.id === 'native-android-compose') {
     return {
       steps: [{ cwd: dir, cmd: './gradlew', args: ['assembleRelease', '--console=plain', '-q'] }],

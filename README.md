@@ -13,6 +13,7 @@ This repo benchmarks layout performance and CSS support on deep and heavy layout
 | `ns-solid-mason` | `@nativescript-community/solid-js` (dominative) + Mason | running |
 | `react-native` | React Native 0.87.1 bare CLI, Fabric, Hermes, FlashList v2 | running |
 | `lynx` | ReactLynx (rspeedy) bundle in a minimal native host on Lynx SDK 4.1.0 | running |
+| `nsh` | [Native Shell](https://nsh.dev) 0.4.0: a TSX bundle on QuickJS in a minimal native host that embeds `nsh.aar` | running (Android) |
 | `ng-native` | Angular Native (Expo host) | running (iOS) |
 | `dartnative` | [DartNative](https://dartnative.com) 1.2: Flutter-style widgets in AOT Dart, rendered to UIKit / Android views with Yoga. Needs a licence key; see [apps/dartnative/README.md](apps/dartnative/README.md) | running (Android; iOS on a device only) |
 | `ns-core-mason-perf` | `ns-core-mason` on a local masonkit build (`rebuild-mason.sh`), for A/B work on Mason itself | running |
@@ -60,6 +61,7 @@ Each scenario root ends with a 1 dp sentinel view. Mount or mutation time runs f
 | NativeScript (all three) | Sentinel `layoutChanged`, then one `CADisplayLink` or Choreographer frame (core's `FPSCallback`). Before 2026-10-17 this was core's `requestAnimationFrame`, which, called outside a frame callback, runs as the next macrotask without waiting for a frame, so NativeScript samples ended at layout, up to a frame before the other stacks'. |
 | React Native | Sentinel `onLayout` (Fabric), then `requestAnimationFrame`. Checked from the native side: Fabric's single mount transaction always finishes before `onLayout`, and on text-heavy scenes the main thread then spends up to ~190 ms drawing before it can run a frame; the end lands after that, so the measurement includes it. |
 | Lynx | Sentinel `bindlayoutchange`, then `requestAnimationFrame`. Checked against Lynx's own `PipelineEntry.paintEnd` for the same updates: this end always lands 1 to 14 ms after `paintEnd`, so it includes the main-thread UI work that follows Lynx's off-thread layout. |
+| Native Shell | Sentinel `onLayout`, then a second `requestAnimationFrame`, both on NSH's engine thread. NSH drives rAF from a Choreographer callback on the main thread, so the first one fires as the main thread starts drawing the commit and the second only after that draw. Checked on the emulator with a main-thread message trace and `dumpsys gfxinfo framestats`: the end landed after the main thread's draw in 154 of 154 samples (styled-cards M medians: first rAF 28 ms after layout, draw done 46 ms, end 63 ms). |
 
 The native baselines take the same marks: a sentinel's layout callback (UIKit `layoutSubviews`, SwiftUI a tiny `UIViewRepresentable`, Android an `OnLayoutChangeListener`, Compose `onGloballyPositioned`), then one `CADisplayLink` or Choreographer frame. The iOS baselines lay the window out right away (`layoutIfNeeded`) after a mount or mutation, like every other stack does, instead of waiting for UIKit's next update; before 2026-10-02 they waited, which added up to a frame to every native iOS sample.
 
@@ -78,6 +80,7 @@ Every app runs the same runner, [scenarios/src/runner.ts](scenarios/src/runner.t
 Requirements:
 - Node 22 or later, Xcode with an iOS simulator, the Android SDK and a JDK 17.
 - The NativeScript CLI (`ns`) for the NativeScript apps, CocoaPods for React Native and Lynx on iOS.
+- The Native Shell CLI (`nsh`, [install](https://nsh.dev)) for `nsh`. Its build finds the install through `nsh` on `PATH`, or `NSH_HOME`.
 - The DartNative CLI (`dn`) and a licence key for `dartnative` ([setup](apps/dartnative/README.md#setup)).
 - The UIKit + Mason app (`native-ios-mason`) copies `Mason.xcframework` from a [nativescript-mason](https://github.com/triniwiz/nativescript-mason) checkout next to this repo (or set `MASON_REPO`); the Views + Mason app ships its masonkit AAR in `app/libs`.
 
